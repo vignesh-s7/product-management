@@ -108,3 +108,19 @@ MIT — see [LICENSE](LICENSE).
 
 **Vignesh Vignesh S** · Senior Product Manager · AI · BFSI · Healthcare
 [Portfolio](https://vittobh.github.io) · [LinkedIn](https://linkedin.com/in/Vignesh) · [Profile](https://github.com/vittobh)
+
+
+---
+
+## 🚀 Live Console
+**[https://vittobh.github.io/pm-os/](https://vittobh.github.io/pm-os/)**
+
+Pick any of the 8 PRDs from the dropdown → click **Run Pipeline** → watch the 6-stage multi-agent SDLC animate (PM Gate · Architect · Designer · Engineer · QA · DevOps) → inspect generated architecture, DB schema, eval report, and deploy config. Light + dark mode (toggle in header).
+
+Mock outputs by default. Add an Anthropic key to browser localStorage to attempt live calls (CORS-permitting).
+
+## 🤖 AI Use Cases (2026)
+See **[AI_USE_CASES.md](AI_USE_CASES.md)** — per-PRD recommended agent crews, multi-model strategy, cost envelope.
+
+## ⚠️ Limitations
+See **[LIMITATIONS.md](LIMITATIONS.md)** — orchestrate.sh stubs need wiring (MetaGPT, OpenHands installs); deploy needs Cloudflare token.

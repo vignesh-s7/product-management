@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>pm-os Console</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head>
+<body><header>
+<div><h1>pm-os Console</h1><div class="tagline">Pick a PRD → run multi-agent SDLC pipeline → deploy live preview</div></div>
+<button id="theme-toggle" class="theme-toggle">☾ Dark</button>
+</header><main>
+<div id="ai-banner" class="banner" style="display:none"></div>
+<div class="row" style="margin-bottom:1rem">
+  <span class="dim">Live AI keys:</span>
+  <button class="btn btn-ghost" onclick="app.setKey('anthropic')">+ Claude</button>
+  <button class="btn btn-ghost" onclick="app.setKey('gemini')">+ Gemini</button>
+  <button class="btn btn-ghost" onclick="app.setKey('grok')">+ Grok</button>
+</div>
+<div class="grid" style="grid-template-columns:2fr 1fr">
+  <div class="card"><h3>1. Pick a PRD</h3>
+    <select class="select" id="prd" onchange="loadPrd()"></select>
+    <div id="prdmeta" class="dim" style="font-size:.85rem;margin-top:.5rem"></div>
+  </div>
+  <div class="card"><h3>Model</h3>
+    <label><input type="radio" name="m" value="claude-opus" checked> Claude Opus 4.7</label><br>
+    <label><input type="radio" name="m" value="claude-sonnet"> Claude Sonnet 4.6</label><br>
+    <label><input type="radio" name="m" value="gemini"> Gemini 2.x</label><br>
+    <label><input type="radio" name="m" value="grok"> Grok</label>
+  </div>
+</div>
+<div class="card" style="margin-top:1rem">
+  <h3>2. Multi-agent pipeline</h3>
+  <div class="pipeline" id="pipe"></div>
+  <div style="text-align:center;margin-top:1rem">
+    <button class="btn btn-primary" onclick="run()">▶ Run Pipeline</button>
+  </div>
+</div>
+<div id="outputs" class="grid" style="grid-template-columns:1fr 1fr;margin-top:1rem"></div>
+</main>
+<script src="app.js"></script><script src="page.js"></script>
+</body></html>
