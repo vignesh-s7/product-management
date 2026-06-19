@@ -1,0 +1,37 @@
+name: prd-pipeline
+
+on:
+  push:
+    paths:
+      - 'prds/**.md'
+  workflow_dispatch:
+    inputs:
+      prd:
+        description: 'PRD path (e.g. prds/01-y-score-framework.md)'
+        required: true
+
+jobs:
+  run-crew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect changed PRD
+        id: prd
+        run: |
+          if [ -n "${{ inputs.prd }}" ]; then
+            echo "path=${{ inputs.prd }}" >> $GITHUB_OUTPUT
+          else
+            echo "path=$(git diff --name-only HEAD^ HEAD | grep '^prds/.*\.md$' | head -1)" >> $GITHUB_OUTPUT
+          fi
+      - name: Run orchestrator
+        if: steps.prd.outputs.path != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: ./orchestrate.sh "${{ steps.prd.outputs.path }}"
+      - name: Upload artifacts
+        if: steps.prd.outputs.path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdlc-output
+          path: outputs/
