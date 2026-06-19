@@ -1,7 +1,11 @@
-// Generic AI prototype runtime. Each repo wires its domain UI through window.app callbacks.
+// Generic AI prototype runtime — proxy-only. API keys NEVER live in the browser.
+// Set window.PROXY_BASE on a per-page basis to point at the deployed Cloudflare Worker.
 (function(){
-  const KEYS = { anthropic:'ANTHROPIC_API_KEY', openai:'OPENAI_API_KEY', gemini:'GEMINI_API_KEY', grok:'GROK_API_KEY' };
-  const hasKey = (k) => !!localStorage.getItem(KEYS[k] || k);
+  // PROXY_BASE is set in index.html via <script>window.PROXY_BASE='https://ai-proxy.<sub>.workers.dev/v1'</script>
+  // If null/empty, all AI calls return mock.
+  function proxyBase(){ return (window.PROXY_BASE || '').replace(/\/$/,''); }
+  function hasProxy(){ return !!proxyBase(); }
+
   const banner = (msg, ok=false) => {
     const el = document.getElementById('ai-banner');
     if (!el) return;
@@ -9,20 +13,52 @@
     el.className = 'banner' + (ok ? ' banner-ok' : '');
     el.style.display = 'block';
   };
+
   async function tryAnthropic(userPrompt, systemPrompt) {
-    const key = localStorage.getItem('ANTHROPIC_API_KEY');
-    if (!key) return { mocked:true, reason:'No ANTHROPIC_API_KEY in localStorage' };
+    if (!hasProxy()) return { mocked:true, reason:'PROXY_BASE not configured — set window.PROXY_BASE to the deployed Worker URL' };
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(`${proxyBase()}/anthropic/messages`, {
         method:'POST',
-        headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body: JSON.stringify({ model:'claude-sonnet-4-5-20250929', max_tokens:512, system: systemPrompt, messages:[{role:'user',content:userPrompt}] })
+        headers:{ 'content-type':'application/json' },
+        body: JSON.stringify({
+          model:'claude-sonnet-4-5-20250929',
+          max_tokens:512,
+          system: systemPrompt,
+          messages:[{role:'user',content:userPrompt}]
+        })
       });
-      if (!res.ok) return { mocked:true, reason:`API ${res.status}` };
+      if (!res.ok) {
+        const t = await res.text();
+        return { mocked:true, reason:`Proxy ${res.status}: ${t.slice(0,120)}` };
+      }
       const j = await res.json();
       return { mocked:false, text: (j.content||[]).map(c=>c.text).join('\n') };
-    } catch (e) { return { mocked:true, reason:'CORS or network: '+e.message }; }
+    } catch (e) {
+      return { mocked:true, reason:'Network: '+e.message };
+    }
   }
+
+  async function tryGemini(userPrompt, systemPrompt, model='gemini-2.0-flash') {
+    if (!hasProxy()) return { mocked:true, reason:'PROXY_BASE not configured' };
+    try {
+      const res = await fetch(`${proxyBase()}/gemini/v1/models/${model}:generateContent`, {
+        method:'POST',
+        headers:{ 'content-type':'application/json' },
+        body: JSON.stringify({
+          system_instruction: systemPrompt ? { parts:[{text:systemPrompt}] } : undefined,
+          contents:[{role:'user',parts:[{text:userPrompt}]}]
+        })
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        return { mocked:true, reason:`Proxy ${res.status}: ${t.slice(0,120)}` };
+      }
+      const j = await res.json();
+      const text = (j.candidates?.[0]?.content?.parts || []).map(p=>p.text).join('\n');
+      return { mocked:false, text };
+    } catch (e) { return { mocked:true, reason:'Network: '+e.message }; }
+  }
+
   // Theme handling
   function initTheme(){
     const saved = localStorage.getItem('theme');
@@ -45,13 +81,23 @@
       sync();
     }
   }
+
+  // Show live/mock status on load
+  function showStatus(){
+    if (hasProxy()) banner('Live AI via proxy: ' + proxyBase(), true);
+    else banner('Mock mode — proxy not configured. AI buttons return mock data.', false);
+  }
+
   window.app = {
-    hasKey, banner, tryAnthropic,
-    setKey(provider) {
-      const v = prompt(`Paste ${provider} API key (stored only in this browser's localStorage):`);
-      if (v) { localStorage.setItem(KEYS[provider]||provider, v); banner(`✓ ${provider} key saved locally`, true); }
+    // hasKey kept for backward compat — now answers "is proxy configured"
+    hasKey: () => hasProxy(),
+    banner,
+    tryAnthropic,
+    tryGemini,
+    setKey() {
+      banner('🔒 Keys live on the Cloudflare Worker, never in the browser. Set them via CF dashboard → Worker → Variables.', false);
     },
     loadMock(url){ return fetch(url).then(r=>r.json()); }
   };
-  document.addEventListener('DOMContentLoaded', initTheme);
+  document.addEventListener('DOMContentLoaded', () => { initTheme(); showStatus(); });
 })();
