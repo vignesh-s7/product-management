@@ -8,20 +8,18 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
-.shell{width:100%;max-width:620px}
-
-/* Header */
-.brand{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
-.brand-icon{width:36px;height:36px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
+.shell{width:100%;max-width:660px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;justify-content:center}
+.brand-icon{width:38px;height:38px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
 .brand-name{font-size:20px;font-weight:700;color:#1E293B}
 .brand-tag{font-size:12px;color:#64748B;font-weight:500;margin-left:4px}
 
 /* Progress */
-.progress{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px}
-.step-dot{width:32px;height:32px;border-radius:50%;border:2px solid #CBD5E1;background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#94A3B8;transition:all .3s;position:relative;z-index:1}
+.progress{display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.step-dot{width:30px;height:30px;border-radius:50%;border:2px solid #CBD5E1;background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#94A3B8;transition:all .3s;z-index:1;flex-shrink:0}
 .step-dot.active{border-color:#2563EB;background:#2563EB;color:#fff}
 .step-dot.done{border-color:#10B981;background:#10B981;color:#fff}
-.step-line{width:60px;height:2px;background:#CBD5E1;transition:background .3s}
+.step-line{flex:1;height:2px;background:#CBD5E1;transition:background .3s;min-width:20px}
 .step-line.done{background:#10B981}
 
 /* Card */
@@ -30,81 +28,103 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
 .step{display:none}.step.active{display:block}
 
 /* Typography */
-.card h2{font-size:22px;font-weight:700;color:#1E293B;margin-bottom:6px}
-.card p.sub{font-size:14px;color:#64748B;margin-bottom:24px;line-height:1.6}
+.card h2{font-size:21px;font-weight:700;color:#1E293B;margin-bottom:6px}
+.card p.sub{font-size:13.5px;color:#64748B;margin-bottom:22px;line-height:1.6}
+.section-label{font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.8px;margin:18px 0 10px}
 
 /* Form */
-.field{margin-bottom:18px}
-.field label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:14px;font-family:inherit;color:#1E293B;outline:none;transition:border .2s}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:10px 13px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:13.5px;font-family:inherit;color:#1E293B;outline:none;transition:border .2s;background:#fff}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#2563EB}
-.field textarea{resize:vertical;min-height:90px}
+.field textarea{resize:vertical;min-height:80px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 
 /* Chips */
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.chip{padding:7px 14px;border-radius:20px;border:1.5px solid #E2E8F0;font-size:13px;font-weight:500;color:#475569;cursor:pointer;transition:all .2s;user-select:none}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.chip{padding:6px 13px;border-radius:20px;border:1.5px solid #E2E8F0;font-size:12.5px;font-weight:500;color:#475569;cursor:pointer;transition:all .2s;user-select:none}
 .chip.selected{background:#EFF6FF;border-color:#2563EB;color:#2563EB}
+.chip.selected.purple{background:#F5F3FF;border-color:#7C3AED;color:#7C3AED}
 
-/* Tool cards */
-.tools{display:flex;flex-direction:column;gap:10px}
-.tool-card{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #E2E8F0;border-radius:12px;transition:border .2s}
+/* Tool groups */
+.tool-group-label{font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.7px;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.tool-group-label::after{content:'';flex:1;height:1px;background:#F1F5F9}
+.tools{display:flex;flex-direction:column;gap:8px}
+.tool-card{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1.5px solid #E2E8F0;border-radius:11px;transition:border .2s}
 .tool-card.connected{border-color:#10B981;background:#F0FDF4}
-.tool-left{display:flex;align-items:center;gap:12px}
-.tool-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;background:#F1F5F9}
-.tool-name{font-size:14px;font-weight:600;color:#1E293B}
-.tool-desc{font-size:12px;color:#94A3B8}
-.btn-connect{padding:7px 16px;border-radius:8px;border:1.5px solid #2563EB;background:#fff;color:#2563EB;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.tool-left{display:flex;align-items:center;gap:11px}
+.tool-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;background:#F8FAFC;flex-shrink:0}
+.tool-name{font-size:13.5px;font-weight:600;color:#1E293B}
+.tool-desc{font-size:11.5px;color:#94A3B8}
+.btn-connect{padding:6px 14px;border-radius:7px;border:1.5px solid #2563EB;background:#fff;color:#2563EB;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;flex-shrink:0}
 .btn-connect:hover{background:#EFF6FF}
 .btn-connect.connected{border-color:#10B981;color:#10B981;pointer-events:none}
-.skip-row{text-align:center;margin-top:12px}
-.skip-link{font-size:13px;color:#94A3B8;cursor:pointer;text-decoration:underline}
+.skip-row{text-align:center;margin-top:10px}
+.skip-link{font-size:12.5px;color:#94A3B8;cursor:pointer;text-decoration:underline}
 
 /* Tiers */
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:4px}
-.tier-card{border:2px solid #E2E8F0;border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative}
+.tier-card{border:2px solid #E2E8F0;border-radius:14px;padding:18px;cursor:pointer;transition:all .2s}
 .tier-card.selected-std{border-color:#2563EB;background:#EFF6FF}
 .tier-card.selected-ai{border-color:#7C3AED;background:#F5F3FF}
-.tier-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.tier-badge{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block;margin-bottom:10px}
 .tier-badge.std{background:#DBEAFE;color:#1D4ED8}
 .tier-badge.ai{background:linear-gradient(135deg,#7C3AED,#2563EB);color:#fff}
-.tier-card h3{font-size:15px;font-weight:700;color:#1E293B;margin-bottom:10px}
-.tier-features{list-style:none;font-size:13px;color:#475569;line-height:2}
-.tier-features li::before{content:"✓ ";color:#10B981;font-weight:700}
-.tier-ai-extra li::before{content:"✨ ";color:#7C3AED}
+.tier-card h3{font-size:14.5px;font-weight:700;color:#1E293B;margin-bottom:10px}
+.tier-features{list-style:none;font-size:12.5px;color:#475569;line-height:2}
+.tier-features li::before{content:"✓  ";color:#10B981;font-weight:700}
+.tier-ai-extra li::before{content:"✨  ";color:#7C3AED}
+
+/* Radio toggle */
+.toggle-row{display:flex;gap:10px;margin-top:6px}
+.toggle-btn{flex:1;padding:10px;border:1.5px solid #E2E8F0;border-radius:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:#64748B;transition:all .2s;user-select:none}
+.toggle-btn.active-std{border-color:#2563EB;background:#EFF6FF;color:#2563EB}
+.toggle-btn.active-ai{border-color:#7C3AED;background:#F5F3FF;color:#7C3AED}
+
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.kpi-card{border:1.5px solid #E2E8F0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s}
+.kpi-card.selected{border-color:#2563EB;background:#EFF6FF}
+.kpi-card .kpi-icon{font-size:20px;margin-bottom:5px}
+.kpi-card .kpi-name{font-size:12.5px;font-weight:600;color:#374151}
+.kpi-card .kpi-eg{font-size:11px;color:#94A3B8}
+
+/* Output chips */
+.output-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
 
 /* Ready */
-.ready-icon{width:72px;height:72px;background:linear-gradient(135deg,#10B981,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px}
-.actions-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:20px 0}
-.action-card{border:1.5px solid #E2E8F0;border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s}
+.ready-icon{width:68px;height:68px;background:linear-gradient(135deg,#10B981,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 18px}
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.action-card{border:1.5px solid #E2E8F0;border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s}
 .action-card:hover{border-color:#2563EB;background:#EFF6FF}
-.action-card .a-icon{font-size:24px;margin-bottom:8px}
-.action-card .a-label{font-size:12px;font-weight:600;color:#374151}
+.action-card .a-icon{font-size:22px;margin-bottom:7px}
+.action-card .a-label{font-size:11.5px;font-weight:600;color:#374151}
+.summary-box{background:#F8FAFC;border-radius:12px;padding:14px 16px;font-size:12.5px;color:#475569;line-height:2;margin-bottom:16px;border:1px solid #E2E8F0}
+.summary-box strong{color:#1E293B}
 
 /* Buttons */
-.btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:24px}
-.btn-back{padding:10px 20px;border-radius:10px;border:1.5px solid #E2E8F0;background:#fff;color:#64748B;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+.btn-back{padding:10px 20px;border-radius:10px;border:1.5px solid #E2E8F0;background:#fff;color:#64748B;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
 .btn-back:hover{border-color:#94A3B8}
-.btn-next{padding:10px 28px;border-radius:10px;border:none;background:linear-gradient(135deg,#2563EB,#1D4ED8);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(37,99,235,.3)}
-.btn-next:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(37,99,235,.4)}
+.btn-next{padding:10px 26px;border-radius:10px;border:none;background:linear-gradient(135deg,#2563EB,#1D4ED8);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(37,99,235,.3)}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.35)}
 .btn-next.purple{background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.btn-next.purple:hover{box-shadow:0 4px 14px rgba(124,58,237,.35)}
 .btn-full{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#2563EB,#1D4ED8);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(37,99,235,.3);transition:all .2s}
-.btn-full:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(37,99,235,.4)}
+.btn-full:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(37,99,235,.4)}
+.hint{font-size:11.5px;color:#94A3B8;margin-top:4px}
 </style>
 </head>
 <body>
 <div class="shell">
 
-  <\!-- Brand -->
   <div class="brand">
     <div class="brand-icon">pm</div>
-    <div>
-      <span class="brand-name">pm-os</span>
-      <span class="brand-tag">AI-Native PM Platform</span>
-    </div>
+    <div><span class="brand-name">pm-os</span><span class="brand-tag">AI-Native PM Platform</span></div>
   </div>
 
-  <\!-- Progress -->
+  <\!-- Progress: 6 steps -->
   <div class="progress">
     <div class="step-dot active" id="dot-1">1</div>
     <div class="step-line" id="line-1"></div>
@@ -114,39 +134,30 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
     <div class="step-line" id="line-3"></div>
     <div class="step-dot" id="dot-4">4</div>
     <div class="step-line" id="line-4"></div>
-    <div class="step-dot" id="dot-5">✓</div>
+    <div class="step-dot" id="dot-5">5</div>
+    <div class="step-line" id="line-5"></div>
+    <div class="step-dot" id="dot-6">✓</div>
   </div>
 
-  <\!-- Card -->
   <div class="card">
 
-    <\!-- Step 1: Profile -->
+    <\!-- STEP 1: Profile -->
     <div class="step active" id="step-1">
       <h2>Welcome to pm-os 👋</h2>
-      <p class="sub">Your AI-native PM operating system — from first idea to launch. Let's get you set up in 4 quick steps.</p>
+      <p class="sub">Your AI-native PM operating system. Let's get you set up in 5 quick steps.</p>
       <div class="row">
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="pm-name" placeholder="Vignesh Vignesh S">
-        </div>
-        <div class="field">
-          <label>Role</label>
+        <div class="field"><label>Full Name</label><input id="pm-name" placeholder="Vignesh Vignesh S"></div>
+        <div class="field"><label>Role</label>
           <select id="pm-role">
-            <option>Product Manager</option>
-            <option>Senior PM</option>
-            <option>PM Lead / Manager</option>
-            <option>CPO / VP Product</option>
-            <option>P&T Ops Lead</option>
-            <option>Consultant PM</option>
+            <option>Product Manager</option><option>Senior PM</option>
+            <option>PM Lead / Manager</option><option>CPO / VP Product</option>
+            <option>P&T Ops Lead</option><option>Consultant PM</option>
           </select>
         </div>
       </div>
+      <div class="field"><label>Organisation</label><input id="pm-org" placeholder="e.g. Coupa, BCG, Company"></div>
       <div class="field">
-        <label>Organisation</label>
-        <input type="text" id="pm-org" placeholder="e.g. Coupa, BCG, Company">
-      </div>
-      <div class="field">
-        <label>Domain Expertise <span style="color:#94A3B8;font-weight:400">(select all that apply)</span></label>
+        <label>Domain Expertise <span style="font-weight:400;color:#94A3B8">(select all that apply)</span></label>
         <div class="chips" id="domain-chips">
           <div class="chip" onclick="toggleChip(this)">BFSI</div>
           <div class="chip" onclick="toggleChip(this)">Healthcare</div>
@@ -155,107 +166,105 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
           <div class="chip" onclick="toggleChip(this)">Consumer</div>
           <div class="chip" onclick="toggleChip(this)">E-Commerce</div>
           <div class="chip" onclick="toggleChip(this)">Fintech</div>
+          <div class="chip" onclick="toggleChip(this)">Logistics</div>
+          <div class="chip" onclick="toggleChip(this)">EdTech</div>
         </div>
       </div>
-      <div class="btn-row">
-        <span></span>
-        <button class="btn-next" onclick="goTo(2)">Continue →</button>
-      </div>
+      <div class="btn-row"><span></span><button class="btn-next" onclick="goTo(2)">Continue →</button></div>
     </div>
 
-    <\!-- Step 2: Connect Tools -->
+    <\!-- STEP 2: Connect Tools -->
     <div class="step" id="step-2">
       <h2>Connect your knowledge sources</h2>
-      <p class="sub">pm-os uses Atlassian Rovo and Microsoft 365 — connect your existing tools. You can skip and connect later.</p>
+      <p class="sub">pm-os orchestrates your existing tools — Atlassian, Microsoft 365, and Google Workspace. Connect what you use.</p>
+
+      <div class="tool-group-label">Atlassian (via Rovo)</div>
       <div class="tools">
         <div class="tool-card" id="tc-jira">
-          <div class="tool-left">
-            <div class="tool-icon">🔵</div>
-            <div>
-              <div class="tool-name">Jira</div>
-              <div class="tool-desc">Epics, issues, sprints via Atlassian Rovo</div>
-            </div>
-          </div>
+          <div class="tool-left"><div class="tool-icon">🔵</div><div><div class="tool-name">Jira</div><div class="tool-desc">Epics, issues, sprints — Rovo Search + Jira AI</div></div></div>
           <button class="btn-connect" onclick="connect('jira')">Connect</button>
         </div>
         <div class="tool-card" id="tc-confluence">
-          <div class="tool-left">
-            <div class="tool-icon">📘</div>
-            <div>
-              <div class="tool-name">Confluence</div>
-              <div class="tool-desc">Pages, spaces, AI summaries via Rovo</div>
-            </div>
-          </div>
+          <div class="tool-left"><div class="tool-icon">📘</div><div><div class="tool-name">Confluence</div><div class="tool-desc">Pages, spaces, AI summaries — Rovo + Confluence AI</div></div></div>
           <button class="btn-connect" onclick="connect('confluence')">Connect</button>
         </div>
+      </div>
+
+      <div class="tool-group-label">Microsoft 365 (via Graph API)</div>
+      <div class="tools">
         <div class="tool-card" id="tc-sharepoint">
-          <div class="tool-left">
-            <div class="tool-icon">📁</div>
-            <div>
-              <div class="tool-name">SharePoint</div>
-              <div class="tool-desc">Documents and sites via Microsoft Graph</div>
-            </div>
-          </div>
+          <div class="tool-left"><div class="tool-icon">📁</div><div><div class="tool-name">SharePoint</div><div class="tool-desc">Documents and sites — M365 Copilot</div></div></div>
           <button class="btn-connect" onclick="connect('sharepoint')">Connect</button>
         </div>
         <div class="tool-card" id="tc-yammer">
-          <div class="tool-left">
-            <div class="tool-icon">💬</div>
-            <div>
-              <div class="tool-name">Yammer / Viva Engage</div>
-              <div class="tool-desc">Posts and announcements via Microsoft Graph</div>
-            </div>
-          </div>
+          <div class="tool-left"><div class="tool-icon">💬</div><div><div class="tool-name">Yammer / Viva Engage</div><div class="tool-desc">Posts and announcements — M365 Graph</div></div></div>
           <button class="btn-connect" onclick="connect('yammer')">Connect</button>
         </div>
+        <div class="tool-card" id="tc-teams">
+          <div class="tool-left"><div class="tool-icon">🟣</div><div><div class="tool-name">Microsoft Teams</div><div class="tool-desc">Channels, files, meeting notes — M365 Copilot</div></div></div>
+          <button class="btn-connect" onclick="connect('teams')">Connect</button>
+        </div>
         <div class="tool-card" id="tc-powerbi">
-          <div class="tool-left">
-            <div class="tool-icon">📊</div>
-            <div>
-              <div class="tool-name">Power BI</div>
-              <div class="tool-desc">Reports and dashboards via Embed + Copilot API</div>
-            </div>
-          </div>
+          <div class="tool-left"><div class="tool-icon">📊</div><div><div class="tool-name">Power BI</div><div class="tool-desc">Reports and dashboards — Embed + Copilot API</div></div></div>
           <button class="btn-connect" onclick="connect('powerbi')">Connect</button>
         </div>
       </div>
-      <div class="skip-row">
-        <span class="skip-link" onclick="goTo(3)">Skip for now — connect later in settings</span>
+
+      <div class="tool-group-label">Google Workspace (via Google APIs)</div>
+      <div class="tools">
+        <div class="tool-card" id="tc-gdrive">
+          <div class="tool-left"><div class="tool-icon">🟡</div><div><div class="tool-name">Google Drive</div><div class="tool-desc">Docs, Sheets, Slides — Drive API + Gemini</div></div></div>
+          <button class="btn-connect" onclick="connect('gdrive')">Connect</button>
+        </div>
+        <div class="tool-card" id="tc-gdocs">
+          <div class="tool-left"><div class="tool-icon">📝</div><div><div class="tool-name">Google Docs / Slides</div><div class="tool-desc">PRDs, decks, specs — Docs API + Gemini AI</div></div></div>
+          <button class="btn-connect" onclick="connect('gdocs')">Connect</button>
+        </div>
+        <div class="tool-card" id="tc-looker">
+          <div class="tool-left"><div class="tool-icon">🔍</div><div><div class="tool-name">Looker / Google Data Studio</div><div class="tool-desc">BI reports and dashboards — Looker API</div></div></div>
+          <button class="btn-connect" onclick="connect('looker')">Connect</button>
+        </div>
+        <div class="tool-card" id="tc-gchat">
+          <div class="tool-left"><div class="tool-icon">🟢</div><div><div class="tool-name">Google Chat / Gmail</div><div class="tool-desc">Threads, decisions — Google Workspace API</div></div></div>
+          <button class="btn-connect" onclick="connect('gchat')">Connect</button>
+        </div>
       </div>
+
+      <div class="skip-row"><span class="skip-link" onclick="goTo(3)">Skip — connect later in Settings</span></div>
       <div class="btn-row">
         <button class="btn-back" onclick="goTo(1)">← Back</button>
         <button class="btn-next" onclick="goTo(3)">Continue →</button>
       </div>
     </div>
 
-    <\!-- Step 3: Choose Tier -->
+    <\!-- STEP 3: Tier -->
     <div class="step" id="step-3">
       <h2>Choose your tier</h2>
-      <p class="sub">Start with Standard and upgrade anytime. AI tier requires Atlassian Rovo and Microsoft 365 Copilot licences.</p>
+      <p class="sub">Start with Standard — upgrade to AI anytime. AI tier uses Atlassian Rovo, M365 Copilot, Gemini, and Claude.</p>
       <div class="tiers">
-        <div class="tier-card" id="tier-std" onclick="selectTier('std')">
+        <div class="tier-card selected-std" id="tier-std" onclick="selectTier('std')">
           <div class="tier-badge std">Standard</div>
           <h3>Search & Report</h3>
           <ul class="tier-features">
             <li>Federated KB search</li>
             <li>Reuse artifact URLs</li>
-            <li>PowerBI dashboards</li>
+            <li>PowerBI + Looker embed</li>
             <li>PM templates library</li>
-            <li>Client workspace</li>
+            <li>Client workspace view</li>
+            <li>Multi-PM org KB</li>
           </ul>
         </div>
         <div class="tier-card" id="tier-ai" onclick="selectTier('ai')">
           <div class="tier-badge ai">AI ✨</div>
           <h3>Chat & Generate</h3>
-          <ul class="tier-features">
-            <li>Everything in Standard</li>
-          </ul>
+          <ul class="tier-features"><li>Everything in Standard</li></ul>
           <ul class="tier-features tier-ai-extra">
             <li>Rovo Chat + Claude AI</li>
+            <li>Gemini for Google WS</li>
             <li>AI artifact generation</li>
-            <li>PowerBI Copilot interpret</li>
+            <li>PowerBI / Looker AI</li>
             <li>Deep research engine</li>
-            <li>Confluence AI drafts</li>
+            <li>Jira AI story gen</li>
           </ul>
         </div>
       </div>
@@ -265,75 +274,146 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
       </div>
     </div>
 
-    <\!-- Step 4: First Product -->
+    <\!-- STEP 4: Project Setup -->
     <div class="step" id="step-4">
-      <h2>Start your first product</h2>
-      <p class="sub">Tell pm-os about your first product. We'll search the org KB for relevant prior work and run a discovery pack.</p>
+      <h2>Tell us about your project</h2>
+      <p class="sub">pm-os tailors your KB, templates, and compliance checks based on your project context.</p>
+
       <div class="field">
-        <label>Product Name</label>
-        <input type="text" id="prod-name" placeholder="e.g. AI-Assisted KYC Platform">
+        <label>Is this a new or existing project?</label>
+        <div class="toggle-row" id="proj-toggle">
+          <div class="toggle-btn active-std" onclick="setToggle('new')">🆕 &nbsp;New Project</div>
+          <div class="toggle-btn" onclick="setToggle('existing')">🔄 &nbsp;Existing Project</div>
+        </div>
       </div>
+
+      <div class="field"><label>Project / Product Name</label><input id="prod-name" placeholder="e.g. AI-Assisted KYC Platform"></div>
+
+      <div class="row">
+        <div class="field"><label>Domain</label>
+          <select id="prod-domain">
+            <option>BFSI</option><option>Healthcare</option><option>SaaS / Enterprise</option>
+            <option>Telecom</option><option>Consumer</option><option>Fintech</option>
+            <option>E-Commerce</option><option>Logistics</option><option>EdTech</option>
+          </select>
+        </div>
+        <div class="field"><label>Compliance Regime</label>
+          <select id="prod-compliance">
+            <option>Auto-detect from domain</option><option>HIPAA</option><option>PCI-DSS</option>
+            <option>GDPR</option><option>EU AI Act</option><option>FATF / KYC / AML</option>
+            <option>SOC 2</option><option>None</option>
+          </select>
+        </div>
+      </div>
+
       <div class="field">
-        <label>Problem Statement</label>
+        <label>Tech Stack <span style="font-weight:400;color:#94A3B8">(select all that apply)</span></label>
+        <div class="chips" id="tech-chips">
+          <div class="chip" onclick="toggleChip(this)">React</div>
+          <div class="chip" onclick="toggleChip(this)">Next.js</div>
+          <div class="chip" onclick="toggleChip(this)">Python</div>
+          <div class="chip" onclick="toggleChip(this)">Node.js</div>
+          <div class="chip" onclick="toggleChip(this)">Java / Spring</div>
+          <div class="chip" onclick="toggleChip(this)">AWS</div>
+          <div class="chip" onclick="toggleChip(this)">Azure</div>
+          <div class="chip" onclick="toggleChip(this)">GCP</div>
+          <div class="chip" onclick="toggleChip(this)">Kafka</div>
+          <div class="chip" onclick="toggleChip(this)">Postgres</div>
+          <div class="chip" onclick="toggleChip(this)">Snowflake</div>
+          <div class="chip" onclick="toggleChip(this)">LLM / GenAI</div>
+        </div>
+      </div>
+
+      <div class="field"><label>Problem Statement</label>
         <textarea id="prod-ps" placeholder="What problem are you solving, for whom, and why now?"></textarea>
       </div>
-      <div class="row">
-        <div class="field">
-          <label>Domain</label>
-          <select id="prod-domain">
-            <option>BFSI</option>
-            <option>Healthcare</option>
-            <option>SaaS / Enterprise</option>
-            <option>Telecom</option>
-            <option>Consumer</option>
-            <option>E-Commerce</option>
-            <option>Fintech</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Compliance</label>
-          <select id="prod-compliance">
-            <option>Auto-detect</option>
-            <option>HIPAA</option>
-            <option>PCI-DSS</option>
-            <option>GDPR</option>
-            <option>EU AI Act</option>
-            <option>FATF / KYC</option>
-            <option>None</option>
-          </select>
-        </div>
-      </div>
-      <div class="skip-row" style="margin-top:0;margin-bottom:4px">
-        <span class="skip-link" onclick="goTo(5)">Skip — I'll add a product later</span>
-      </div>
+
       <div class="btn-row">
         <button class="btn-back" onclick="goTo(3)">← Back</button>
-        <button class="btn-next purple" onclick="goTo(5)">Run Discovery ✨</button>
+        <button class="btn-next" onclick="goTo(5)">Continue →</button>
       </div>
     </div>
 
-    <\!-- Step 5: Ready -->
+    <\!-- STEP 5: Goals, KPIs, Outputs -->
     <div class="step" id="step-5">
+      <h2>Goals, KPIs & expected outputs</h2>
+      <p class="sub">pm-os uses this to pre-configure your discovery pack, reporting templates, and AI artifact suggestions.</p>
+
+      <div class="field"><label>Primary Goal</label>
+        <select id="goal-primary">
+          <option>Reduce operational cost</option>
+          <option>Increase revenue / upsell</option>
+          <option>Improve customer experience / NPS</option>
+          <option>Accelerate time-to-market</option>
+          <option>Ensure regulatory compliance</option>
+          <option>Expand to new market / segment</option>
+          <option>Replace / modernise legacy system</option>
+          <option>AI / automation enablement</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>KPI Focus Areas <span style="font-weight:400;color:#94A3B8">(pick up to 3)</span></label>
+        <div class="kpi-grid" id="kpi-grid">
+          <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">📈</div><div class="kpi-name">Adoption & Activation</div><div class="kpi-eg">DAU, onboarding rate</div></div>
+          <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">💰</div><div class="kpi-name">Revenue Impact</div><div class="kpi-eg">ARR, conversion, upsell</div></div>
+          <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">⚡</div><div class="kpi-name">Operational Efficiency</div><div class="kpi-eg">Time saved, cost reduction</div></div>
+          <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">😊</div><div class="kpi-name">Customer Satisfaction</div><div class="kpi-eg">NPS, CSAT, churn</div></div>
+          <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">🛡️</div><div class="kpi-name">Compliance & Risk</div><div class="kpi-eg">Audit pass rate, incidents</div></div>
+          <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">🚀</div><div class="kpi-name">Delivery Velocity</div><div class="kpi-eg">Sprint velocity, cycle time</div></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Outputs you need pm-os to generate</label>
+        <div class="output-chips" id="output-chips">
+          <div class="chip" onclick="toggleChip(this)">PRD</div>
+          <div class="chip" onclick="toggleChip(this)">SWOT Analysis</div>
+          <div class="chip" onclick="toggleChip(this)">Competitor Matrix</div>
+          <div class="chip" onclick="toggleChip(this)">ROI Model</div>
+          <div class="chip" onclick="toggleChip(this)">Compliance Checklist</div>
+          <div class="chip" onclick="toggleChip(this)">User Stories</div>
+          <div class="chip" onclick="toggleChip(this)">KPI Dashboard</div>
+          <div class="chip" onclick="toggleChip(this)">Release Plan</div>
+          <div class="chip" onclick="toggleChip(this)">Beta Strategy</div>
+          <div class="chip" onclick="toggleChip(this)">GTM Brief</div>
+          <div class="chip" onclick="toggleChip(this)">Stakeholder Map</div>
+          <div class="chip" onclick="toggleChip(this)">Risk Register</div>
+        </div>
+      </div>
+
+      <div class="field"><label>Target Launch Timeline</label>
+        <select id="prod-timeline">
+          <option>< 1 month (fast track)</option>
+          <option>1–3 months (standard)</option>
+          <option>3–6 months (complex)</option>
+          <option>6–12 months (large scale)</option>
+          <option>12+ months (multi-phase)</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goTo(4)">← Back</button>
+        <button class="btn-next purple" onclick="goTo(6)">Generate My Setup ✨</button>
+      </div>
+    </div>
+
+    <\!-- STEP 6: Ready -->
+    <div class="step" id="step-6">
       <div style="text-align:center">
         <div class="ready-icon">✓</div>
         <h2 id="ready-heading">You're all set\!</h2>
-        <p class="sub" style="margin-bottom:0">pm-os is configured and ready. Here's where to start:</p>
+        <p class="sub" style="margin-bottom:4px">pm-os is configured. Your discovery pack is being prepared.</p>
       </div>
       <div class="actions-grid">
-        <div class="action-card">
-          <div class="a-icon">🔍</div>
-          <div class="a-label">Search KB</div>
-        </div>
-        <div class="action-card">
-          <div class="a-icon">🚀</div>
-          <div class="a-label">Run Discovery</div>
-        </div>
-        <div class="action-card">
-          <div class="a-icon">📊</div>
-          <div class="a-label">View Reports</div>
-        </div>
+        <div class="action-card"><div class="a-icon">🔍</div><div class="a-label">Search KB</div></div>
+        <div class="action-card"><div class="a-icon">🚀</div><div class="a-label">Run Discovery</div></div>
+        <div class="action-card"><div class="a-icon">📊</div><div class="a-label">View Reports</div></div>
+        <div class="action-card"><div class="a-icon">🤖</div><div class="a-label">AI Chat</div></div>
+        <div class="action-card"><div class="a-icon">📋</div><div class="a-label">Templates</div></div>
+        <div class="action-card"><div class="a-icon">👥</div><div class="a-label">Client WS</div></div>
       </div>
-      <div id="summary-box" style="background:#F8FAFC;border-radius:12px;padding:16px;font-size:13px;color:#475569;line-height:1.8;margin-bottom:4px"></div>
+      <div class="summary-box" id="summary-box"></div>
       <button class="btn-full" onclick="alert('Dashboard launching — connect your backend to go live\!')">Go to Dashboard →</button>
     </div>
 
@@ -344,24 +424,30 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
 let currentStep = 1;
 let selectedTier = 'std';
 let connected = {};
+let projType = 'new';
+let selectedKPIs = 0;
 
 function goTo(n) {
   document.getElementById('step-' + currentStep).classList.remove('active');
-  // update progress
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 6; i++) {
     const dot = document.getElementById('dot-' + i);
-    const line = i < 5 ? document.getElementById('line-' + i) : null;
-    if (i < n) { dot.classList.add('done'); dot.classList.remove('active'); dot.textContent = '✓'; }
-    else if (i === n) { dot.classList.add('active'); dot.classList.remove('done'); dot.textContent = i < 5 ? i : '✓'; }
-    else { dot.classList.remove('active','done'); dot.textContent = i < 5 ? i : '✓'; }
-    if (line) { i < n ? line.classList.add('done') : line.classList.remove('done'); }
+    const line = i < 6 ? document.getElementById('line-' + i) : null;
+    if (i < n) { dot.classList.remove('active'); dot.classList.add('done'); dot.textContent = '✓'; }
+    else if (i === n) { dot.classList.add('active'); dot.classList.remove('done'); dot.textContent = i < 6 ? i : '✓'; }
+    else { dot.classList.remove('active','done'); dot.textContent = i < 6 ? i : '✓'; }
+    if (line) i < n ? line.classList.add('done') : line.classList.remove('done');
   }
   currentStep = n;
   document.getElementById('step-' + n).classList.add('active');
-  if (n === 5) buildSummary();
+  if (n === 6) buildSummary();
 }
 
 function toggleChip(el) { el.classList.toggle('selected'); }
+
+function toggleKPI(el) {
+  if (el.classList.contains('selected')) { el.classList.remove('selected'); selectedKPIs--; }
+  else if (selectedKPIs < 3) { el.classList.add('selected'); selectedKPIs++; }
+}
 
 function connect(tool) {
   connected[tool] = true;
@@ -376,25 +462,51 @@ function selectTier(t) {
   selectedTier = t;
   document.getElementById('tier-std').className = 'tier-card' + (t === 'std' ? ' selected-std' : '');
   document.getElementById('tier-ai').className = 'tier-card' + (t === 'ai' ? ' selected-ai' : '');
-  const btn = document.getElementById('tier-btn');
-  btn.className = t === 'ai' ? 'btn-next purple' : 'btn-next';
+  document.getElementById('tier-btn').className = t === 'ai' ? 'btn-next purple' : 'btn-next';
+}
+
+function setToggle(type) {
+  projType = type;
+  const btns = document.querySelectorAll('#proj-toggle .toggle-btn');
+  btns.forEach((b,i) => {
+    b.className = 'toggle-btn';
+    if ((i===0 && type==='new') || (i===1 && type==='existing'))
+      b.className = 'toggle-btn active-std';
+  });
+}
+
+function getSelected(containerClass) {
+  return Array.from(document.querySelectorAll(containerClass + ' .chip.selected')).map(c => c.textContent).join(', ') || 'None';
+}
+
+function getSelectedKPIs() {
+  return Array.from(document.querySelectorAll('#kpi-grid .kpi-card.selected')).map(c => c.querySelector('.kpi-name').textContent).join(', ') || 'None';
 }
 
 function buildSummary() {
   const name = document.getElementById('pm-name').value || 'PM';
   const org = document.getElementById('pm-org').value || 'your org';
   const role = document.getElementById('pm-role').value;
-  const prod = document.getElementById('prod-name').value;
-  const connectedList = Object.keys(connected).join(', ') || 'None yet';
-  document.getElementById('ready-heading').textContent = 'You\'re all set, ' + name.split(' ')[0] + '\!';
+  const prod = document.getElementById('prod-name').value || 'Not set';
+  const domain = document.getElementById('prod-domain').value;
+  const goal = document.getElementById('goal-primary').value;
+  const timeline = document.getElementById('prod-timeline').value;
+  const connList = Object.keys(connected).join(', ') || 'None yet';
+  const outputs = getSelected('#output-chips');
+  const kpis = getSelectedKPIs();
+
+  document.getElementById('ready-heading').textContent = "You're all set, " + name.split(' ')[0] + "\!";
   document.getElementById('summary-box').innerHTML =
-    '<strong>Role:</strong> ' + role + ' at ' + org + '<br>' +
+    '<strong>PM:</strong> ' + role + ' · ' + org + '<br>' +
     '<strong>Tier:</strong> ' + (selectedTier === 'ai' ? 'AI ✨' : 'Standard') + '<br>' +
-    '<strong>Connected:</strong> ' + connectedList + '<br>' +
-    (prod ? '<strong>First product:</strong> ' + prod : '<strong>First product:</strong> Not added yet — add from dashboard');
+    '<strong>Connected:</strong> ' + connList + '<br>' +
+    '<strong>Project:</strong> ' + (projType === 'new' ? 'New' : 'Existing') + ' · ' + prod + ' · ' + domain + '<br>' +
+    '<strong>Goal:</strong> ' + goal + '<br>' +
+    '<strong>KPIs:</strong> ' + kpis + '<br>' +
+    '<strong>Outputs:</strong> ' + outputs + '<br>' +
+    '<strong>Timeline:</strong> ' + timeline;
 }
 
-// Default tier selection
 selectTier('std');
 </script>
 </body>
