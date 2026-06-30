@@ -7,44 +7,40 @@
   "developer": {
     "name": "Vignesh Vignesh S",
     "websiteUrl": "https://vittobh.github.io/pm-os",
-    "privacyUrl": "https://vittobh.github.io/pm-os/docs/onboarding/",
-    "termsOfUseUrl": "https://vittobh.github.io/pm-os/docs/onboarding/"
+    "privacyUrl": "https://vittobh.github.io/pm-os/onboarding/",
+    "termsOfUseUrl": "https://vittobh.github.io/pm-os/onboarding/"
   },
-  "name": {
-    "short": "pm-os",
-    "full": "pm-os: AI-Native PM Platform"
-  },
+  "name": { "short": "pm-os", "full": "pm-os: AI-Native PM Platform" },
   "description": {
     "short": "Your AI-native PM operating system",
-    "full": "pm-os helps product managers discover, reuse, and generate PM artifacts across the full lifecycle — from discovery to release. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI."
+    "full": "pm-os helps product managers discover, reuse, and generate PM artifacts across the full lifecycle. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI."
   },
-  "icons": {
-    "color": "icon-color.png",
-    "outline": "icon-outline.png"
-  },
+  "icons": { "color": "icon-color.png", "outline": "icon-outline.png" },
   "accentColor": "#2563EB",
   "staticTabs": [
     {
       "entityId": "onboarding",
       "name": "Get Started",
-      "contentUrl": "https://vittobh.github.io/pm-os/docs/onboarding/",
-      "websiteUrl": "https://vittobh.github.io/pm-os/docs/onboarding/",
+      "contentUrl": "https://vittobh.github.io/pm-os/onboarding/teams.html",
+      "websiteUrl": "https://vittobh.github.io/pm-os/onboarding/",
+      "scopes": ["personal", "team"]
+    },
+    {
+      "entityId": "cucp-deck",
+      "name": "CuCP Rollout",
+      "contentUrl": "https://vittobh.github.io/pm-os/cucp/presentation.html",
+      "websiteUrl": "https://vittobh.github.io/pm-os/cucp/presentation.html",
       "scopes": ["personal", "team"]
     }
   ],
   "configurableTabs": [
     {
-      "configurationUrl": "https://vittobh.github.io/pm-os/docs/onboarding/?teams=1",
+      "configurationUrl": "https://vittobh.github.io/pm-os/onboarding/teams.html?config=1",
       "canUpdateConfiguration": true,
       "scopes": ["team", "groupChat"],
-      "sharePointPreviewImage": "https://vittobh.github.io/pm-os/docs/onboarding/preview.png",
       "supportedSharePointHosts": ["sharePointFullPage", "sharePointWebPart"]
     }
   ],
   "permissions": ["identity", "messageTeamMembers"],
-  "validDomains": ["vittobh.github.io"],
-  "webApplicationInfo": {
-    "id": "pm-os-app",
-    "resource": "https://vittobh.github.io/pm-os"
-  }
+  "validDomains": ["vittobh.github.io"]
 }
