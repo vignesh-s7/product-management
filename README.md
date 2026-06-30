@@ -1,126 +1,146 @@
-# pm-os
+# pm-os — AI-Native PM Operating System
 
-> **Give it a PRD. Get an SDLC.**
-> A product manager's operating system that turns a one-page PRD into architecture, DB schema, code, tests, and a live URL — by orchestrating the best open-source agent crews on GitHub.
-
-**Built by [Vignesh Vignesh S](https://github.com/vittobh)** — Senior PM for regulated AI (BFSI, Healthcare). I don't reinvent agent frameworks; I compose them with PM-grade rigor: readiness scoring, eval harnesses, guardrails, and launch checklists drawn from 10 years shipping AI into HIPAA / PCI / EU-AI-Act environments.
-
----
-
-## Why this exists
-
-Most "AI builder" projects start from code. PMs start from a problem statement. `pm-os` closes that gap: a PRD goes in, a working artifact comes out — and the *PM craft* (Y-Score readiness, eval rubrics, anti-hallucination guardrails, compliance checklists) is baked into every step.
-
-This repo is also a **portfolio gallery**: the same platform generates the 8 case-study repos linked below. The platform *is* the proof.
+**Author:** Vignesh Vignesh S · Senior PM · AI / BFSI / Healthcare
+**Live:** [vittobh.github.io/pm-os](https://vittobh.github.io/pm-os)
+**Status:** Active · v0.4
 
 ---
 
-## Architecture
+## What is pm-os?
+
+pm-os is a full-lifecycle PM operating system that takes a product from first idea to post-launch review — generating every artifact a PM needs along the way.
+
+It does not replace Jira, Confluence, SharePoint, or Google Workspace. It **orchestrates** them, adding a PM-specific workflow layer on top of Atlassian Rovo, Microsoft 365 Copilot, Google Workspace AI, and Claude.
+
+---
+
+## The Problem
+
+Product managers spend 60–80% of their working week on documentation and re-work:
+
+- Market research, SWOT, competitor analysis, ROI models — produced from scratch every time
+- Jira, Confluence, SharePoint, Yammer, Google Drive searched separately with no unified view
+- AI exists in each tool (Rovo, M365 Copilot, Gemini) but is not connected into a PM workflow
+- Nothing is reused across products, teams, or client engagements
+
+---
+
+## Two-Tier Product Model
+
+| | Standard | AI ✨ |
+|--|----------|-------|
+| **Search** | Federated KB search: Jira + Confluence (Rovo) · SharePoint + Yammer + Teams (M365) · Google Drive + Docs (Google API) | Same + AI chat grounded in KB (Rovo Chat + Claude) |
+| **Reporting** | Embedded PowerBI + Looker standard templates | PowerBI Copilot + Looker AI — natural language queries and screenshot interpretation |
+| **Research** | Browse + reuse artifact URLs | Deep research: internal KB + web, structured report (Quick / Standard / Deep) |
+| **Artifacts** | PM templates library — clone and edit | AI-generated drafts: SWOT, PRD, ROI model, KPI plan, release strategy |
+| **Org** | Multi-PM org KB · Client workspace (read-only) | AI-summarised client status · cross-product pattern recognition |
+
+---
+
+## Four Engines
+
+### 1. Discovery Engine
+Input: problem statement + domain
+Output: market sizing (TAM/SAM/SOM) · SWOT · competitor matrix · ROI model · compliance risk map · GTM brief
+
+### 2. Delivery Engine
+Input: PRD
+Output: prioritised backlog (RICE/WSJF/MoSCoW) · KPI plan · Y-Score gate · beta strategy · phased rollout plan
+
+### 3. KB Layer
+- Indexed across: Jira, Confluence (Rovo) · SharePoint, Yammer, Teams (M365) · Google Drive, Docs (Google API)
+- Every artifact tagged: domain · stage · product-type · compliance-regime
+- Standard: search + reuse URLs · AI: Rovo Chat + Claude, cited responses
+- Client workspace: PM creates, client views — no Atlassian/M365 licence required for client
+- Shared Library: anonymised templates reusable across all client engagements
+
+### 4. Code Pipeline (original pm-os)
+Input: PRD → MetaGPT (architecture) → OpenHands (code) → Promptfoo (QA) → Cloudflare (deploy)
+
+---
+
+## Live Pages
+
+| Page | URL |
+|------|-----|
+| Landing | [vittobh.github.io/pm-os](https://vittobh.github.io/pm-os) |
+| PM Onboarding | [vittobh.github.io/pm-os/onboarding](https://vittobh.github.io/pm-os/onboarding/) |
+| CuCP Slide Deck | [vittobh.github.io/pm-os/cucp/presentation.html](https://vittobh.github.io/pm-os/cucp/presentation.html) |
+| Teams Tab | [vittobh.github.io/pm-os/onboarding/teams.html](https://vittobh.github.io/pm-os/onboarding/teams.html) |
+
+---
+
+## Repository Structure
 
 ```
-PRD.md  ──►  ┌─────────────────────────────────────────┐
-             │  pm-os orchestrator (this repo)         │
-             │                                          │
-             │  PM        → Y-Score readiness check    │
-             │  Architect → MetaGPT  ────────────────► │ architecture/, db/
-             │  Engineer  → OpenHands ───────────────► │ code/, tests/
-             │  Designer  → v0 / Onlook ─────────────► │ ui/
-             │  QA        → Promptfoo + Playwright ──► │ evals/
-             │  DevOps    → Wrangler ────────────────► │ Cloudflare Pages
-             └─────────────────────────────────────────┘
-                                  │
-                                  ▼
-                       outputs/<repo-name>/   +   https://<slug>.pages.dev
+pm-os/
+├── prds/                          # Reference PRDs
+│   ├── 00-pm-os-platform.md       # Master platform PRD (v0.4)
+│   ├── 01-y-score-framework.md    # Launch readiness framework
+│   ├── 02–08-*.md                 # Domain reference PRDs
+│   └── 09-cucp-program-ops.md    # Coupa CuCP 90-day rollout
+├── docs/                          # GitHub Pages (live site)
+│   ├── index.html                 # Landing page
+│   ├── onboarding/
+│   │   ├── index.html             # 6-step PM onboarding wizard
+│   │   ├── teams.html             # Microsoft Teams entry point
+│   │   └── manifest.json          # Teams app manifest
+│   ├── cucp/
+│   │   └── presentation.html      # CuCP slide deck (6 slides)
+│   └── product/
+│       ├── SRS.md                 # System requirements (v0.4)
+│       └── FRD.md                 # Functional requirements (v0.4)
+├── ROADMAP.md                     # Phased delivery plan
+└── .github/workflows/pages.yml   # Auto-deploy to GitHub Pages
 ```
 
-The orchestrator is intentionally thin (~200 LOC bash + Python). All heavy lifting is delegated to upstream crews — see **[CREDITS.md](CREDITS.md)**.
+---
+
+## Integration Strategy
+
+pm-os builds on existing enterprise AI — it does not reinvent it:
+
+| Layer | Tool Used | pm-os Adds |
+|-------|-----------|-----------|
+| Jira + Confluence search + AI | Atlassian Rovo (Search + Chat) | PM templates, KB tagging, cross-product patterns |
+| SharePoint + Yammer + Teams | Microsoft 365 Copilot / Graph API | Unified view alongside Atlassian |
+| Google Drive + Docs + Chat | Google Workspace API + Gemini | Same unified view, Google-native orgs |
+| PowerBI + Looker reports | PowerBI Embed + Copilot · Looker API | PM pre-built templates, AI narrative layer |
+| AI chat + artifact generation | Rovo Chat + Claude Sonnet 4.6 | PM workflow context, cited KB responses |
 
 ---
 
-## The portfolio gallery (8 PRDs)
+## Constraints
 
-Each PRD in `prds/` becomes a standalone repo, generated by `pm-os`:
-
-| # | PRD | Domain | Status |
-|---|---|---|---|
-| 1 | [y-score-framework](prds/01-y-score-framework.md) | PM framework | MVP |
-| 2 | [regulated-rag-eval-harness](prds/02-regulated-rag-eval-harness.md) | Eval | MVP |
-| 3 | [multi-agent-credit-risk-reference](prds/03-multi-agent-credit-risk-reference.md) | BFSI | MVP |
-| 4 | [fhir-kafka-apim-pattern](prds/04-fhir-kafka-apim-pattern.md) | Healthcare | MVP |
-| 5 | [local-private-llm-stack](prds/05-local-private-llm-stack.md) | Regulated AI | MVP |
-| 6 | [awesome-regulated-ai-pm](prds/06-awesome-regulated-ai-pm.md) | Curation | MVP |
-| 7 | [wellness-iot-rag](prds/07-wellness-iot-rag.md) | Healthcare | MVP |
-| 8 | [doc-to-md-pipeline](prds/08-doc-to-md-pipeline.md) | DevTools | MVP |
+- LLM cost < $0.50 per full discovery pack (Claude Sonnet 4.6 with prompt caching)
+- All outputs are human-editable markdown — no lock-in
+- AI outputs cite every source with URL (EU AI Act Art. 13 explainability)
+- Standard tier: zero LLM cost — Rovo + M365 + Google search only
+- Client data is fully isolated — separate tenants, never cross-contaminated
+- Rovo / M365 Copilot / Google Workspace licences required at org level
 
 ---
 
-## Quick start
+## Getting Started
 
 ```bash
-# 1. clone
-git clone https://github.com/vittobh/pm-os && cd pm-os
-
-# 2. set keys
-export ANTHROPIC_API_KEY=...
-export CLOUDFLARE_API_TOKEN=...   # optional, for deploy
-
-# 3. run orchestrator on any PRD
-./orchestrate.sh prds/01-y-score-framework.md
-
-# 4. find generated artifact
-ls outputs/y-score-framework/
+git clone https://github.com/vittobh/pm-os.git
+cd pm-os
+# Set API credentials
+export ANTHROPIC_API_KEY=your_key
+export CLOUDFLARE_API_TOKEN=your_token
+# Run orchestrator against any PRD
+bash orchestrate.sh prds/00-pm-os-platform.md
 ```
 
-Or push a PRD to `prds/` on `main` — GitHub Actions runs the full pipeline.
+Or open the live onboarding: [vittobh.github.io/pm-os/onboarding](https://vittobh.github.io/pm-os/onboarding/)
 
 ---
 
-## The PM craft baked in
+## Built With
 
-The differentiator vs. plain MetaGPT/OpenHands runs:
-
-- **Y-Score readiness gate** — every output passes a 7-dimension launch-readiness check before deploy. See [.claude/skills/y-score-readiness/](.claude/skills/y-score-readiness/).
-- **Regulated-AI guardrails** — HIPAA / PCI / GDPR / EU-AI-Act checks injected as agent constraints.
-- **Eval-first** — no PRD ships without a Promptfoo eval harness + golden set.
-- **Anti-hallucination patterns** — guardrail prompts from production multi-agent credit-risk work (sanitized).
+[Atlassian Rovo](https://www.atlassian.com/software/rovo) · [Microsoft 365 Copilot](https://www.microsoft.com/en-us/microsoft-365/copilot) · [Google Workspace AI](https://workspace.google.com/intl/en/features/ai/) · [Claude API (Anthropic)](https://www.anthropic.com) · [MetaGPT](https://github.com/geekan/MetaGPT) · [OpenHands](https://github.com/All-Hands-AI/OpenHands) · [Promptfoo](https://github.com/promptfoo/promptfoo) · [Cloudflare Workers](https://workers.cloudflare.com)
 
 ---
 
-## Credits — none of this works without the upstream crews
-
-See **[CREDITS.md](CREDITS.md)** for the full list. Highlights:
-
-- [MetaGPT](https://github.com/geekan/MetaGPT) — the Architect/Engineer/QA simulation
-- [OpenHands](https://github.com/All-Hands-AI/OpenHands) — autonomous coder
-- [Aider](https://github.com/Aider-AI/aider) — surgical edits
-- [Promptfoo](https://github.com/promptfoo/promptfoo) — eval harness
-- [Onlook](https://github.com/onlook-dev/onlook) — UI generation
-
-`pm-os` is a thin orchestration + PM-craft layer. The agents do the work; this repo does the *productization*.
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
-## Author
-
-**Vignesh Vignesh S** · Senior Product Manager · AI · BFSI · Healthcare
-[Portfolio](https://vittobh.github.io) · [LinkedIn](https://linkedin.com/in/Vignesh) · [Profile](https://github.com/vittobh)
-
-
----
-
-## 🚀 Live Console
-**[https://vittobh.github.io/pm-os/](https://vittobh.github.io/pm-os/)**
-
-Pick any of the 8 PRDs from the dropdown → click **Run Pipeline** → watch the 6-stage multi-agent SDLC animate (PM Gate · Architect · Designer · Engineer · QA · DevOps) → inspect generated architecture, DB schema, eval report, and deploy config. Light + dark mode (toggle in header).
-
-Mock outputs by default. Add an Anthropic key to browser localStorage to attempt live calls (CORS-permitting).
-
-## 🤖 AI Use Cases (2026)
-See **[AI_USE_CASES.md](AI_USE_CASES.md)** — per-PRD recommended agent crews, multi-model strategy, cost envelope.
-
-## ⚠️ Limitations
-See **[LIMITATIONS.md](LIMITATIONS.md)** — orchestrate.sh stubs need wiring (MetaGPT, OpenHands installs); deploy needs Cloudflare token.
+*Built by [Vignesh Vignesh S](https://github.com/vittobh) · Senior PM · AI / BFSI / Healthcare*
