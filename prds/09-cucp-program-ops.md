@@ -2,135 +2,203 @@
 
 **Domain:** P&T Operations · Program Management
 **Author:** Vignesh Vignesh S
-**Status:** MVP · Case Study · Coupa Sr. Lead P&T Operations
-**Program:** Customer Collaboration Program (CuCP) — Coupa Software
+**Status:** MVP · Coupa Sr. Lead P&T Operations — Case Study
+**Live Deck:** [docs/cucp/presentation.html](../docs/cucp/presentation.html)
 
 ---
 
-## Problem
+## Case Study Brief (Preserved from Coupa Assignment)
 
-Coupa's pre-release customer engagement has been ad-hoc. EAP and Limited Availability
-phases lack standardised governance, creating three compounding failure modes:
+**Role:** Sr. Lead, P&T Operations — Coupa Software
+**Programme:** Customer Collaboration Program (CuCP)
+**Mandate:** Lead, execute, and scale the CuCP across the Product Management organisation.
 
-1. **Definition drift** — scope and exit criteria shift during pre-GA phases, causing
-   misaligned customer expectations and delayed or risky GA decisions.
-2. **Fragmented execution** — each PM runs their own engagement model, producing
-   inconsistent customer experience and zero institutional learning.
-3. **PM resistance** — new structured processes are perceived as administrative overhead
-   that slows release velocity rather than accelerating it.
+### The Scenario
+Coupa is institutionalising how it partners with customers throughout the product lifecycle,
+particularly during pre-release phases. The foundational framework is drafted and approved.
 
-The CuCP v1.0 framework has been drafted and approved by leadership. The gap is
-**adoption** — turning a paper framework into operational reality across the PM org.
+**Challenge:** The framework exists on paper but has not been implemented or adopted by the PM org.
+Historically, customer engagement prior to GA has been ad-hoc. PMs perceive CuCP as
+"administrative overhead" that will slow release velocity rather than enable success.
+
+### The Assignment
+Create a plan to successfully implement and scale CuCP across the organisation in the first 90 days.
+
+**Four pillars required:**
+1. Change Management & Adoption Strategy
+2. Rollout Execution (phased approach)
+3. Enablement & Support
+4. Measuring Initial Success
+
+### Provided Context: Coupa CuCP Framework
+
+**Core Problem:** Fragmented Execution — lack of standardised governance for EAP/LA phases
+causes "definition drift", creating operational risk and a compromised path to GA.
+
+**Opportunity:** A Predictable Engine — a unified operating model that aligns cross-functional
+teams, standardises launch phases, builds customer trust, de-risks the roadmap, and accelerates
+time-to-value.
+
+**Capability Classifications:**
+
+| Type | Definition | Pre-GA Focus | Release Characteristics |
+|------|-----------|-------------|------------------------|
+| Standard | Deterministic logic, no AI. e.g. sourcing dashboards, workflow routing, UI redesigns | Validate operational readiness, scalability, support enablement | Readiness + enablement primary; controlled customer cohorts sufficient |
+| AI | Powered by AI/ML/LLMs. Probabilistic models. e.g. Copilot (AI-Assisted), Agent Studio (Agentic) | Model tuning, trust/safety guardrails, real-world telemetry | Learning + usage patterns primary; benefits from broad customer interaction |
+
+**The Coupa Phase Matrix:**
+
+| Phase | Standard Capability | AI Capability |
+|-------|--------------------|--------------------|
+| Phase 1: EAP (Closed Beta) | Goal: validate core UX, value, workflow. 5–10 customers max. $0 order form. | Free (AI Credits). High-touch PM/Eng engagement. |
+| Phase 2: Pre-GA (Variable) | Goal: validate operational readiness. Explicitly approved cohorts. $0 order form. Readiness gate with commercial alignment. | Early Access (Open Beta). Goal: learn, ingest telemetry, tune models at scale. Available to all eligible. Frictionless UI toggle. No $0 forms. Free (AI Credits). |
+| Phase 3: GA | Production-ready, fully supported, meets all standard SLAs. Complete GTM enablement and fully monetised. | Same. |
+
+**Principle of Proportional Governance:** The level of release gating must be proportional
+to the risk, complexity, and impact of the feature. Phase 2 is optional — PM decides based
+on risk/complexity/operational impact.
 
 ---
 
-## Target User
+## Slide Deck: 90-Day Rollout Plan
 
-**Primary:** Product Managers at Coupa shipping Standard or AI capabilities through
-EAP → Pre-GA → GA phases.
-
-**Secondary:** P&T Leadership who need visibility and confidence in release readiness.
-
-**Resistance persona (the adoption blocker):** The sceptical PM who sees CuCP as
-compliance tax. This persona must be converted through evidence, not mandate.
+*Live interactive version: `docs/cucp/presentation.html` (keyboard navigable)*
 
 ---
 
-## Solution: 90-Day Rollout Plan
+### Slide 1 — Title
+**"Turning the CuCP Framework into Adopted Reality"**
+A 90-day plan to implement and scale the Customer Collaboration Program — from paper
+framework to predictable launch engine.
 
-Adoption is **earned, not mandated.** The rollout follows a Pilot → Learn → Scale model.
-
-### The Framing Shift (Change Management Core)
-
-The single message to land with every PM:
-
-> "CuCP is your evidence kit — not a compliance checklist."
-
-Structured EAP/LA phases protect PMs at GA. They answer "how do we know this is ready?"
-with customer data instead of gut feel. For AI capabilities especially, this evidence
-is what separates a clean launch from a rollback. CuCP = launch accelerator, not gatekeeper.
-
-Tactics to shift perception:
-- Lead with PM pain, not programme goals: "You've been asked to justify GA readiness
-  with no data. CuCP gives you that data."
-- Find proto-champions — PMs already doing informal EAP governance well. Their story
-  converts sceptics faster than any top-down message.
-- Make the first experience ridiculously easy: templates pre-filled, I handle admin,
-  PM just runs their programme.
+**Presented by:** Vignesh Vignesh S · Sr. Lead, P&T Operations · Coupa
 
 ---
 
-## Phase 1: Listen & Align — Days 1–30
+### Slide 2 — The Challenge & The Reframe
 
-**Goal:** Understand real friction before imposing solutions.
+**The Problem: Fragmented Execution**
+- Ad-hoc EAP/LA engagement with no standard process
+- "Definition drift" — scope shifts before GA
+- No exit criteria → risky launch decisions
+- PMs see CuCP as admin overhead slowing velocity
+
+**Strategy: Earn Adoption, Don't Mandate It**
+- Lead with PM pain — not programme goals
+- Find proto-champions already doing good EAP work
+- Make the first experience frictionless — I absorb the admin
+- Their story converts sceptics; mine doesn't
+
+> **The message that lands:**
+> *"CuCP is your evidence kit — not a compliance checklist."*
+> Structured EAP data protects PMs at GA. It answers "how do we know this is ready?"
+> with customer signal, not gut feel.
+
+---
+
+### Slide 3 — 90-Day Rollout: Pilot → Learn → Scale
+
+No big-bang mandate. Build trust through service, then scale on proven evidence.
+
+**Phase 1: Listen & Align (Days 1–30)**
+
+Goal: Understand real friction before imposing solutions.
 
 | Action | Output |
 |--------|--------|
 | 1:1 listening sessions with 8–10 PMs | Friction map: where time is lost, where trust is low |
-| Shadow 2 live EAP/LA cycles | Ground truth on actual workflow vs. perceived workflow |
-| Identify proto-champions (good informal EAP managers) | Pilot PM shortlist |
-| Select pilot cohort: 1 Standard, 1 AI, 1 sceptic-but-persuadable | Pilot confirmed with rationale |
-| Playbook v0.1 adjusted from v1.0 draft based on listening | Playbook ready for pilot |
-| Day 30 read-out to P&T Leadership | Friction map + pilot plan + adjusted framework |
+| Shadow 2 live EAP/LA cycles | Ground truth on actual workflow vs. perceived |
+| Identify proto-champions | Pilot PM shortlist |
+| Select pilot: 1 Standard + 1 AI + 1 sceptic | Pilot cohort confirmed |
+| Adjust playbook v0.1 from v1.0 draft | Playbook ready for pilot |
 
-**Decision gate:** Do pilot PMs feel the adjusted playbook addresses their concerns?
-If no → iterate before proceeding.
+Output: **Friction map + pilot cohort confirmed**
 
----
+**Phase 2: Pilot & Refine (Days 31–60)**
 
-## Phase 2: Pilot & Refine — Days 31–60
-
-**Goal:** Run CuCP with pilot PMs, prove the value proposition, build the playbook.
+Goal: Run CuCP with pilot PMs, prove value, build the playbook.
 
 | Action | Output |
 |--------|--------|
-| Launch 2–3 live CuCP pilots (Standard + AI + edge case) | Real programmes running |
-| Act as embedded CuCP Concierge for pilot PMs | PM learns process; I absorb admin overhead |
-| Weekly retros with pilot PMs: what saved time, what added time | Playbook v1.0 |
-| Capture "before/after" evidence: EAP→GA cycle time, customer feedback quality, drift incidents | Proof points for scaling |
-| PM Champion activation: pilot PMs tell their own story | Internal advocacy (more credible than me) |
-| "CuCP in 5 minutes" cheat sheet — Standard version + AI version | Self-serve onboarding asset |
+| Launch 2–3 live CuCP pilots | Real programmes running |
+| Act as embedded CuCP Concierge | PM learns; I absorb admin overhead |
+| Weekly retros — cut what adds time | Playbook v1.0 |
+| Capture before/after evidence | Proof points for scaling |
+| Activate PM champions | Internal advocacy |
+| "CuCP in 5 minutes" cheat sheets (Standard + AI) | Self-serve onboarding asset |
 
-**Capability-specific playbook differences:**
+Output: **Playbook v1.0 + champion stories**
 
-| | Standard Capability | AI Capability |
-|---|---|---|
-| Phase 2 trigger | Optional — PM decides based on risk/complexity | Default for Copilot/Agent Studio (needs telemetry) |
-| Customer cohort | 5–10 curated, $0 order form | All eligible, frictionless UI toggle |
-| Primary goal | Operational readiness + support enablement | Model tuning + trust/safety guardrails + telemetry |
-| PM workload | Moderate (controlled cohort comms) | Lower admin (broad open beta self-serves) |
+**Phase 3: Scale & Institutionalise (Days 61–90)**
 
-**Decision gate:** Do pilot PMs say CuCP saved them time or reduced launch risk?
-If yes → scale. If no → fix playbook before scaling.
-
----
-
-## Phase 3: Scale & Institutionalise — Days 61–90
-
-**Goal:** Expand CuCP to full PM org with structured enablement and self-serve support.
+Goal: Expand CuCP to full PM org with structured enablement.
 
 | Action | Output |
 |--------|--------|
-| All-hands PM enablement: led by pilot champions, not by me | Peer-to-peer credibility |
-| Tiered training: 30-min onboarding all PMs + deep-dive for AI capabilities | Everyone enabled |
-| Self-serve KB: playbook, templates, decision trees, pilot examples | Zero dependency on me for basics |
-| #cucp-support Slack channel + weekly office hours | Live support without bottleneck |
-| Automate admin: customer invitation templates, $0 order form workflow, exit criteria tracker | < 2 hrs PM overhead per release |
-| Leadership dashboard: CuCP coverage %, PM confidence, customer participation rate | Visibility without asks |
+| All-hands enablement — led by pilot champions, not me | Peer-to-peer credibility |
+| Self-serve KB: playbook, templates, decision trees | Zero dependency on me for basics |
+| #cucp-support Slack + weekly office hours | Live support without bottleneck |
+| Automate admin: invites, order forms, exit criteria tracker | < 2 hrs PM overhead per release |
+| Leadership dashboard: CuCP coverage %, PM confidence, customer participation | Visibility without asks |
+
+Output: **All PMs enabled · tracking dashboard live**
 
 ---
 
-## Proportional Governance Principle
+### Slide 4 — Enablement & Support Model
 
-The rollout applies the same principle as the CuCP Phase Matrix itself:
-**adoption pressure must be proportional to the evidence available.**
+Four pillars that make CuCP stupidly easy to run — before it becomes expected.
+
+| Pillar | What It Is | Timing |
+|--------|-----------|--------|
+| **CuCP Concierge** | I act as operational support for pilot PMs. They learn the process; I handle templates, invites, and exit criteria tracking. PM overhead: near zero. | Days 1–60, high-touch |
+| **Playbook + Cheat Sheets** | Two 1-page cheat sheets: Standard path and AI path. Separate because their pre-GA goals, cohort sizes, and exit criteria differ meaningfully. | Live Day 45 |
+| **#cucp-support + Office Hours** | Live Slack channel for real-time questions. Weekly 30-min open office hours for first 90 days. PMs get answers in minutes, not days. | Day 60 onwards, async + sync |
+| **Champion-Led Rollout** | Pilot PMs present at the all-hands enablement session — not me. Peer stories are far more credible than top-down messaging for converting sceptics. | Day 65 all-hands |
+
+---
+
+### Slide 5 — Measuring Initial Success
+
+Six metrics prove the rollout is working. One leading indicator matters most in first 90 days.
+
+| KPI | Baseline | Day 90 Target | How Measured | Type |
+|-----|----------|--------------|-------------|------|
+| ⭐ **PM Satisfaction — "Is CuCP helping?"** | — | ≥ 4.0 / 5.0 | Post-pilot + post-scale survey | **Leading** |
+| % eligible releases using CuCP | 0% (ad-hoc) | ≥ 50% | Release tracker | Lagging |
+| EAP → GA cycle time | Measure Days 1–30 | No regression; –10% | Release logs | Lagging |
+| Definition drift incidents | Unmeasured | Tracked; 0 in pilots | EAP/LA retros | Leading |
+| Customer participation rate | — | ≥ 70% invited engage | CuCP tracker | Lagging |
+| PM admin time per release | — | < 2 hours | PM self-report | Leading |
+
+> ⭐ If PMs feel CuCP helps — scaling is pull, not push.
+> If they feel it hurts — fix the playbook before mandating.
+
+---
+
+### Slide 6 — Day 90 Vision + Ask of Leadership
+
+**Evidence of Success at Day 90:**
+- ≥ 50% eligible releases running CuCP
+- PM satisfaction ≥ 4.0 / 5.0
+- 2–3 champion PMs advocating internally
+- Self-serve KB live — zero dependency on me
+- Leadership dashboard showing programme health
+
+**Proportional Governance Principle (applied to the rollout itself):**
 
 | Window | Approach |
 |--------|----------|
-| Days 1–30 | No mandate. Observe and listen only. |
-| Days 31–60 | Voluntary pilot. Earn trust through service. |
-| Days 61–90 | Structured enablement. Clear expectation for eligible releases. |
-| Day 90+ | Data-backed mandate discussion with leadership — only after PM satisfaction confirms value. |
+| Days 1–30 | Observe only — no mandate |
+| Days 31–60 | Voluntary pilot — earn trust |
+| Days 61–90 | Clear expectation for eligible releases |
+| Day 90+ | Data-backed mandate discussion — only after PM satisfaction confirmed |
+
+**My Ask of P&T Leadership:**
+- Air cover during pilot — no forced mandate before data exists
+- Exec sponsor for the all-hands enablement session
+- Access to 2–3 willing pilot PMs in Week 1
+- Release log access for baseline measurement
 
 ---
 
@@ -138,59 +206,18 @@ The rollout applies the same principle as the CuCP Phase Matrix itself:
 
 | KPI | Baseline | Day 90 Target | Measured By |
 |-----|----------|--------------|-------------|
-| % eligible releases using CuCP | 0% (ad-hoc) | ≥ 50% | Release tracker |
-| PM satisfaction score (is CuCP helping?) | — | ≥ 4.0 / 5.0 | Post-pilot + post-scale survey |
-| EAP → GA cycle time | Measure in Days 1–30 | No regression; target 10% faster | Release logs |
-| Definition drift incidents | Unmeasured | Tracked; target 0 in pilots | EAP/LA retros |
-| Customer participation rate | — | ≥ 70% of invited customers engage | CuCP programme tracker |
-| PM time on CuCP admin per release | — | < 2 hours | PM self-report |
-
-**Leading indicator — most important in Days 1–90:**
-PM satisfaction score. If PMs feel CuCP helps, scaling is pull, not push.
-If they feel it hurts, fix the playbook — mandate never replaces trust.
-
----
-
-## Deliverables
-
-### Days 1–30
-- Friction map (listening session synthesis)
-- Pilot PM cohort with selection rationale
-- Playbook v0.1 (adjusted from v1.0 draft)
-- Day 30 leadership read-out
-
-### Days 31–60
-- 2–3 live pilot CuCP programmes
-- Weekly retro outputs + playbook iterations
-- "CuCP in 5 minutes" cheat sheets (Standard + AI)
-- Champion story documentation
-
-### Days 61–90
-- Playbook v1.0 (validated, self-serve)
-- All-PM enablement session delivered
-- #cucp-support channel + weekly office hours live
-- Leadership tracking dashboard live
-- Day 90 read-out: metrics, learnings, Phase 2 scale plan
-
----
-
-## Slide Mapping (Interview Deck)
-
-| Slide | Section in this PRD |
-|-------|---------------------|
-| 1 | Title |
-| 2 | Problem → The Framing Shift (change management strategy) |
-| 3 | Phase 1–2–3 table (90-day phased rollout) |
-| 4 | Enablement & Support model (Phase 3 actions + cheat sheet + KB) |
-| 5 | Success Metrics table |
-| 6 | What Day 90 looks like + my ask of leadership |
+| % eligible releases using CuCP | 0% | ≥ 50% | Release tracker |
+| PM satisfaction score | — | ≥ 4.0 / 5.0 | Survey |
+| EAP → GA cycle time | TBD Days 1–30 | No regression; –10% | Release logs |
+| Definition drift incidents | Unmeasured | 0 in pilots | Retros |
+| Customer participation rate | — | ≥ 70% | CuCP tracker |
+| PM admin time per release | — | < 2 hours | Self-report |
 
 ---
 
 ## Out of Scope (90-day window)
 
-- Jira / tooling integration for CuCP tracking (v2 — after playbook is stable)
-- Mandatory compliance gate before any release (requires established trust first)
-- Retroactive CuCP documentation for in-flight releases
-- External customer-facing CuCP communications (PM-facing only in 90 days)
-- Standard capability Phase 2 mandate (proportional governance — PM-decided)
+- Jira/tooling integration for CuCP tracking (v2)
+- Mandatory gate before any release (requires trust first)
+- Retroactive documentation for in-flight releases
+- External customer-facing CuCP communications
