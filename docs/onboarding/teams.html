@@ -1,0 +1,38 @@
+<\!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="msapplication-config" content="none">
+<\!-- Microsoft Teams JS SDK -->
+<script src="https://res.cdn.office.net/teams-js/2.0.0/js/MicrosoftTeams.min.js"></script>
+<title>pm-os — Redirecting</title>
+<style>
+  body{font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#EEF2FF;margin:0}
+  .msg{text-align:center;color:#1E293B}
+  .spinner{width:36px;height:36px;border:3px solid #E2E8F0;border-top-color:#2563EB;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="msg">
+  <div class="spinner"></div>
+  <p>Loading pm-os...</p>
+</div>
+<script>
+(async () => {
+  try {
+    await microsoftTeams.app.initialize();
+    const ctx = await microsoftTeams.app.getContext();
+    // Pass Teams context to onboarding
+    const orgName = ctx.user?.tenant?.displayName || '';
+    const userName = ctx.user?.displayName || '';
+    window.location.href = 'index.html?teams=1&org=' + encodeURIComponent(orgName) + '&name=' + encodeURIComponent(userName);
+  } catch(e) {
+    // Not in Teams — load onboarding directly
+    window.location.href = 'index.html';
+  }
+})();
+</script>
+</body>
+</html>
