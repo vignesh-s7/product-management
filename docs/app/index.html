@@ -14,11 +14,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{display:flex;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;font-size:14px}
 a{color:var(--accent);text-decoration:none}
-
 /* SIDEBAR */
 #sidebar{width:240px;min-height:100vh;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50}
 .logo{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
-.logo h2{font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.logo h2{font-size:18px;font-weight:700;letter-spacing:-.5px}
 .logo span{color:var(--accent)}
 .logo .badge-ai{background:var(--badge-ai);color:#fff;font-size:10px;padding:2px 6px;border-radius:99px;margin-left:6px;vertical-align:middle}
 nav{flex:1;padding:12px 0;overflow-y:auto}
@@ -29,18 +28,23 @@ nav .icon{width:18px;text-align:center}
 .sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 .sidebar-footer a{color:var(--muted);display:block;padding:4px 0}
 .sidebar-footer a:hover{color:var(--text)}
-
+.nav-section{padding:8px 16px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:8px}
 /* MAIN */
 #main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:40}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:40}
 .topbar h1{font-size:20px;font-weight:600}
 .topbar .meta{color:var(--muted);font-size:13px}
 .content{padding:24px;flex:1}
-
-/* SECTION */
+/* AUTO MODE TOGGLE */
+.auto-toggle{display:flex;align-items:center;gap:10px;background:#1E293B;border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;transition:.2s;user-select:none}
+.auto-toggle.on{border-color:var(--green);background:rgba(16,185,129,.1)}
+.auto-toggle .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:.2s}
+.auto-toggle.on .dot{background:var(--green)}
+.auto-toggle .label{font-size:12px;font-weight:600;color:var(--muted);transition:.2s}
+.auto-toggle.on .label{color:var(--green)}
+/* SECTIONS */
 .section{display:none}
 .section.active{display:block}
-
 /* CARDS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
@@ -57,8 +61,7 @@ nav .icon{width:18px;text-align:center}
 .dot.yellow{background:var(--yellow)}
 .dot.red{background:var(--red)}
 .dot.blue{background:var(--accent)}
-
-/* TAGS / PILLS */
+/* PILLS */
 .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500}
 .pill.jira{background:#1D4ED8;color:#fff}
 .pill.confluence{background:#0369A1;color:#fff}
@@ -66,7 +69,6 @@ nav .icon{width:18px;text-align:center}
 .pill.yammer{background:#7C2D12;color:#fff}
 .pill.gdrive{background:#92400E;color:#fff}
 .pill.ai{background:var(--badge-ai);color:#fff}
-
 /* SEARCH */
 .search-bar{display:flex;gap:8px;margin-bottom:16px}
 .search-bar input{flex:1;background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;outline:none}
@@ -76,6 +78,7 @@ nav .icon{width:18px;text-align:center}
 .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent)}
 .result-item{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:.15s}
 .result-item:hover{background:rgba(255,255,255,.03)}
+.result-item.drag-over{background:rgba(59,130,246,.1);border:2px dashed var(--accent)}
 .result-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .result-info{flex:1}
 .result-title{font-weight:500;margin-bottom:4px}
@@ -86,9 +89,8 @@ nav .icon{width:18px;text-align:center}
 .btn-sm:hover{border-color:var(--accent);color:var(--accent)}
 .btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .no-results{text-align:center;padding:48px;color:var(--muted)}
-
 /* CHAT */
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 180px)}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px)}
 .chat-messages{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:16px}
 .msg{display:flex;gap:12px;max-width:640px}
 .msg.assistant{align-self:flex-start}
@@ -107,16 +109,14 @@ nav .icon{width:18px;text-align:center}
 .chat-suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .chat-suggestions button{background:#1E293B;border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--muted);font-size:12px;cursor:pointer;transition:.15s}
 .chat-suggestions button:hover{border-color:var(--accent);color:var(--accent)}
-
 /* REPORTS */
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
 .chart-card canvas{max-height:260px}
-
 /* DISCOVERY */
 .discovery-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-.form-group input,.form-group select,.form-group textarea{width:100%;background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:14px;outline:none}
+.form-group input,.form-group select{width:100%;background:#0F172A;border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:14px;outline:none}
 .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
 .form-group select option{background:#1E293B}
 .domain-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
@@ -138,14 +138,14 @@ nav .icon{width:18px;text-align:center}
 .acc-item.open .chevron{transform:rotate(90deg)}
 .acc-body{padding:0 16px 16px;font-size:13px;line-height:1.7;color:var(--muted);display:none}
 .acc-item.open .acc-body{display:block}
-.insight-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
-.insight-box{background:#0F172A;border-radius:8px;padding:12px;font-size:12px}
-.insight-box strong{display:block;margin-bottom:4px;color:var(--text)}
-
 /* CLIENT WS */
 .client-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
-.artifact-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.artifact-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);cursor:grab;transition:.2s}
 .artifact-row:last-child{border-bottom:none}
+.artifact-row:active{cursor:grabbing}
+.artifact-row.dragging{opacity:.4;background:rgba(59,130,246,.05)}
+.artifact-row.drag-target{border-top:2px solid var(--accent)}
+.artifact-row .drag-handle{color:var(--muted);margin-right:10px;font-size:16px;cursor:grab}
 .artifact-info{flex:1}
 .artifact-name{font-weight:500;margin-bottom:2px}
 .artifact-meta{font-size:12px;color:var(--muted)}
@@ -158,25 +158,18 @@ nav .icon{width:18px;text-align:center}
 .client-preview.show{display:block}
 .preview-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .preview-item{padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:13px}
-
-/* ACTIVITY FEED */
+/* ACTIVITY / TOOL STATUS */
 .activity-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(51,65,85,.5)}
 .activity-item:last-child{border-bottom:none}
 .activity-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
 .activity-text{font-size:13px;line-height:1.4}
 .activity-time{font-size:11px;color:var(--muted);margin-top:2px}
-
-/* TOOLS STATUS */
 .tool-status{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.5)}
 .tool-status:last-child{border-bottom:none}
 .tool-name{display:flex;align-items:center;gap:8px;font-size:13px}
 .status-badge{font-size:11px;padding:2px 8px;border-radius:99px}
 .status-badge.connected{background:rgba(16,185,129,.15);color:var(--green)}
 .status-badge.pending{background:rgba(245,158,11,.15);color:var(--yellow)}
-
-/* RESPONSIVE NAV */
-.nav-section{padding:8px 16px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:8px}
-
 /* QUICK ACTIONS */
 .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .qa-card{background:#0F172A;border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:.15s;text-align:left}
@@ -184,15 +177,48 @@ nav .icon{width:18px;text-align:center}
 .qa-card .qa-icon{font-size:20px;margin-bottom:8px}
 .qa-card .qa-title{font-size:13px;font-weight:500;margin-bottom:4px}
 .qa-card .qa-desc{font-size:11px;color:var(--muted)}
-
-/* TYPING ANIMATION */
+/* KANBAN */
+.kanban-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.kanban-controls{display:flex;gap:8px}
+.kanban-board{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px}
+.kanban-col{flex:0 0 240px;background:#1E293B;border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;min-height:400px}
+.kanban-col-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+.col-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.col-count{background:#0F172A;border-radius:99px;padding:2px 8px;font-size:11px;color:var(--muted)}
+.kanban-cards{flex:1;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:200px;transition:.15s}
+.kanban-cards.drag-over-col{background:rgba(59,130,246,.06);border-radius:8px}
+.kcard{background:#0F172A;border:1px solid var(--border);border-radius:10px;padding:12px;cursor:grab;transition:.2s;position:relative}
+.kcard:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(59,130,246,.15)}
+.kcard:active{cursor:grabbing}
+.kcard.dragging{opacity:.35;transform:rotate(2deg)}
+.kcard-title{font-size:13px;font-weight:500;margin-bottom:8px;line-height:1.4}
+.kcard-meta{display:flex;align-items:center;justify-content:space-between}
+.kcard-tags{display:flex;gap:4px;flex-wrap:wrap}
+.kcard-tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500}
+.kcard-tag.bfsi{background:#1D4ED822;color:#60A5FA}
+.kcard-tag.healthcare{background:#06474022;color:#34D399}
+.kcard-tag.saas{background:#4C1D9522;color:#A78BFA}
+.kcard-sp{font-size:11px;color:var(--muted);background:#1E293B;border-radius:4px;padding:2px 6px}
+.kcard-assignee{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.kcard-priority{position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%}
+.kcard-priority.high{background:var(--red)}
+.kcard-priority.med{background:var(--yellow)}
+.kcard-priority.low{background:var(--green)}
+.add-kcard{display:flex;align-items:center;gap:6px;padding:10px 16px;font-size:12px;color:var(--muted);cursor:pointer;border-top:1px solid var(--border);transition:.15s}
+.add-kcard:hover{color:var(--accent)}
+/* TYPING */
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .typing-cursor{animation:blink .7s infinite}
-
 /* SCROLLBAR */
-::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+/* AUTO MODE BADGE */
+.auto-badge{display:none;background:var(--green);color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;animation:pulse 2s infinite}
+.auto-badge.show{display:inline-block}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.auto-hint{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--green);margin-bottom:16px;display:none}
+.auto-hint.show{display:block}
 </style>
 </head>
 <body>
@@ -205,44 +231,38 @@ nav .icon{width:18px;text-align:center}
   </div>
   <nav>
     <div class="nav-section">Workspace</div>
-    <a href="#" class="active" data-section="dashboard">
-      <span class="icon">&#9632;</span> Dashboard
-    </a>
-    <a href="#" data-section="search">
-      <span class="icon">&#128269;</span> Search KB
-    </a>
+    <a href="#" class="active" data-section="dashboard"><span class="icon">&#9632;</span> Dashboard</a>
+    <a href="#" data-section="kanban"><span class="icon">&#9723;</span> Kanban Board</a>
+    <a href="#" data-section="search"><span class="icon">&#128269;</span> Search KB</a>
     <div class="nav-section">Intelligence</div>
-    <a href="#" data-section="chat">
-      <span class="icon">&#9733;</span> AI Chat
-    </a>
-    <a href="#" data-section="reports">
-      <span class="icon">&#128202;</span> Reports
-    </a>
-    <a href="#" data-section="discovery">
-      <span class="icon">&#128270;</span> Discovery Engine
-    </a>
+    <a href="#" data-section="chat"><span class="icon">&#9733;</span> AI Chat</a>
+    <a href="#" data-section="reports"><span class="icon">&#128202;</span> Reports</a>
+    <a href="#" data-section="discovery"><span class="icon">&#128270;</span> Discovery Engine</a>
     <div class="nav-section">Collaboration</div>
-    <a href="#" data-section="client">
-      <span class="icon">&#128101;</span> Client Workspace
-    </a>
+    <a href="#" data-section="client"><span class="icon">&#128101;</span> Client Workspace</a>
   </nav>
   <div class="sidebar-footer">
     <a href="../onboarding/">Onboarding Wizard</a>
     <a href="../cucp/presentation.html">CuCP Case Study</a>
     <a href="https://github.com/vittobh/pm-os" target="_blank">GitHub Repo</a>
-    <div style="margin-top:8px;font-size:10px">v0.4 &mdash; Mock Data Demo</div>
+    <div style="margin-top:8px;font-size:10px">v0.5 &mdash; DnD + Auto Mode</div>
   </div>
 </aside>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <main id="main">
   <div class="topbar">
     <div>
       <h1 id="page-title">Dashboard</h1>
-      <div class="meta" id="page-meta">PM-OS &mdash; All phases demo with mock data</div>
+      <div class="meta" id="page-meta">PM-OS &mdash; All phases with DnD + Auto Mode</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
-      <span style="font-size:12px;color:var(--muted)">Acme Corp Workspace</span>
+      <span class="auto-badge" id="auto-badge">AUTO ON</span>
+      <div class="auto-toggle" id="auto-toggle" onclick="toggleAutoMode()">
+        <div class="dot"></div>
+        <span class="label">Auto Mode</span>
+      </div>
+      <span style="font-size:12px;color:var(--muted)">Acme Corp</span>
       <div style="width:32px;height:32px;background:var(--badge-ai);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">V</div>
     </div>
   </div>
@@ -251,129 +271,64 @@ nav .icon{width:18px;text-align:center}
 
     <!-- DASHBOARD -->
     <div class="section active" id="section-dashboard">
+      <div class="auto-hint" id="dash-auto-hint">Auto Mode is ON &mdash; Dashboard metrics refreshing every 30s. AI insights are being generated proactively.</div>
       <div class="grid-4">
-        <div class="card stat-card">
-          <div class="label">KB Artifacts</div>
-          <div class="value">247</div>
-          <div class="delta up">+18 this week</div>
-        </div>
-        <div class="card stat-card">
-          <div class="label">Active Projects</div>
-          <div class="value">12</div>
-          <div class="delta up">+2 added</div>
-        </div>
-        <div class="card stat-card">
-          <div class="label">AI Queries (30d)</div>
-          <div class="value">1,432</div>
-          <div class="delta up">+34% vs prior</div>
-        </div>
-        <div class="card stat-card">
-          <div class="label">Reuse Rate</div>
-          <div class="value">67%</div>
-          <div class="delta up">+9pts this month</div>
-        </div>
+        <div class="card stat-card"><div class="label">KB Artifacts</div><div class="value">247</div><div class="delta up">+18 this week</div></div>
+        <div class="card stat-card"><div class="label">Active Projects</div><div class="value">12</div><div class="delta up">+2 added</div></div>
+        <div class="card stat-card"><div class="label">AI Queries (30d)</div><div class="value">1,432</div><div class="delta up">+34% vs prior</div></div>
+        <div class="card stat-card"><div class="label">Reuse Rate</div><div class="value">67%</div><div class="delta up">+9pts this month</div></div>
       </div>
-
       <div class="grid-2" style="margin-bottom:24px">
         <div class="card">
           <div class="card-title">Connected Tools</div>
-          <div class="tool-status">
-            <div class="tool-name"><span>&#128196;</span> Atlassian Rovo (Jira + Confluence)</div>
-            <span class="status-badge connected">Connected</span>
-          </div>
-          <div class="tool-status">
-            <div class="tool-name"><span>&#128200;</span> Microsoft 365 Copilot</div>
-            <span class="status-badge connected">Connected</span>
-          </div>
-          <div class="tool-status">
-            <div class="tool-name"><span>&#128196;</span> Google Workspace + Gemini</div>
-            <span class="status-badge connected">Connected</span>
-          </div>
-          <div class="tool-status">
-            <div class="tool-name"><span>&#128202;</span> PowerBI + Copilot</div>
-            <span class="status-badge connected">Connected</span>
-          </div>
-          <div class="tool-status">
-            <div class="tool-name"><span>&#9733;</span> Claude Sonnet 4.6</div>
-            <span class="status-badge connected">Active</span>
-          </div>
-          <div class="tool-status">
-            <div class="tool-name"><span>&#128101;</span> Microsoft Teams</div>
-            <span class="status-badge pending">Pending Auth</span>
-          </div>
+          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Atlassian Rovo</div><span class="status-badge connected">Connected</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128200;</span> Microsoft 365 Copilot</div><span class="status-badge connected">Connected</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Google Workspace + Gemini</div><span class="status-badge connected">Connected</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128202;</span> PowerBI + Copilot</div><span class="status-badge connected">Connected</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#9733;</span> Claude Sonnet 4.6</div><span class="status-badge connected">Active</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128101;</span> Microsoft Teams</div><span class="status-badge pending">Pending Auth</span></div>
         </div>
         <div class="card">
           <div class="card-title">Recent Activity</div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--green)"></div>
-            <div>
-              <div class="activity-text">KYC PRD draft generated via AI Chat</div>
-              <div class="activity-time">2 min ago &mdash; BFSI Project</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--accent)"></div>
-            <div>
-              <div class="activity-text">Discovery pack cloned to KB: Healthcare Intake Flow</div>
-              <div class="activity-time">18 min ago &mdash; Healthcare Project</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--yellow)"></div>
-            <div>
-              <div class="activity-text">Client workspace shared: Acme Corp &mdash; 6 artifacts</div>
-              <div class="activity-time">1 hr ago &mdash; Client Portal</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--accent2)"></div>
-            <div>
-              <div class="activity-text">SWOT analysis published to Confluence</div>
-              <div class="activity-time">3 hr ago &mdash; SaaS Project</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--green)"></div>
-            <div>
-              <div class="activity-text">Velocity report exported to PowerBI</div>
-              <div class="activity-time">Yesterday &mdash; Reports</div>
-            </div>
-          </div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--green)"></div><div><div class="activity-text">KYC PRD draft generated via AI Chat</div><div class="activity-time">2 min ago &mdash; BFSI Project</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent)"></div><div><div class="activity-text">Discovery pack cloned to KB: Healthcare Intake</div><div class="activity-time">18 min ago</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--yellow)"></div><div><div class="activity-text">Client workspace shared: Acme Corp &mdash; 4 artifacts</div><div class="activity-time">1 hr ago</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent2)"></div><div><div class="activity-text">Kanban card moved: KYC-12 &rarr; Review</div><div class="activity-time">2 hr ago</div></div></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title">Quick Actions</div>
         <div class="qa-grid">
-          <div class="qa-card" onclick="navigate('search')">
-            <div class="qa-icon">&#128269;</div>
-            <div class="qa-title">Search Knowledge Base</div>
-            <div class="qa-desc">Find PRDs, specs, decisions across Jira, Confluence, SharePoint, Google Drive</div>
-          </div>
-          <div class="qa-card" onclick="navigate('chat')">
-            <div class="qa-icon">&#9733;</div>
-            <div class="qa-title">Ask AI Assistant</div>
-            <div class="qa-desc">Generate PRDs, SWOT, competitor analysis, ROI models via Claude + Rovo</div>
-          </div>
-          <div class="qa-card" onclick="navigate('discovery')">
-            <div class="qa-icon">&#128270;</div>
-            <div class="qa-title">Run Discovery Engine</div>
-            <div class="qa-desc">Auto-generate market analysis, risk register, GTM strategy for any domain</div>
-          </div>
-          <div class="qa-card" onclick="navigate('client')">
-            <div class="qa-icon">&#128101;</div>
-            <div class="qa-title">Client Workspace</div>
-            <div class="qa-desc">Share curated artifact sets with clients in a read-only portal</div>
-          </div>
+          <div class="qa-card" onclick="navigate('kanban')"><div class="qa-icon">&#9723;</div><div class="qa-title">Kanban Board</div><div class="qa-desc">Drag and drop stories across Backlog, Sprint, Review, Done</div></div>
+          <div class="qa-card" onclick="navigate('chat')"><div class="qa-icon">&#9733;</div><div class="qa-title">Ask AI Assistant</div><div class="qa-desc">Generate PRDs, SWOT, competitor analysis, ROI models</div></div>
+          <div class="qa-card" onclick="navigate('discovery')"><div class="qa-icon">&#128270;</div><div class="qa-title">Discovery Engine</div><div class="qa-desc">Auto-generate market analysis for any domain</div></div>
+          <div class="qa-card" onclick="navigate('client')"><div class="qa-icon">&#128101;</div><div class="qa-title">Client Workspace</div><div class="qa-desc">Drag to reorder &amp; share curated artifact sets</div></div>
         </div>
       </div>
     </div>
 
-    <!-- SEARCH KB (Phase 2) -->
-    <div class="section" id="section-search">
-      <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search across Jira, Confluence, SharePoint, Google Drive, Yammer..." oninput="filterSearch()">
+    <!-- KANBAN (DnD) -->
+    <div class="section" id="section-kanban">
+      <div class="auto-hint" id="kanban-auto-hint">Auto Mode is ON &mdash; Stories are being auto-prioritised based on dependency signals from Jira and blocker patterns.</div>
+      <div class="kanban-header">
+        <div style="font-size:13px;color:var(--muted)">Sprint PI-4 &middot; 5 stories &middot; Drag cards between columns</div>
+        <div class="kanban-controls">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn">BFSI</button>
+          <button class="filter-btn">Healthcare</button>
+          <button class="filter-btn">SaaS</button>
+          <button class="btn-sm primary" onclick="addCard()">+ Add Story</button>
+        </div>
       </div>
+      <div class="kanban-board" id="kanban-board">
+        <!-- columns rendered by JS -->
+      </div>
+    </div>
+
+    <!-- SEARCH KB -->
+    <div class="section" id="section-search">
+      <div class="auto-hint" id="search-auto-hint">Auto Mode is ON &mdash; Search results are ranked by your active project context (BFSI / KYC). Drag any result to Client Workspace.</div>
+      <div class="search-bar"><input type="text" id="search-input" placeholder="Search Jira, Confluence, SharePoint, Google Drive, Yammer..." oninput="filterSearch()"></div>
       <div class="filter-row" id="filter-source">
         <span style="font-size:12px;color:var(--muted);padding:5px 0;margin-right:4px">Source:</span>
         <button class="filter-btn active" data-filter="all" onclick="setFilter('source','all')">All</button>
@@ -392,12 +347,13 @@ nav .icon{width:18px;text-align:center}
       </div>
       <div class="card" style="padding:0;overflow:hidden">
         <div id="search-results"></div>
-        <div class="no-results" id="no-results" style="display:none">No results found. Try different keywords or filters.</div>
+        <div class="no-results" id="no-results" style="display:none">No results found.</div>
       </div>
     </div>
 
-    <!-- AI CHAT (Phase 3) -->
+    <!-- AI CHAT -->
     <div class="section" id="section-chat">
+      <div class="auto-hint" id="chat-auto-hint">Auto Mode is ON &mdash; AI is proactively generating insights based on your recent Jira activity. New suggestion ready.</div>
       <div class="chat-suggestions" id="chat-suggestions">
         <button onclick="sendSuggestion('Generate KYC PRD for BFSI')">Generate KYC PRD</button>
         <button onclick="sendSuggestion('Run SWOT analysis for digital lending')">SWOT: digital lending</button>
@@ -411,66 +367,44 @@ nav .icon{width:18px;text-align:center}
           <div class="msg assistant">
             <div class="msg-avatar">AI</div>
             <div>
-              <div class="msg-body">
-                Hi! I'm your PM-OS AI assistant, powered by <strong>Claude Sonnet 4.6 + Atlassian Rovo + Gemini</strong>. I can generate PRDs, SWOT analyses, competitor research, ROI models, compliance checklists, and discovery packs — drawing from your connected KB across Jira, Confluence, SharePoint, and Google Drive. What would you like to build?
-              </div>
+              <div class="msg-body">Hi! I'm your PM-OS AI assistant, powered by <strong>Claude Sonnet 4.6 + Atlassian Rovo + Gemini</strong>. I can generate PRDs, SWOT analyses, competitor research, ROI models, compliance checklists, and discovery packs. What would you like to build?</div>
             </div>
           </div>
         </div>
         <div class="chat-input-row">
-          <input type="text" id="chat-input" placeholder="Ask anything... e.g. 'Generate KYC PRD for BFSI'" onkeydown="if(event.key==='Enter')sendChat()">
+          <input type="text" id="chat-input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendChat()">
           <button onclick="sendChat()">Send</button>
         </div>
       </div>
     </div>
 
-    <!-- REPORTS (Phase 3) -->
+    <!-- REPORTS -->
     <div class="section" id="section-reports">
+      <div class="auto-hint" id="reports-auto-hint">Auto Mode is ON &mdash; Reports are cycling automatically. PowerBI Copilot is generating narrative summaries.</div>
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-        <button class="filter-btn active" onclick="showReport('velocity')">Sprint Velocity</button>
-        <button class="filter-btn" onclick="showReport('kpi')">KPI Trends</button>
-        <button class="filter-btn" onclick="showReport('time')">PM Time Allocation</button>
-        <button class="filter-btn" onclick="showReport('reuse')">KB Reuse Rate</button>
+        <button class="filter-btn active" onclick="showReport('velocity',event)">Sprint Velocity</button>
+        <button class="filter-btn" onclick="showReport('kpi',event)">KPI Trends</button>
+        <button class="filter-btn" onclick="showReport('time',event)">PM Time</button>
+        <button class="filter-btn" onclick="showReport('reuse',event)">Reuse Rate</button>
       </div>
       <div class="grid-2" id="report-container"></div>
     </div>
 
-    <!-- DISCOVERY ENGINE (Phase 5) -->
+    <!-- DISCOVERY ENGINE -->
     <div class="section" id="section-discovery">
+      <div class="auto-hint" id="disc-auto-hint">Auto Mode is ON &mdash; Discovery Engine will auto-run when you select a domain. Results will stream in real-time.</div>
       <div class="discovery-form">
         <div style="font-size:15px;font-weight:600;margin-bottom:4px">Discovery Engine</div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Auto-generate market analysis, SWOT, competitor landscape, ROI model, risk register, and GTM strategy</div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Product / Initiative Name</label>
-            <input type="text" id="disc-name" placeholder="e.g. Digital KYC Platform" value="Digital KYC Platform">
-          </div>
-          <div class="form-group">
-            <label>Target Market</label>
-            <input type="text" id="disc-market" placeholder="e.g. Mid-size banks in India" value="Mid-size banks in India">
-          </div>
+          <div class="form-group"><label>Product / Initiative</label><input type="text" id="disc-name" value="Digital KYC Platform"></div>
+          <div class="form-group"><label>Target Market</label><input type="text" id="disc-market" value="Mid-size banks in India"></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Stage</label>
-            <select id="disc-stage">
-              <option>Discovery</option>
-              <option>Scoping</option>
-              <option>Build</option>
-              <option>Launch</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Budget Range</label>
-            <select id="disc-budget">
-              <option>Under $100K</option>
-              <option selected>$100K &ndash; $500K</option>
-              <option>$500K &ndash; $2M</option>
-              <option>$2M+</option>
-            </select>
-          </div>
+          <div class="form-group"><label>Stage</label><select id="disc-stage"><option>Discovery</option><option>Scoping</option><option>Build</option><option>Launch</option></select></div>
+          <div class="form-group"><label>Budget</label><select id="disc-budget"><option>Under $100K</option><option selected>$100K &ndash; $500K</option><option>$500K &ndash; $2M</option><option>$2M+</option></select></div>
         </div>
-        <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Domain</div>
+        <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Domain &mdash; click to select (Auto Mode: auto-runs on selection)</div>
         <div class="domain-chips" id="domain-chips">
           <div class="domain-chip selected" data-domain="bfsi" onclick="selectDomain(this)">BFSI</div>
           <div class="domain-chip" data-domain="healthcare" onclick="selectDomain(this)">Healthcare</div>
@@ -481,82 +415,21 @@ nav .icon{width:18px;text-align:center}
         </div>
         <button class="btn-run" id="disc-run-btn" onclick="runDiscovery()">Run Discovery Engine</button>
       </div>
-      <div class="loader" id="disc-loader">
-        <div class="spinner"></div>
-        <div>Querying connected sources &mdash; Jira, Confluence, Google Drive, SharePoint&hellip;</div>
-      </div>
+      <div class="loader" id="disc-loader"><div class="spinner"></div><div id="disc-loader-text">Querying Jira, Confluence, Google Drive, SharePoint&hellip;</div></div>
       <div class="accordion" id="disc-results"></div>
     </div>
 
-    <!-- CLIENT WORKSPACE (Phase 4) -->
+    <!-- CLIENT WORKSPACE -->
     <div class="section" id="section-client">
+      <div class="auto-hint" id="client-auto-hint">Auto Mode is ON &mdash; Client portal is syncing. New artifact recommendations available based on Acme Corp project activity.</div>
       <div class="client-card">
-        <div class="card-title" style="margin-bottom:12px">Share Artifacts with Client &mdash; Acme Corp</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Toggle artifacts to include in the client-facing read-only portal. Client sees only what you share.</div>
+        <div class="card-title">Share Artifacts &mdash; Acme Corp &middot; <span style="font-size:12px;color:var(--muted);font-weight:400">Drag to reorder</span></div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Toggle to share. Drag rows to reorder. Client sees only enabled artifacts in their portal.</div>
         <div id="artifact-list">
-          <div class="artifact-row">
-            <div class="artifact-info">
-              <div class="artifact-name">KYC Platform &mdash; PRD v2.1</div>
-              <div class="artifact-meta">Confluence &middot; BFSI &middot; Updated 2 days ago</div>
-            </div>
-            <div class="toggle-wrap">
-              <span style="font-size:11px;color:var(--muted)" class="toggle-label">Off</span>
-              <div class="toggle on" onclick="toggleArtifact(this)"></div>
-            </div>
-          </div>
-          <div class="artifact-row">
-            <div class="artifact-info">
-              <div class="artifact-name">Digital Lending SWOT Analysis</div>
-              <div class="artifact-meta">Google Drive &middot; BFSI &middot; Updated 3 days ago</div>
-            </div>
-            <div class="toggle-wrap">
-              <span style="font-size:11px;color:var(--muted)" class="toggle-label">Off</span>
-              <div class="toggle on" onclick="toggleArtifact(this)"></div>
-            </div>
-          </div>
-          <div class="artifact-row">
-            <div class="artifact-info">
-              <div class="artifact-name">Sprint Velocity Report &mdash; Q2 2026</div>
-              <div class="artifact-meta">PowerBI &middot; Delivery &middot; Updated today</div>
-            </div>
-            <div class="toggle-wrap">
-              <span style="font-size:11px;color:var(--muted)" class="toggle-label">Off</span>
-              <div class="toggle on" onclick="toggleArtifact(this)"></div>
-            </div>
-          </div>
-          <div class="artifact-row">
-            <div class="artifact-info">
-              <div class="artifact-name">Competitor Analysis: BFSI Platforms</div>
-              <div class="artifact-meta">Confluence &middot; BFSI &middot; Updated 1 week ago</div>
-            </div>
-            <div class="toggle-wrap">
-              <span style="font-size:11px;color:var(--muted)" class="toggle-label">Off</span>
-              <div class="toggle off" onclick="toggleArtifact(this)"></div>
-            </div>
-          </div>
-          <div class="artifact-row">
-            <div class="artifact-info">
-              <div class="artifact-name">ROI Model: Digital KYC</div>
-              <div class="artifact-meta">SharePoint &middot; BFSI &middot; Updated 5 days ago</div>
-            </div>
-            <div class="toggle-wrap">
-              <span style="font-size:11px;color:var(--muted)" class="toggle-label">Off</span>
-              <div class="toggle off" onclick="toggleArtifact(this)"></div>
-            </div>
-          </div>
-          <div class="artifact-row">
-            <div class="artifact-info">
-              <div class="artifact-name">GTM Strategy Deck &mdash; Q3 2026</div>
-              <div class="artifact-meta">Google Drive &middot; Delivery &middot; Updated 4 days ago</div>
-            </div>
-            <div class="toggle-wrap">
-              <span style="font-size:11px;color:var(--muted)" class="toggle-label">Off</span>
-              <div class="toggle on" onclick="toggleArtifact(this)"></div>
-            </div>
-          </div>
+          <!-- rendered by JS -->
         </div>
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <div style="font-size:13px;color:var(--muted)"><span id="shared-count">4</span> of 6 artifacts shared</div>
+          <div style="font-size:13px;color:var(--muted)"><span id="shared-count">4</span> artifacts shared</div>
           <div style="display:flex;gap:8px">
             <button class="btn-sm" onclick="togglePreview()">Preview as Client</button>
             <button class="btn-sm primary">Copy Portal Link</button>
@@ -565,330 +438,501 @@ nav .icon{width:18px;text-align:center}
       </div>
       <div class="client-preview" id="client-preview">
         <div class="preview-header">
-          <div>
-            <div style="font-size:15px;font-weight:600">Acme Corp Portal</div>
-            <div style="font-size:12px;color:var(--muted)">Read-only client view &mdash; 4 artifacts</div>
-          </div>
+          <div><div style="font-size:15px;font-weight:600">Acme Corp Portal</div><div style="font-size:12px;color:var(--muted)">Read-only client view</div></div>
           <span class="pill ai">Client View</span>
         </div>
         <div id="preview-artifacts"></div>
       </div>
     </div>
 
-  </div><!-- /content -->
+  </div>
 </main>
 
 <script>
-// ============================================================
+// ==============================================================
+// STATE
+// ==============================================================
+var autoMode = false;
+var autoReportTimer = null;
+var reportOrder = ['velocity','kpi','time','reuse'];
+var reportIdx = 0;
+var activeReport = 'velocity';
+var chartInstances = {};
+var selectedDomain = 'bfsi';
+var currentFilters = {source:'all', domain:'all'};
+
+// ==============================================================
+// AUTO MODE
+// ==============================================================
+function toggleAutoMode() {
+  autoMode = !autoMode;
+  var toggle = document.getElementById('auto-toggle');
+  var badge = document.getElementById('auto-badge');
+  toggle.classList.toggle('on', autoMode);
+  badge.classList.toggle('show', autoMode);
+  // Show/hide all hints
+  document.querySelectorAll('.auto-hint').forEach(function(h) {
+    h.classList.toggle('show', autoMode);
+  });
+  if (autoMode) {
+    startAutoReport();
+    scheduleAutoChat();
+  } else {
+    clearInterval(autoReportTimer);
+  }
+}
+
+function startAutoReport() {
+  clearInterval(autoReportTimer);
+  if (!autoMode) return;
+  autoReportTimer = setInterval(function() {
+    if (document.getElementById('section-reports').classList.contains('active')) {
+      reportIdx = (reportIdx + 1) % reportOrder.length;
+      var next = reportOrder[reportIdx];
+      activeReport = next;
+      var btns = document.querySelectorAll('#section-reports .filter-btn');
+      btns.forEach(function(b, i) { b.classList.toggle('active', i === reportIdx); });
+      initReports();
+    }
+  }, 6000);
+}
+
+function scheduleAutoChat() {
+  if (!autoMode) return;
+  setTimeout(function() {
+    if (autoMode && document.getElementById('section-chat').classList.contains('active')) {
+      var messages = document.getElementById('chat-messages');
+      messages.innerHTML += '<div class="msg assistant"><div class="msg-avatar">AI</div><div><div class="msg-body"><strong>Auto Mode insight:</strong> Based on your recent Jira activity (BFSI-204 in Review), I noticed the KYC acceptance criteria gap. Want me to generate a gap analysis?</div></div></div>';
+      messages.scrollTop = messages.scrollHeight;
+    }
+  }, 3500);
+}
+
+// ==============================================================
 // NAVIGATION
-// ============================================================
-var sections={
-  dashboard:{title:'Dashboard',meta:'PM-OS — All phases demo with mock data'},
-  search:{title:'Search Knowledge Base',meta:'Phase 2 — Unified search across all connected tools'},
-  chat:{title:'AI Chat',meta:'Phase 3 — Claude + Rovo + Gemini synthesis'},
-  reports:{title:'Reports',meta:'Phase 3 — PowerBI + Copilot interpretation'},
-  discovery:{title:'Discovery Engine',meta:'Phase 5 — Auto-generate discovery packs'},
-  client:{title:'Client Workspace',meta:'Phase 4 — Curated client-facing portal'}
+// ==============================================================
+var sections = {
+  dashboard: {title:'Dashboard', meta:'PM-OS — All phases demo with DnD + Auto Mode'},
+  kanban:    {title:'Kanban Board', meta:'Phase 2 — Drag & drop sprint management'},
+  search:    {title:'Search Knowledge Base', meta:'Phase 2 — Unified search across all connected tools'},
+  chat:      {title:'AI Chat', meta:'Phase 3 — Claude + Rovo + Gemini synthesis'},
+  reports:   {title:'Reports', meta:'Phase 3 — PowerBI + Copilot interpretation'},
+  discovery: {title:'Discovery Engine', meta:'Phase 5 — Auto-generate discovery packs'},
+  client:    {title:'Client Workspace', meta:'Phase 4 — Curated client-facing portal with DnD reorder'}
 };
 
-document.querySelectorAll('nav a').forEach(function(a){
-  a.addEventListener('click',function(e){
+document.querySelectorAll('nav a').forEach(function(a) {
+  a.addEventListener('click', function(e) {
     e.preventDefault();
     navigate(this.dataset.section);
   });
 });
 
-function navigate(id){
-  document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('active')});
-  var navEl=document.querySelector('nav a[data-section="'+id+'"]');
-  if(navEl)navEl.classList.add('active');
-  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
-  var sec=document.getElementById('section-'+id);
-  if(sec)sec.classList.add('active');
-  var s=sections[id];
-  if(s){
-    document.getElementById('page-title').textContent=s.title;
-    document.getElementById('page-meta').textContent=s.meta;
+function navigate(id) {
+  document.querySelectorAll('nav a').forEach(function(a) { a.classList.remove('active'); });
+  var navEl = document.querySelector('nav a[data-section="' + id + '"]');
+  if (navEl) navEl.classList.add('active');
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  var sec = document.getElementById('section-' + id);
+  if (sec) sec.classList.add('active');
+  var s = sections[id];
+  if (s) {
+    document.getElementById('page-title').textContent = s.title;
+    document.getElementById('page-meta').textContent = s.meta;
   }
-  if(id==='reports')initReports();
+  if (id === 'reports') initReports();
+  if (id === 'kanban') initKanban();
+  if (id === 'chat' && autoMode) scheduleAutoChat();
+  if (id === 'search') filterSearch();
+  if (id === 'client') renderArtifacts();
 }
 
-// ============================================================
+// ==============================================================
+// KANBAN DnD
+// ==============================================================
+var kanbanData = {
+  backlog: [
+    {id:'BFSI-208', title:'Aadhaar OTP fallback for eKYC edge cases', sp:3, domain:'bfsi', priority:'high', assignee:'PR'},
+    {id:'KYC-15',   title:'Video KYC session timeout handling',          sp:2, domain:'bfsi', priority:'med', assignee:'RK'},
+    {id:'HC-22',    title:'FHIR R4 patient merge API',                   sp:5, domain:'healthcare', priority:'low', assignee:'AM'},
+    {id:'SAAS-91',  title:'Billing webhook retry queue',                 sp:3, domain:'saas', priority:'med', assignee:'KS'}
+  ],
+  sprint: [
+    {id:'BFSI-204', title:'Digital lending risk scoring engine v2',      sp:8, domain:'bfsi', priority:'high', assignee:'VG'},
+    {id:'KYC-12',   title:'Risk-based onboarding: high-risk flow',       sp:5, domain:'bfsi', priority:'high', assignee:'PR'},
+    {id:'SAAS-88',  title:'API platform: developer portal phase 1',      sp:6, domain:'saas', priority:'med', assignee:'AT'}
+  ],
+  review: [
+    {id:'HC-19',    title:'HL7 FHIR adapter: Cerner compatibility',      sp:5, domain:'healthcare', priority:'med', assignee:'AM'},
+    {id:'BFSI-201', title:'Audit trail: 7-year retention config',        sp:2, domain:'bfsi', priority:'low', assignee:'RK'}
+  ],
+  done: [
+    {id:'BFSI-199', title:'eKYC RBI circular compliance update',         sp:3, domain:'bfsi', priority:'low', assignee:'VG'},
+    {id:'SAAS-85',  title:'SSO SAML 2.0 enterprise integration',         sp:5, domain:'saas', priority:'med', assignee:'AT'},
+    {id:'KYC-10',   title:'Liveness detection API integration',          sp:8, domain:'bfsi', priority:'high', assignee:'PR'}
+  ]
+};
+
+var colMeta = {
+  backlog: {label:'Backlog', color:'#94A3B8'},
+  sprint:  {label:'In Sprint', color:'#3B82F6'},
+  review:  {label:'In Review', color:'#F59E0B'},
+  done:    {label:'Done', color:'#10B981'}
+};
+
+var dragCard = null;
+var dragFromCol = null;
+
+function initKanban() {
+  var board = document.getElementById('kanban-board');
+  board.innerHTML = '';
+  Object.keys(kanbanData).forEach(function(colId) {
+    var col = document.createElement('div');
+    col.className = 'kanban-col';
+    col.dataset.col = colId;
+    var meta = colMeta[colId];
+    var cards = kanbanData[colId];
+    col.innerHTML =
+      '<div class="kanban-col-header">' +
+        '<span class="col-title" style="color:' + meta.color + '">' + meta.label + '</span>' +
+        '<span class="col-count">' + cards.length + '</span>' +
+      '</div>' +
+      '<div class="kanban-cards" id="col-' + colId + '" ' +
+        'ondragover="event.preventDefault();this.classList.add(\'drag-over-col\')" ' +
+        'ondragleave="this.classList.remove(\'drag-over-col\')" ' +
+        'ondrop="dropCard(event,\'' + colId + '\')">' +
+      '</div>' +
+      '<div class="add-kcard" onclick="addCardToCol(\'' + colId + '\')">+ Add story</div>';
+    board.appendChild(col);
+  });
+  Object.keys(kanbanData).forEach(function(colId) {
+    kanbanData[colId].forEach(function(card) {
+      renderCard(card, colId);
+    });
+  });
+}
+
+function renderCard(card, colId) {
+  var container = document.getElementById('col-' + colId);
+  if (!container) return;
+  var el = document.createElement('div');
+  el.className = 'kcard';
+  el.id = 'kcard-' + card.id;
+  el.draggable = true;
+  el.innerHTML =
+    '<div class="kcard-priority ' + card.priority + '"></div>' +
+    '<div class="kcard-title">' + card.id + ': ' + card.title + '</div>' +
+    '<div class="kcard-meta">' +
+      '<div class="kcard-tags"><span class="kcard-tag ' + card.domain + '">' + card.domain.toUpperCase() + '</span></div>' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+        '<span class="kcard-sp">' + card.sp + ' SP</span>' +
+        '<span class="kcard-assignee" style="background:' + assigneeColor(card.assignee) + '">' + card.assignee + '</span>' +
+      '</div>' +
+    '</div>';
+  el.addEventListener('dragstart', function(e) {
+    dragCard = card;
+    dragFromCol = colId;
+    setTimeout(function() { el.classList.add('dragging'); }, 0);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  el.addEventListener('dragend', function() {
+    el.classList.remove('dragging');
+    document.querySelectorAll('.drag-over-col').forEach(function(c) { c.classList.remove('drag-over-col'); });
+  });
+  container.appendChild(el);
+}
+
+function dropCard(e, targetCol) {
+  e.preventDefault();
+  document.querySelectorAll('.drag-over-col').forEach(function(c) { c.classList.remove('drag-over-col'); });
+  if (!dragCard || dragFromCol === targetCol) return;
+  // Remove from source
+  kanbanData[dragFromCol] = kanbanData[dragFromCol].filter(function(c) { return c.id !== dragCard.id; });
+  // Add to target
+  kanbanData[targetCol].push(dragCard);
+  dragCard = null;
+  dragFromCol = null;
+  initKanban();
+}
+
+function addCard() { addCardToCol('backlog'); }
+function addCardToCol(colId) {
+  var title = prompt('Story title:');
+  if (!title) return;
+  var sp = parseInt(prompt('Story points (1-13):') || '3');
+  var domains = ['bfsi','healthcare','saas'];
+  var domain = domains[Math.floor(Math.random() * domains.length)];
+  var id = 'NEW-' + Math.floor(Math.random() * 900 + 100);
+  kanbanData[colId].push({id: id, title: title, sp: sp || 3, domain: domain, priority: 'med', assignee: 'VG'});
+  initKanban();
+}
+
+function assigneeColor(a) {
+  var colors = {PR:'#7C3AED',RK:'#0369A1',AM:'#047857',KS:'#B45309',VG:'#1D4ED8',AT:'#7C2D12'};
+  return colors[a] || '#334155';
+}
+
+// ==============================================================
 // SEARCH KB
-// ============================================================
-var KB=[
-  {id:1,title:'KYC Platform PRD v2.1',source:'confluence',domain:'bfsi',type:'PRD',snippet:'End-to-end KYC automation with Aadhaar eKYC, video KYC, and risk-based onboarding for mid-tier banks. Covers user stories, acceptance criteria, and API contracts.',updated:'2d ago',author:'Priya R.'},
-  {id:2,title:'Digital Lending Jira Epic BFSI-204',source:'jira',domain:'bfsi',type:'Epic',snippet:'Epic: Loan origination system upgrade. 24 stories, 3 sprints. Blockers: Core banking API rate limits. Velocity: 38 SP avg.',updated:'1d ago',author:'Rohit K.'},
-  {id:3,title:'Healthcare Intake Flow — PRD',source:'sharepoint',domain:'healthcare',type:'PRD',snippet:'Patient intake digitization: e-forms, EHR integration (HL7 FHIR), bed management API. Regulatory: HIPAA, NABH. Timeline: 14 weeks.',updated:'5d ago',author:'Anita M.'},
-  {id:4,title:'Competitor Analysis BFSI 2026 Q2',source:'confluence',domain:'bfsi',type:'Research',snippet:'Side-by-side analysis of Finacle, Temenos, and FIS for digital lending. Covers TCO, integration complexity, AI readiness score, and migration risk.',updated:'1w ago',author:'Priya R.'},
-  {id:5,title:'SaaS Onboarding Redesign — User Research',source:'gdrive',domain:'saas',type:'Research',snippet:'12 user interviews, 3 personas, key friction points: step 3 dropout 62%, time-to-value >14 days. Recommended: progressive disclosure, in-app guidance.',updated:'3d ago',author:'Karan S.'},
-  {id:6,title:'HIPAA Compliance Checklist v3',source:'sharepoint',domain:'healthcare',type:'Compliance',snippet:'164 controls mapped to HIPAA Security Rule. PHI handling, audit trail requirements, BA agreement templates. Status: 87% compliant.',updated:'2w ago',author:'Legal Team'},
-  {id:7,title:'Sprint Velocity Report Q2 2026',source:'jira',domain:'saas',type:'Report',snippet:'10-sprint rolling average: 36 SP. PI-3 commitment vs delivery: 94%. Top blockers: dependency delays (32%), unclear acceptance criteria (28%).',updated:'today',author:'Scrum Master'},
-  {id:8,title:'GTM Strategy Deck Q3 2026',source:'gdrive',domain:'bfsi',type:'Strategy',snippet:'Go-to-market for Digital KYC: target segment (Tier 2/3 banks), pricing model (per-verification), channel (direct + BankTech partners), launch Q3.',updated:'4d ago',author:'Vignesh S.'},
-  {id:9,title:'SaaS Platform Architecture RFC',source:'confluence',domain:'saas',type:'RFC',snippet:'Proposed microservices migration from monolith. Event-driven with Kafka, multi-tenant via schema isolation, observability stack: Datadog + PagerDuty.',updated:'6d ago',author:'Arjun T.'},
-  {id:10,title:'Yammer Discussion: OKR Alignment Q3',source:'yammer',domain:'saas',type:'Discussion',snippet:'Cross-functional discussion on Q3 OKR cascade. Engineering vs Product priority conflict on infra vs feature work. Resolution: 70/30 split agreed.',updated:'3d ago',author:'Leadership'},
-  {id:11,title:'ROI Model: Digital KYC',source:'sharepoint',domain:'bfsi',type:'Model',snippet:'5-year NPV: $2.4M. Assumptions: 40K verifications/month, 65% manual effort reduction, $3.20 cost-per-KYC vs $18 manual baseline.',updated:'5d ago',author:'Finance'},
-  {id:12,title:'BFSI Risk Register v2',source:'confluence',domain:'bfsi',type:'Risk',snippet:'18 risks catalogued. Top: regulatory change (RBI circular on eKYC), vendor dependency (Aadhaar API SLA), data residency compliance.',updated:'1w ago',author:'Risk Team'},
-  {id:13,title:'Healthcare EHR Integration Spike',source:'jira',domain:'healthcare',type:'Story',snippet:'HL7 FHIR R4 spike results: Epic SMART on FHIR compatible, Cerner requires custom adapter. Estimate: 6 SP for adapter, 2 SP for tests.',updated:'2d ago',author:'Dev Team'},
-  {id:14,title:'SaaS Pricing Model Analysis',source:'gdrive',domain:'saas',type:'Analysis',snippet:'Freemium vs PLG vs Enterprise comparison. Recommendation: tiered PLG with enterprise upsell. Benchmark: Notion, Linear, Figma pricing tiers.',updated:'1w ago',author:'Karan S.'},
-  {id:15,title:'Yammer: Post-Launch Retrospective — KYC v1',source:'yammer',domain:'bfsi',type:'Retro',snippet:'NPS: 42 (up from 28). Top feedback: faster onboarding, manual fallback needed for edge cases. Planned: v1.1 with fallback flow.',updated:'2w ago',author:'PM Team'},
-  {id:16,title:'Healthcare SWOT: Digital Intake 2026',source:'sharepoint',domain:'healthcare',type:'SWOT',snippet:'Strengths: existing EHR relationships, proven HL7 adapters. Weakness: sales cycle 9+ months. Opp: ABDM mandate. Threat: Epic Direct.',updated:'1w ago',author:'Strategy'},
-  {id:17,title:'SaaS Jira Epic SAAS-88: API Platform',source:'jira',domain:'saas',type:'Epic',snippet:'Build internal API platform: rate limiting, developer portal, API versioning. Enables 3rd party integrations. Target: 5 partners by Q4.',updated:'3d ago',author:'Platform Team'}
+// ==============================================================
+var KB = [
+  {id:1,  title:'KYC Platform PRD v2.1',                  source:'confluence',  domain:'bfsi',       type:'PRD',        snippet:'End-to-end KYC automation with Aadhaar eKYC, video KYC, and risk-based onboarding. Covers user stories, acceptance criteria, and API contracts.',      updated:'2d ago', author:'Priya R.'},
+  {id:2,  title:'Digital Lending Jira Epic BFSI-204',      source:'jira',        domain:'bfsi',       type:'Epic',       snippet:'Loan origination upgrade. 24 stories, 3 sprints. Blockers: Core banking API rate limits. Velocity: 38 SP avg.',                                     updated:'1d ago', author:'Rohit K.'},
+  {id:3,  title:'Healthcare Intake Flow PRD',              source:'sharepoint',  domain:'healthcare', type:'PRD',        snippet:'Patient intake digitisation: e-forms, EHR integration (HL7 FHIR), bed management API. Regulatory: HIPAA, NABH. Timeline: 14 weeks.',               updated:'5d ago', author:'Anita M.'},
+  {id:4,  title:'Competitor Analysis BFSI 2026 Q2',        source:'confluence',  domain:'bfsi',       type:'Research',   snippet:'Side-by-side: Finacle, Temenos, FIS for digital lending. TCO, integration complexity, AI readiness, migration risk.',                              updated:'1w ago', author:'Priya R.'},
+  {id:5,  title:'SaaS Onboarding Redesign User Research',  source:'gdrive',      domain:'saas',       type:'Research',   snippet:'12 user interviews, 3 personas. Key friction: step 3 dropout 62%, TTV >14 days. Rec: progressive disclosure.',                                    updated:'3d ago', author:'Karan S.'},
+  {id:6,  title:'HIPAA Compliance Checklist v3',           source:'sharepoint',  domain:'healthcare', type:'Compliance', snippet:'164 controls mapped to HIPAA Security Rule. PHI handling, audit trail, BA agreement templates. Status: 87% compliant.',                            updated:'2w ago', author:'Legal'},
+  {id:7,  title:'Sprint Velocity Report Q2 2026',          source:'jira',        domain:'saas',       type:'Report',     snippet:'10-sprint rolling avg: 36 SP. PI-3 commitment vs delivery: 94%. Top blockers: dependency delays 32%, unclear AC 28%.',                            updated:'today',  author:'Scrum Master'},
+  {id:8,  title:'GTM Strategy Deck Q3 2026',               source:'gdrive',      domain:'bfsi',       type:'Strategy',   snippet:'Digital KYC GTM: Tier 2/3 banks target, per-verification pricing, direct + BankTech channel, Q3 launch.',                                         updated:'4d ago', author:'Vignesh S.'},
+  {id:9,  title:'SaaS Platform Architecture RFC',          source:'confluence',  domain:'saas',       type:'RFC',        snippet:'Microservices migration from monolith. Event-driven with Kafka, multi-tenant via schema isolation, Datadog + PagerDuty.',                           updated:'6d ago', author:'Arjun T.'},
+  {id:10, title:'Yammer: OKR Alignment Q3',                source:'yammer',      domain:'saas',       type:'Discussion', snippet:'Cross-functional OKR cascade. Engineering vs Product priority conflict on infra vs features. Resolution: 70/30 split.',                            updated:'3d ago', author:'Leadership'},
+  {id:11, title:'ROI Model: Digital KYC',                  source:'sharepoint',  domain:'bfsi',       type:'Model',      snippet:'5-year NPV: $24.4M. 40K verifications/month, 65% manual reduction, $3.20 cost vs $18 manual. Payback: 3.2 weeks.',                                 updated:'5d ago', author:'Finance'},
+  {id:12, title:'BFSI Risk Register v2',                   source:'confluence',  domain:'bfsi',       type:'Risk',       snippet:'18 risks. Top: RBI regulatory change, Aadhaar API SLA dependency, data residency compliance.',                                                    updated:'1w ago', author:'Risk Team'},
+  {id:13, title:'Healthcare EHR Integration Spike',        source:'jira',        domain:'healthcare', type:'Story',      snippet:'FHIR R4: Epic SMART compatible, Cerner needs custom adapter. Estimate: 6 SP adapter, 2 SP tests.',                                                 updated:'2d ago', author:'Dev Team'},
+  {id:14, title:'SaaS Pricing Model Analysis',             source:'gdrive',      domain:'saas',       type:'Analysis',   snippet:'Freemium vs PLG vs Enterprise. Rec: tiered PLG + enterprise upsell. Benchmarks: Notion, Linear, Figma.',                                          updated:'1w ago', author:'Karan S.'},
+  {id:15, title:'Post-Launch Retro: KYC v1',               source:'yammer',      domain:'bfsi',       type:'Retro',      snippet:'NPS: 42 (from 28). Top feedback: faster onboarding, manual fallback needed. Planned v1.1 with fallback flow.',                                    updated:'2w ago', author:'PM Team'},
+  {id:16, title:'Healthcare SWOT: Digital Intake 2026',    source:'sharepoint',  domain:'healthcare', type:'SWOT',       snippet:'Strengths: EHR relationships, HL7 adapters. Weakness: 9+ month sales. Opp: ABDM mandate. Threat: Epic Direct.',                                   updated:'1w ago', author:'Strategy'},
+  {id:17, title:'Jira Epic SAAS-88: API Platform',         source:'jira',        domain:'saas',       type:'Epic',       snippet:'Build internal API platform: rate limiting, dev portal, versioning. Enables 3rd party integrations. 5 partners by Q4.',                           updated:'3d ago', author:'Platform'}
 ];
 
-var currentFilters={source:'all',domain:'all'};
+function filterSearch() { renderSearch(); }
 
-function filterSearch(){
-  renderSearch();
-}
-
-function setFilter(type,val){
-  currentFilters[type]=val;
-  document.querySelectorAll('#filter-'+type+' .filter-btn').forEach(function(b){
-    b.classList.toggle('active',b.dataset.filter===val);
+function setFilter(type, val) {
+  currentFilters[type] = val;
+  document.querySelectorAll('#filter-' + type + ' .filter-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.filter === val);
   });
   renderSearch();
 }
 
-function renderSearch(){
-  var q=(document.getElementById('search-input').value||'').toLowerCase();
-  var filtered=KB.filter(function(item){
-    var matchSource=currentFilters.source==='all'||item.source===currentFilters.source;
-    var matchDomain=currentFilters.domain==='all'||item.domain===currentFilters.domain;
-    var matchQ=!q||item.title.toLowerCase().includes(q)||item.snippet.toLowerCase().includes(q)||item.type.toLowerCase().includes(q);
-    return matchSource&&matchDomain&&matchQ;
+function renderSearch() {
+  var q = (document.getElementById('search-input').value || '').toLowerCase();
+  var filtered = KB.filter(function(item) {
+    var ms = currentFilters.source === 'all' || item.source === currentFilters.source;
+    var md = currentFilters.domain === 'all' || item.domain === currentFilters.domain;
+    var mq = !q || item.title.toLowerCase().includes(q) || item.snippet.toLowerCase().includes(q) || item.type.toLowerCase().includes(q);
+    return ms && md && mq;
   });
-  var container=document.getElementById('search-results');
-  var noResults=document.getElementById('no-results');
-  if(filtered.length===0){
-    container.innerHTML='';
-    noResults.style.display='block';
-    return;
-  }
-  noResults.style.display='none';
-  var srcIcons={jira:'&#128196;',confluence:'&#128209;',sharepoint:'&#128200;',yammer:'&#128172;',gdrive:'&#128196;'};
-  var srcColors={jira:'#1D4ED8',confluence:'#0369A1',sharepoint:'#047857',yammer:'#7C2D12',gdrive:'#B45309'};
-  container.innerHTML=filtered.map(function(item){
-    return '<div class="result-item">'+
-      '<div class="result-icon" style="background:'+srcColors[item.source]+'22;color:'+srcColors[item.source]+'">'+srcIcons[item.source]+'</div>'+
-      '<div class="result-info">'+
-        '<div class="result-title">'+item.title+'</div>'+
-        '<div class="result-snippet">'+item.snippet+'</div>'+
-        '<div class="result-meta">'+
-          '<span><span class="pill '+item.source+'">'+item.source+'</span></span>'+
-          '<span>'+item.domain.toUpperCase()+'</span>'+
-          '<span>'+item.type+'</span>'+
-          '<span>'+item.updated+'</span>'+
-          '<span>'+item.author+'</span>'+
-        '</div>'+
-        '<div class="result-actions">'+
-          '<button class="btn-sm">View</button>'+
-          '<button class="btn-sm" onclick="cloneToKB('+item.id+')">Clone to KB</button>'+
-          '<button class="btn-sm">Share</button>'+
-        '</div>'+
-      '</div>'+
+  var container = document.getElementById('search-results');
+  var noResults = document.getElementById('no-results');
+  if (!filtered.length) { container.innerHTML = ''; noResults.style.display = 'block'; return; }
+  noResults.style.display = 'none';
+  var srcIcons = {jira:'&#128196;',confluence:'&#128209;',sharepoint:'&#128200;',yammer:'&#128172;',gdrive:'&#128196;'};
+  var srcColors = {jira:'#1D4ED8',confluence:'#0369A1',sharepoint:'#047857',yammer:'#7C2D12',gdrive:'#B45309'};
+  container.innerHTML = filtered.map(function(item) {
+    return '<div class="result-item" draggable="true" ondragstart="dragSearchItem(event,' + item.id + ')">' +
+      '<div class="result-icon" style="background:' + srcColors[item.source] + '22;color:' + srcColors[item.source] + '">' + srcIcons[item.source] + '</div>' +
+      '<div class="result-info">' +
+        '<div class="result-title">' + item.title + '</div>' +
+        '<div class="result-snippet">' + item.snippet + '</div>' +
+        '<div class="result-meta">' +
+          '<span><span class="pill ' + item.source + '">' + item.source + '</span></span>' +
+          '<span>' + item.domain.toUpperCase() + '</span>' +
+          '<span>' + item.type + '</span>' +
+          '<span>' + item.updated + '</span>' +
+        '</div>' +
+        '<div class="result-actions">' +
+          '<button class="btn-sm">View</button>' +
+          '<button class="btn-sm" onclick="cloneToKB(' + item.id + ')">Clone to KB</button>' +
+          '<button class="btn-sm primary" onclick="addToClientWS(' + item.id + ')">Add to Client WS</button>' +
+        '</div>' +
+      '</div>' +
     '</div>';
   }).join('');
 }
 
-function cloneToKB(id){
-  var item=KB.find(function(k){return k.id===id});
-  if(item){alert('Cloned "'+item.title+'" to your workspace KB.\n\nIn production: writes to Confluence via Rovo API.');}
+var draggedSearchItemId = null;
+function dragSearchItem(e, id) {
+  draggedSearchItemId = id;
+  e.dataTransfer.effectAllowed = 'copy';
 }
 
-// Init search on load
-setTimeout(renderSearch,100);
+function cloneToKB(id) {
+  var item = KB.find(function(k) { return k.id === id; });
+  if (item) alert('Cloned "' + item.title + '" to your workspace KB.\n\nIn production: writes to Confluence via Rovo API.');
+}
 
-// ============================================================
+function addToClientWS(id) {
+  var item = KB.find(function(k) { return k.id === id; });
+  if (item) alert('Added "' + item.title + '" to Client Workspace (Acme Corp).\n\nSwitch to Client Workspace tab to manage visibility.');
+}
+
+// ==============================================================
 // AI CHAT
-// ============================================================
-var chatResponses={
-  kyc:{
-    keywords:['kyc','know your customer','onboarding','aadhaar','ekyc','video kyc'],
-    response:'**KYC Platform PRD Draft (BFSI)**\n\n**Problem:** Manual KYC takes 3–5 days, costs $18/verification, 22% drop-off.\n\n**Solution:** Automated KYC with Aadhaar eKYC + Video KYC fallback.\n\n**Key Features:**\n- Aadhaar OTP-based eKYC (RBI compliant)\n- Video KYC for NRI / high-risk segments\n- Risk-based onboarding (low/medium/high)\n- Real-time liveness detection\n- Audit trail for regulatory compliance\n\n**Success Metrics:** Cost-per-KYC < $3.50 | TAT < 4 hours | Drop-off < 8%\n\n**Sources pulled from:** BFSI-204 (Jira), KYC PRD v2.1 (Confluence), ROI Model (SharePoint)',
-    sources:['Jira: BFSI-204','Confluence: KYC PRD v2.1','SharePoint: ROI Model']
+// ==============================================================
+var chatResponses = {
+  kyc: {
+    keywords: ['kyc','know your customer','aadhaar','ekyc','video kyc'],
+    response: '**KYC Platform PRD (BFSI)**\n\n**Problem:** Manual KYC takes 3-5 days, costs $18/verification, 22% drop-off.\n\n**Solution:** Automated KYC with Aadhaar eKYC + Video KYC fallback.\n\n**Key Features:**\n- Aadhaar OTP-based eKYC (RBI compliant)\n- Video KYC for NRI / high-risk segments\n- Risk-based onboarding (low/medium/high)\n- Real-time liveness detection\n- Audit trail for regulatory compliance\n\n**Metrics:** Cost < $3.50 | TAT < 4hr | Drop-off < 8%',
+    sources: ['Jira: BFSI-204','Confluence: KYC PRD v2.1','SharePoint: ROI Model']
   },
-  swot:{
-    keywords:['swot','strength','weakness','opportunity','threat'],
-    response:'**SWOT Analysis: Digital Lending (BFSI)**\n\n**Strengths**\n- Existing bank relationships (avg 7-yr tenure)\n- Proven HL7 + eKYC adapters in production\n- 40+ reference implementations\n\n**Weaknesses**\n- Sales cycle: 9–14 months for enterprise\n- Core banking integrations vary widely\n- Talent scarcity: fintech + cloud engineers\n\n**Opportunities**\n- RBI FLDG framework enabling co-lending\n- OCEN / AA ecosystem maturity\n- Tier 2/3 bank digitisation mandate\n\n**Threats**\n- Neobanks (Jupiter, Fi) with zero-legacy advantage\n- Big tech (Google Pay, PhonePe) credit expansion\n- Regulatory tightening on unsecured lending\n\n**Sources:** Competitor Analysis (Confluence), Yammer OKR thread, BFSI Risk Register',
-    sources:['Confluence: Competitor Analysis','Yammer: OKR Q3','Confluence: Risk Register']
+  swot: {
+    keywords: ['swot','strength','weakness','opportunity','threat'],
+    response: '**SWOT: Digital Lending (BFSI)**\n\n**Strengths** Proven eKYC adapters, 40+ implementations, regtech expertise.\n\n**Weaknesses** Sales cycles 9-14 months, core banking integration variance, India-centric.\n\n**Opportunities** OCEN framework, co-lending mandates, MSME credit gap $530B.\n\n**Threats** Neobanks (Jupiter, Fi), Big Tech credit expansion, RBI tightening.',
+    sources: ['Confluence: Competitor Analysis','Yammer: OKR Q3','Confluence: Risk Register']
   },
-  competitor:{
-    keywords:['competitor','competition','landscape','finacle','temenos','epic','cerner'],
-    response:'**Competitor Landscape Analysis**\n\n| Platform | Strength | Weakness | AI Readiness |\n|----------|----------|----------|--------------|\n| Finacle (Infosys) | Deep BFSI | Legacy UI | Medium |\n| Temenos | Global reach | High TCO | Medium |\n| FIS | Enterprise scale | Complex integration | Low |\n| Epic (Healthcare) | EHR dominance | Closed ecosystem | High |\n| Cerner (Oracle) | Data platform | Migration risk | High |\n\n**PM-OS Differentiation:** Domain-agnostic, AI-native KB layer, faster time-to-value via reusable discovery packs.\n\n**Sources:** Competitor Analysis Q2 (Confluence), SaaS Pricing Model (Google Drive)',
-    sources:['Confluence: Competitor Analysis Q2','Google Drive: SaaS Pricing Model']
+  competitor: {
+    keywords: ['competitor','competition','finacle','temenos','epic','cerner'],
+    response: '**Competitor Landscape**\n\n| Platform | Strength | Weakness | AI Readiness |\n|----------|----------|-----------|--------------|\n| Finacle | Deep BFSI | Legacy UI | Medium |\n| Temenos | Global reach | High TCO | Medium |\n| FIS | Enterprise | Complex | Low |\n| Epic | EHR dominant | Closed | High |\n| Cerner | Data platform | Migration | High |\n\n**PM-OS edge:** Domain-agnostic, AI-native, faster scoping via reusable discovery packs.',
+    sources: ['Confluence: Competitor Analysis Q2','Google Drive: Pricing Model']
   },
-  roi:{
-    keywords:['roi','return','cost','benefit','npv','value','model','savings'],
-    response:'**ROI Model: Digital KYC Platform**\n\n**Assumptions:**\n- 40,000 verifications/month\n- Current manual cost: $18/verification\n- Automated cost: $3.20/verification\n- Implementation: $380K over 14 weeks\n\n**Year 1:**\n- Cost savings: $7.1M (40K x 12 x $14.80)\n- Implementation cost: $380K\n- **Net Year 1: $6.72M**\n\n**5-Year NPV (8% discount):** $24.4M\n**Payback Period:** 3.2 weeks post-go-live\n\n**Sources:** SharePoint: ROI Model, Finance estimates, Jira velocity data',
-    sources:['SharePoint: ROI Model','PowerBI: Sprint Velocity']
+  roi: {
+    keywords: ['roi','return','cost','npv','savings','model'],
+    response: '**ROI Model: Digital KYC**\n\n40K verifications/month | $18 manual vs $3.20 automated = **$14.80 saved/verification**\n\nYear 1 net: **$6.72M** | 5-year NPV: **$24.4M** | Payback: **3.2 weeks**\n\nPM productivity: 35 hrs/PM/month saved = $2.1M recovered capacity (10-PM org).',
+    sources: ['SharePoint: ROI Model','PowerBI: Velocity']
   },
-  compliance:{
-    keywords:['compliance','hipaa','gdpr','rbi','nabh','regulation','audit','checklist'],
-    response:'**Compliance Checklist (HIPAA + BFSI)**\n\n**HIPAA (Healthcare):**\n- [ ] PHI access audit trail enabled\n- [x] BA agreements signed (all vendors)\n- [x] Encryption at rest (AES-256)\n- [x] Encryption in transit (TLS 1.3)\n- [ ] Annual risk assessment scheduled\n- [x] Incident response plan documented\n\n**RBI / BFSI:**\n- [x] eKYC RBI circular compliance\n- [x] Data residency: India DCs only\n- [ ] CERT-In incident reporting (72hr SLA)\n- [x] Customer consent framework\n\n**Status:** 87% compliant. 3 items pending.\n\n**Sources:** SharePoint: HIPAA Checklist v3, Legal team docs',
-    sources:['SharePoint: HIPAA Checklist v3','Confluence: Risk Register']
+  compliance: {
+    keywords: ['compliance','hipaa','gdpr','rbi','nabh','checklist'],
+    response: '**Compliance Checklist**\n\n**HIPAA:** PHI audit trail, BA agreements, AES-256 + TLS 1.3, incident response. Status: 87% (3 pending)\n\n**RBI / BFSI:** eKYC circular, India data residency, CERT-In 72hr reporting (action needed), consent framework.\n\n**ABDM:** FHIR R4 + ABHA integration in progress (Q3 2026).',
+    sources: ['SharePoint: HIPAA Checklist v3','Confluence: Risk Register']
   },
-  saas:{
-    keywords:['saas','onboarding','discovery','b2b','plg','product led'],
-    response:'**Discovery Pack: SaaS Onboarding Flow**\n\n**Market Context:**\n- B2B SaaS onboarding: 62% drop-off at step 3 globally\n- Time-to-value benchmark: 7 days (top quartile)\n- PLG adoption: 58% of new SaaS launches in 2025\n\n**Key Insights (from KB):**\n1. Progressive disclosure reduces cognitive load by 40%\n2. In-app guidance (tooltips + checklist) reduces support tickets 28%\n3. Freemium-to-paid conversion peaks at day 8–12\n\n**Recommended Approach:**\n- 3-step setup (not 7-step)\n- Immediate "aha moment" at T+2 minutes\n- Smart defaults based on company size\n\n**Sources:** Google Drive: SaaS User Research, Jira: SAAS-88, SaaS Pricing Model',
-    sources:['Google Drive: SaaS User Research','Jira: SAAS-88','Google Drive: Pricing Model']
+  saas: {
+    keywords: ['saas','onboarding','discovery','b2b','plg','product led'],
+    response: '**Discovery Pack: SaaS Onboarding**\n\n**Market:** B2B SaaS step-3 dropout 62%. TTV benchmark: 7 days (top quartile). PLG: 58% of new launches.\n\n**Insights from KB:**\n1. Progressive disclosure reduces cognitive load 40%\n2. In-app guidance cuts support tickets 28%\n3. Freemium-to-paid peaks day 8-12\n\n**Rec:** 3-step setup, T+2min aha moment, smart defaults by company size.',
+    sources: ['Google Drive: SaaS Research','Jira: SAAS-88','Google Drive: Pricing Model']
   }
 };
 
-function sendSuggestion(text){
-  document.getElementById('chat-input').value=text;
+function sendSuggestion(text) {
+  document.getElementById('chat-input').value = text;
   sendChat();
 }
 
-function sendChat(){
-  var input=document.getElementById('chat-input');
-  var text=input.value.trim();
-  if(!text)return;
-  input.value='';
-  var messages=document.getElementById('chat-messages');
-  // Add user message
-  messages.innerHTML+='<div class="msg user"><div class="msg-avatar">V</div><div><div class="msg-body">'+escHtml(text)+'</div></div></div>';
-  messages.scrollTop=messages.scrollHeight;
-  // Find response
-  var lower=text.toLowerCase();
-  var match=null;
-  for(var key in chatResponses){
-    var resp=chatResponses[key];
-    for(var i=0;i<resp.keywords.length;i++){
-      if(lower.includes(resp.keywords[i])){match=resp;break;}
+function sendChat() {
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  var messages = document.getElementById('chat-messages');
+  messages.innerHTML += '<div class="msg user"><div class="msg-avatar">V</div><div><div class="msg-body">' + escHtml(text) + '</div></div></div>';
+  messages.scrollTop = messages.scrollHeight;
+  var lower = text.toLowerCase();
+  var match = null;
+  for (var key in chatResponses) {
+    var resp = chatResponses[key];
+    for (var i = 0; i < resp.keywords.length; i++) {
+      if (lower.includes(resp.keywords[i])) { match = resp; break; }
     }
-    if(match)break;
+    if (match) break;
   }
-  if(!match){
-    match={
-      response:'I can help with: KYC PRDs, SWOT analysis, competitor research, ROI models, compliance checklists, and SaaS discovery packs. Try asking about one of those topics, or use the suggestions above.',
-      sources:[]
-    };
-  }
-  // Typing animation
-  var typingId='typing-'+Date.now();
-  messages.innerHTML+='<div class="msg assistant" id="'+typingId+'"><div class="msg-avatar">AI</div><div><div class="msg-body"><span class="typing-cursor">|</span></div></div></div>';
-  messages.scrollTop=messages.scrollHeight;
-  setTimeout(function(){
-    var el=document.getElementById(typingId);
-    if(!el)return;
-    var formatted=match.response.replace(/\n\n/g,'</p><p style="margin-top:8px">').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\|\s*(.*?)\s*\|/g,'| $1 |');
-    var sourcesHtml='';
-    if(match.sources&&match.sources.length){
-      sourcesHtml='<div class="msg-sources">Sources: '+match.sources.map(function(s){return '<span>'+s+'</span>'}).join('')+'</div>';
-    }
-    el.querySelector('.msg-body').innerHTML='<p>'+formatted+'</p>'+sourcesHtml;
-    messages.scrollTop=messages.scrollHeight;
-  },900);
+  if (!match) match = {response:'I can help with: KYC PRDs, SWOT analysis, competitor research, ROI models, compliance checklists, and SaaS discovery. Try one of the suggestions above!', sources:[]};
+  var typingId = 'typing-' + Date.now();
+  messages.innerHTML += '<div class="msg assistant" id="' + typingId + '"><div class="msg-avatar">AI</div><div><div class="msg-body"><span class="typing-cursor">|</span></div></div></div>';
+  messages.scrollTop = messages.scrollHeight;
+  setTimeout(function() {
+    var el = document.getElementById(typingId);
+    if (!el) return;
+    var fmt = match.response.replace(/\n\n/g,'</p><p style="margin-top:8px">').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    var sourcesHtml = match.sources && match.sources.length ? '<div class="msg-sources">Sources: ' + match.sources.map(function(s){return '<span>'+s+'</span>';}).join('') + '</div>' : '';
+    el.querySelector('.msg-body').innerHTML = '<p>' + fmt + '</p>' + sourcesHtml;
+    messages.scrollTop = messages.scrollHeight;
+  }, 900);
 }
 
-function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ============================================================
+// ==============================================================
 // REPORTS
-// ============================================================
-var chartInstances={};
-var activeReport='velocity';
-
-function showReport(type){
-  document.querySelectorAll('#section-reports .filter-btn').forEach(function(b){b.classList.remove('active')});
-  event.target.classList.add('active');
-  activeReport=type;
+// ==============================================================
+function showReport(type, e) {
+  if (e) {
+    document.querySelectorAll('#section-reports .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    e.target.classList.add('active');
+  }
+  activeReport = type;
+  reportIdx = reportOrder.indexOf(type);
   initReports();
 }
 
-function initReports(){
-  var container=document.getElementById('report-container');
-  // Destroy old charts
-  for(var k in chartInstances){chartInstances[k].destroy();}
-  chartInstances={};
+function initReports() {
+  var container = document.getElementById('report-container');
+  for (var k in chartInstances) { chartInstances[k].destroy(); }
+  chartInstances = {};
 
-  if(activeReport==='velocity'){
-    container.innerHTML=
-      '<div class="chart-card"><div class="card-title">Sprint Velocity (Story Points)</div><canvas id="c1"></canvas></div>'+
-      '<div class="chart-card"><div class="card-title">Commitment vs Delivery (%)</div><canvas id="c2"></canvas></div>';
-    var ctx1=document.getElementById('c1').getContext('2d');
-    chartInstances.c1=new Chart(ctx1,{type:'bar',data:{labels:['PI3-S1','PI3-S2','PI3-S3','PI3-S4','PI3-S5','PI4-S1','PI4-S2','PI4-S3','PI4-S4','PI4-S5'],datasets:[{label:'Velocity',data:[32,35,38,36,40,33,37,39,38,42],backgroundColor:'rgba(59,130,246,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
-    var ctx2=document.getElementById('c2').getContext('2d');
-    chartInstances.c2=new Chart(ctx2,{type:'bar',data:{labels:['PI3-S1','PI3-S2','PI3-S3','PI3-S4','PI3-S5','PI4-S1','PI4-S2','PI4-S3','PI4-S4','PI4-S5'],datasets:[{label:'Commitment %',data:[88,92,94,90,96,85,91,95,94,97],backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{min:70,max:100,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
-  } else if(activeReport==='kpi'){
-    container.innerHTML=
-      '<div class="chart-card"><div class="card-title">KPI Trend: Time-to-Value (Days)</div><canvas id="c3"></canvas></div>'+
-      '<div class="chart-card"><div class="card-title">KB Reuse Events / Month</div><canvas id="c4"></canvas></div>';
-    var ctx3=document.getElementById('c3').getContext('2d');
-    chartInstances.c3=new Chart(ctx3,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Days',data:[18,16,14,12,10,9],borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',tension:.4,fill:true,pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
-    var ctx4=document.getElementById('c4').getContext('2d');
-    chartInstances.c4=new Chart(ctx4,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Reuse Events',data:[42,58,71,89,112,134],borderColor:'#8B5CF6',backgroundColor:'rgba(139,92,246,.1)',tension:.4,fill:true,pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
-  } else if(activeReport==='time'){
-    container.innerHTML=
-      '<div class="chart-card"><div class="card-title">PM Time Allocation</div><canvas id="c5"></canvas></div>'+
-      '<div class="chart-card"><div class="card-title">Time Saved by AI (hrs/PM/month)</div><canvas id="c6"></canvas></div>';
-    var ctx5=document.getElementById('c5').getContext('2d');
-    chartInstances.c5=new Chart(ctx5,{type:'doughnut',data:{labels:['Discovery','Delivery','Stakeholder Mgmt','Reporting','Admin','AI/Research'],datasets:[{data:[22,30,20,12,8,8],backgroundColor:['#3B82F6','#10B981','#F59E0B','#8B5CF6','#EF4444','#06B6D4']}]},options:{plugins:{legend:{position:'right'}}}});
-    var ctx6=document.getElementById('c6').getContext('2d');
-    chartInstances.c6=new Chart(ctx6,{type:'bar',data:{labels:['Research','PRD Writing','Reporting','Stakeholder Decks','Status Updates'],datasets:[{label:'Hours Saved',data:[12,8,6,5,4],backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
-  } else if(activeReport==='reuse'){
-    container.innerHTML=
-      '<div class="chart-card"><div class="card-title">Artifact Reuse Rate by Domain (%)</div><canvas id="c7"></canvas></div>'+
-      '<div class="chart-card"><div class="card-title">Reuse by Artifact Type</div><canvas id="c8"></canvas></div>';
-    var ctx7=document.getElementById('c7').getContext('2d');
-    chartInstances.c7=new Chart(ctx7,{type:'bar',data:{labels:['BFSI','Healthcare','SaaS','Retail','GovTech'],datasets:[{label:'Reuse %',data:[74,68,71,45,52],backgroundColor:['#3B82F6','#10B981','#8B5CF6','#F59E0B','#06B6D4'],borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{max:100,beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
-    var ctx8=document.getElementById('c8').getContext('2d');
-    chartInstances.c8=new Chart(ctx8,{type:'doughnut',data:{labels:['PRD Templates','SWOT','Competitor Decks','ROI Models','Risk Registers','GTM Plans'],datasets:[{data:[28,22,18,14,10,8],backgroundColor:['#3B82F6','#10B981','#F59E0B','#8B5CF6','#EF4444','#06B6D4']}]},options:{plugins:{legend:{position:'right'}}}});
+  if (activeReport === 'velocity') {
+    container.innerHTML = '<div class="chart-card"><div class="card-title">Sprint Velocity (SP)</div><canvas id="c1"></canvas></div><div class="chart-card"><div class="card-title">Commitment vs Delivery (%)</div><canvas id="c2"></canvas></div>';
+    chartInstances.c1 = new Chart(document.getElementById('c1').getContext('2d'),{type:'bar',data:{labels:['PI3-S1','PI3-S2','PI3-S3','PI3-S4','PI3-S5','PI4-S1','PI4-S2','PI4-S3','PI4-S4','PI4-S5'],datasets:[{label:'Velocity',data:[32,35,38,36,40,33,37,39,38,42],backgroundColor:'rgba(59,130,246,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
+    chartInstances.c2 = new Chart(document.getElementById('c2').getContext('2d'),{type:'bar',data:{labels:['PI3-S1','PI3-S2','PI3-S3','PI3-S4','PI3-S5','PI4-S1','PI4-S2','PI4-S3','PI4-S4','PI4-S5'],datasets:[{label:'%',data:[88,92,94,90,96,85,91,95,94,97],backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{min:70,max:100,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
+  } else if (activeReport === 'kpi') {
+    container.innerHTML = '<div class="chart-card"><div class="card-title">Time-to-Value (Days)</div><canvas id="c3"></canvas></div><div class="chart-card"><div class="card-title">KB Reuse Events / Month</div><canvas id="c4"></canvas></div>';
+    chartInstances.c3 = new Chart(document.getElementById('c3').getContext('2d'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Days',data:[18,16,14,12,10,9],borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',tension:.4,fill:true,pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
+    chartInstances.c4 = new Chart(document.getElementById('c4').getContext('2d'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Reuse',data:[42,58,71,89,112,134],borderColor:'#8B5CF6',backgroundColor:'rgba(139,92,246,.1)',tension:.4,fill:true,pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
+  } else if (activeReport === 'time') {
+    container.innerHTML = '<div class="chart-card"><div class="card-title">PM Time Allocation</div><canvas id="c5"></canvas></div><div class="chart-card"><div class="card-title">Hours Saved by AI / PM / Month</div><canvas id="c6"></canvas></div>';
+    chartInstances.c5 = new Chart(document.getElementById('c5').getContext('2d'),{type:'doughnut',data:{labels:['Discovery','Delivery','Stakeholder Mgmt','Reporting','Admin','AI/Research'],datasets:[{data:[22,30,20,12,8,8],backgroundColor:['#3B82F6','#10B981','#F59E0B','#8B5CF6','#EF4444','#06B6D4']}]},options:{plugins:{legend:{position:'right'}}}});
+    chartInstances.c6 = new Chart(document.getElementById('c6').getContext('2d'),{type:'bar',data:{labels:['Research','PRD Writing','Reporting','Decks','Status Updates'],datasets:[{label:'Hours',data:[12,8,6,5,4],backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
+  } else {
+    container.innerHTML = '<div class="chart-card"><div class="card-title">Reuse Rate by Domain (%)</div><canvas id="c7"></canvas></div><div class="chart-card"><div class="card-title">Reuse by Artifact Type</div><canvas id="c8"></canvas></div>';
+    chartInstances.c7 = new Chart(document.getElementById('c7').getContext('2d'),{type:'bar',data:{labels:['BFSI','Healthcare','SaaS','Retail','GovTech'],datasets:[{label:'%',data:[74,68,71,45,52],backgroundColor:['#3B82F6','#10B981','#8B5CF6','#F59E0B','#06B6D4'],borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{max:100,beginAtZero:true,grid:{color:'#334155'}},x:{grid:{color:'#334155'}}}}});
+    chartInstances.c8 = new Chart(document.getElementById('c8').getContext('2d'),{type:'doughnut',data:{labels:['PRD Templates','SWOT','Competitor Decks','ROI Models','Risk Registers','GTM Plans'],datasets:[{data:[28,22,18,14,10,8],backgroundColor:['#3B82F6','#10B981','#F59E0B','#8B5CF6','#EF4444','#06B6D4']}]},options:{plugins:{legend:{position:'right'}}}});
   }
 }
 
-// ============================================================
+// ==============================================================
 // DISCOVERY ENGINE
-// ============================================================
-var discPacks={
-  bfsi:{
-    market:'**Market Size:** $48B digital banking solutions market (India + SEA, 2026). CAGR 19.4%.\n\n**Key Segments:** Tier 1 banks (8 players), Tier 2/3 banks (67 players), NBFCs (120+). PM-OS target: Tier 2/3 + NBFCs.\n\n**Regulatory tailwinds:** RBI digital lending guidelines, OCEN co-lending framework, Account Aggregator ecosystem mandated.',
-    swot:'**Strengths:** Proven eKYC adapters, 40+ BFSI implementations, regtech expertise, RBI-compliant audit trails.\n\n**Weaknesses:** Long sales cycles (9-14 months), core banking integration complexity per vendor, limited presence outside India.\n\n**Opportunities:** OCEN framework, co-lending mandates, MSME credit gap $530B, open banking API mandates.\n\n**Threats:** Neobanks (Jupiter, Fi, Slice) with zero-legacy stack, Big Tech credit expansion, RBI tightening on unsecured lending.',
-    competitor:'**Finacle (Infosys):** Market leader in core banking. Strength: deep BFSI. Weakness: legacy UI, slow AI adoption.\n\n**Temenos:** Global footprint. Strength: cross-border. Weakness: high TCO, long implementation.\n\n**FIS:** Enterprise scale. Strength: US market. Weakness: complex integration, limited India presence.\n\n**Our edge:** AI-native KB layer, domain-specific discovery packs, 60% faster scoping via PM-OS.',
-    roi:'**Cost Savings (KYC automation):** $18 manual vs $3.20 automated = $14.80/verification.\n\n**At 40K verifications/month:** $7.1M annual savings.\n\n**Implementation:** $380K over 14 weeks.\n\n**Payback:** 3.2 weeks post go-live.\n\n**5-Year NPV:** $24.4M (8% discount rate).\n\n**PM productivity gain:** 35 hrs/PM/month saved = $2.1M in recovered capacity across org.',
-    compliance:'**RBI eKYC Circular:** OTP-based + Video KYC rules. Status: compliant.\n\n**Data Residency:** India DCs mandatory. Status: compliant.\n\n**CERT-In Incident Reporting:** 72-hour SLA. Action required: automate reporting pipeline.\n\n**Customer Consent Framework:** PDPB alignment needed by Q1 2027.\n\n**Audit Trail:** 7-year retention mandated. Status: implemented.',
-    gtm:'**Target Segment:** Tier 2/3 banks + NBFCs, $50M-$500M AUM.\n\n**Pricing:** Per-verification ($3.20) + platform fee ($15K/month). Enterprise: custom.\n\n**Channel:** Direct (dedicated BFSI sales team) + BankTech partners (Razorpay, Cashfree).\n\n**Launch Timeline:** Q3 2026 soft launch (5 anchor clients), Q4 2026 scale.\n\n**Enablement:** PM-OS discovery packs pre-loaded for all BFSI pitches.'
+// ==============================================================
+var discPacks = {
+  bfsi: {
+    market: '**Market Size:** $48B digital banking solutions (India + SEA, 2026). CAGR 19.4%.\n\n**Segments:** Tier 1 banks (8), Tier 2/3 (67), NBFCs (120+). PM-OS target: Tier 2/3 + NBFCs.\n\n**Tailwinds:** RBI digital lending guidelines, OCEN co-lending framework, Account Aggregator ecosystem.',
+    swot: '**Strengths:** Proven eKYC adapters, 40+ BFSI implementations, regtech expertise, RBI-compliant audit trails.\n\n**Weaknesses:** Long sales cycles (9-14 months), integration complexity, limited global presence.\n\n**Opportunities:** OCEN framework, co-lending mandates, MSME credit gap $530B.\n\n**Threats:** Neobanks, Big Tech credit, RBI tightening on unsecured lending.',
+    competitor: '**Finacle:** Deep BFSI, legacy UI, medium AI readiness.\n**Temenos:** Global, high TCO, medium AI readiness.\n**FIS:** Enterprise, complex, low AI readiness.\n\n**PM-OS edge:** AI-native KB layer, domain packs, 60% faster scoping.',
+    roi: '**KYC automation:** $18 manual vs $3.20 auto = $14.80 savings/verification.\n\n**40K/month:** $7.1M annual savings. Implementation: $380K. Payback: 3.2 weeks. 5-year NPV: $24.4M.',
+    compliance: '**RBI eKYC Circular:** Compliant.\n**Data Residency:** India DCs only. Compliant.\n**CERT-In 72hr SLA:** Action required.\n**PDPB alignment:** Needed by Q1 2027.',
+    gtm: '**Segment:** Tier 2/3 banks + NBFCs ($50M-$500M AUM).\n**Pricing:** $3.20/verification + $15K/month platform.\n**Channel:** Direct + BankTech (Razorpay, Cashfree).\n**Launch:** Q3 2026 soft (5 anchor clients).'
   },
-  healthcare:{
-    market:'**Market Size:** $29B healthcare IT market in India + SEA (2026). Digital health CAGR: 22%.\n\n**Key Segments:** Hospital chains (Apollo, Fortis, Max), diagnostic networks, government ABDM initiative, tele-health platforms.\n\n**Regulatory tailwinds:** ABDM (Ayushman Bharat Digital Mission) mandated, NABH accreditation digital requirements.',
-    swot:'**Strengths:** HL7 FHIR adapters proven, NABH compliance tooling, existing hospital relationships.\n\n**Weaknesses:** Sales cycle 9+ months, fragmented EHR landscape, data sensitivity concerns.\n\n**Opportunities:** ABDM mandate creates $2B+ digitisation spend, PHR (Personal Health Records) ecosystem, tele-consultation boom post-COVID.\n\n**Threats:** Epic Direct market entry, Google Health API commoditisation, government-built ABDM tools.',
-    competitor:'**Epic Systems:** US EHR dominant, entering India. Strength: gold standard. Weakness: closed ecosystem, $5M+ implementations.\n\n**Cerner (Oracle):** Strong data platform. Strength: analytics. Weakness: migration risk, high cost.\n\n**Practo:** India-native. Strength: SME hospitals. Weakness: limited enterprise features.\n\n**Our edge:** ABDM-first, faster go-live, PM-OS KB layer for scoping acceleration.',
-    roi:'**Patient Intake Digitisation:**\n- Manual intake: 45 min avg. Digital: 8 min.\n- Staff savings: 4 FTEs per 200-bed hospital = $180K/yr.\n- Bed utilisation improvement: 6% = $420K annual revenue uplift.\n- Implementation: $280K over 12 weeks.\n- Payback: 5.2 months.',
-    compliance:'**HIPAA (US clients):** 164 controls. 87% compliant. 3 items pending.\n\n**NABH Digital Standards:** Audit trail, patient consent, access controls. Status: compliant.\n\n**ABDM / FHIR R4:** PHR linking, ABHA integration. Status: in progress (Q3 2026).\n\n**Data Residency:** Patient data India-only. Status: compliant.',
-    gtm:'**Target:** 200+ bed private hospitals, diagnostic chains, tele-health platforms.\n\n**Pricing:** Platform fee $8K/month + per-patient activation $0.80.\n\n**Channel:** Direct (healthcare BD team) + NABH consulting partners.\n\n**Launch:** Q4 2026 (3 pilot hospitals), Q1 2027 scale.\n\n**Key differentiator:** ABDM-native + HL7 FHIR out-of-box, no custom integration.'
+  healthcare: {
+    market: '**Market:** $29B healthcare IT (India + SEA, 2026). Digital health CAGR: 22%.\n\n**Segments:** Hospital chains, diagnostic networks, ABDM initiative, tele-health.\n\n**Tailwinds:** ABDM mandate creates $2B+ spend, PHR ecosystem, tele-consultation post-COVID.',
+    swot: '**Strengths:** HL7 FHIR adapters, NABH compliance tooling, existing hospital relationships.\n\n**Weaknesses:** 9+ month sales cycle, fragmented EHR landscape.\n\n**Opportunities:** ABDM mandate, PHR, tele-consultation growth.\n\n**Threats:** Epic Direct entry, Google Health API, government-built ABDM tools.',
+    competitor: '**Epic:** US gold standard, $5M+ implementations, closed ecosystem.\n**Cerner (Oracle):** Data platform, migration risk.\n**Practo:** India SME, limited enterprise.\n\n**PM-OS edge:** ABDM-first, faster go-live, HL7 FHIR out-of-box.',
+    roi: '**Patient intake:** 45 min manual vs 8 min digital.\nStaff savings: 4 FTEs / 200-bed hospital = $180K/yr.\nBed utilisation +6% = $420K revenue uplift.\nPayback: 5.2 months.',
+    compliance: '**NABH Digital Standards:** Compliant.\n**ABDM / FHIR R4:** In progress (Q3 2026).\n**HIPAA (US):** 87% compliant, 3 items pending.\n**Data residency:** India-only. Compliant.',
+    gtm: '**Target:** 200+ bed private hospitals, diagnostic chains.\n**Pricing:** $8K/month + $0.80/patient activation.\n**Channel:** Direct + NABH consulting partners.\n**Launch:** Q4 2026 pilot (3 hospitals).'
   },
-  saas:{
-    market:'**Market Size:** $650B global SaaS market (2026). B2B SaaS India: $25B growing at 28% CAGR.\n\n**Key Segments:** HR tech, fintech SaaS, dev tools, collaboration, data platforms.\n\n**Trends:** PLG dominance (58% new SaaS), AI-native features mandatory, multi-tenant cloud-first.',
-    swot:'**Strengths:** PM-OS PLG approach, AI-native from day 1, rapid discovery-to-scoping (days not months).\n\n**Weaknesses:** New entrant in PM tooling, competing with Atlassian + Linear ecosystem.\n\n**Opportunities:** AI-PM tooling gap, enterprise consolidation of PM tools, multi-PM org use case.\n\n**Threats:** Atlassian Rovo expanding, Notion AI, Linear AI, Microsoft Copilot in DevOps.',
-    competitor:'**Atlassian Rovo:** Search + AI over Jira + Confluence. Strength: native integration. Weakness: closed to non-Atlassian sources.\n\n**Linear:** Dev-centric PM. Strength: speed. Weakness: no enterprise KB.\n\n**Notion AI:** Flexible workspace. Strength: flexibility. Weakness: not PM-domain-specific.\n\n**PM-OS edge:** Multi-source KB (Jira + Confluence + M365 + Google), domain packs, client workspace.',
-    roi:'**Per PM per month:**\n- Research time saved: 12 hrs ($840 at $70/hr blended)\n- PRD writing: 8 hrs ($560)\n- Reporting: 6 hrs ($420)\n- Total: 26 hrs / $1,820 per PM per month\n\n**10-PM org, Annual:** $218,400 recovered capacity.\n**PM-OS cost:** $500/PM/month = $60K/year.\n**Net ROI:** 264%.',
-    compliance:'**SOC 2 Type II:** In progress. Target: Q3 2026.\n\n**GDPR:** Data processing agreements, right to erasure, DPA templates. Status: compliant.\n\n**ISO 27001:** Planned Q4 2026.\n\n**Enterprise requirements:** SSO (SAML 2.0), SCIM provisioning, audit logs. Status: implemented.',
-    gtm:'**Target:** 10-100 PM teams at mid-market B2B SaaS companies.\n\n**Pricing:** $49/PM/month (Standard) | $99/PM/month (AI Tier) | Enterprise custom.\n\n**Channel:** PLG (self-serve) + outbound (PM communities, ProductHunt, Lenny\'s Newsletter).\n\n**Launch:** ProductHunt Q3 2026, 50 beta teams.\n\n**Moat:** Domain-specific KB packs lock-in, client workspace stickiness, multi-PM org network effects.'
+  saas: {
+    market: '**Market:** $650B global SaaS (2026). B2B SaaS India: $25B at 28% CAGR.\n\n**Trends:** PLG dominance (58% new SaaS), AI-native mandatory, multi-tenant cloud-first.',
+    swot: '**Strengths:** PLG approach, AI-native from day 1, rapid discovery-to-scoping.\n\n**Weaknesses:** New entrant in PM tooling, Atlassian ecosystem competition.\n\n**Opportunities:** AI-PM tooling gap, enterprise consolidation, multi-PM org use case.\n\n**Threats:** Atlassian Rovo expanding, Notion AI, Linear AI, Microsoft Copilot.',
+    competitor: '**Atlassian Rovo:** Jira+Confluence native, closed to other sources.\n**Linear:** Dev-centric, no enterprise KB.\n**Notion AI:** Flexible, not PM-domain-specific.\n\n**PM-OS edge:** Multi-source KB, domain packs, client workspace.',
+    roi: '**Per PM per month:** Research 12hr + PRD 8hr + Reporting 6hr = 26hr = $1,820 saved.\n\n**10-PM org annual:** $218K recovered capacity. PM-OS cost: $60K. **Net ROI: 264%.**',
+    compliance: '**SOC 2 Type II:** In progress. Target Q3 2026.\n**GDPR:** DPA, right to erasure. Compliant.\n**ISO 27001:** Planned Q4 2026.\n**SSO SAML 2.0 + SCIM:** Implemented.',
+    gtm: '**Target:** 10-100 PM teams at mid-market B2B SaaS.\n**Pricing:** $49/PM/month Standard | $99/PM/month AI Tier.\n**Channel:** PLG + ProductHunt + Lenny\'s Newsletter.\n**Launch:** ProductHunt Q3 2026, 50 beta teams.'
   }
 };
 
-var selectedDomain='bfsi';
-
-function selectDomain(el){
-  document.querySelectorAll('.domain-chip').forEach(function(c){c.classList.remove('selected')});
+function selectDomain(el) {
+  document.querySelectorAll('.domain-chip').forEach(function(c) { c.classList.remove('selected'); });
   el.classList.add('selected');
-  selectedDomain=el.dataset.domain;
+  selectedDomain = el.dataset.domain;
+  if (autoMode) {
+    setTimeout(runDiscovery, 400);
+  }
 }
 
-function runDiscovery(){
-  var btn=document.getElementById('disc-run-btn');
-  var loader=document.getElementById('disc-loader');
-  var results=document.getElementById('disc-results');
-  btn.disabled=true;
+function runDiscovery() {
+  var btn = document.getElementById('disc-run-btn');
+  var loader = document.getElementById('disc-loader');
+  var results = document.getElementById('disc-results');
+  btn.disabled = true;
   loader.classList.add('show');
   results.classList.remove('show');
-  results.innerHTML='';
-  setTimeout(function(){
+  results.innerHTML = '';
+  var steps = [
+    'Querying Jira + Confluence via Rovo…',
+    'Fetching Google Drive + SharePoint…',
+    'Running Claude synthesis…',
+    'Assembling discovery pack…'
+  ];
+  var si = 0;
+  var stepTimer = setInterval(function() {
+    si++;
+    if (si < steps.length) document.getElementById('disc-loader-text').textContent = steps[si];
+    else clearInterval(stepTimer);
+  }, 550);
+  setTimeout(function() {
+    clearInterval(stepTimer);
     loader.classList.remove('show');
-    btn.disabled=false;
-    var pack=discPacks[selectedDomain]||discPacks.bfsi;
-    var sections=[
+    btn.disabled = false;
+    var pack = discPacks[selectedDomain] || discPacks.bfsi;
+    var sects = [
       {key:'market',label:'Market Analysis',icon:'&#127758;'},
       {key:'swot',label:'SWOT Analysis',icon:'&#9889;'},
       {key:'competitor',label:'Competitor Landscape',icon:'&#128202;'},
@@ -896,72 +940,125 @@ function runDiscovery(){
       {key:'compliance',label:'Compliance Checklist',icon:'&#9989;'},
       {key:'gtm',label:'GTM Strategy',icon:'&#128640;'}
     ];
-    results.innerHTML=sections.map(function(s,i){
-      var content=pack[s.key]||'No data available for this domain.';
-      var formatted=content.replace(/\n\n/g,'</p><p style="margin-top:8px">').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-      return '<div class="acc-item'+(i===0?' open':'')+'">'+
-        '<div class="acc-header" onclick="toggleAcc(this)">'+
-          '<span>'+s.icon+' '+s.label+'</span>'+
-          '<span class="chevron">&#9654;</span>'+
-        '</div>'+
-        '<div class="acc-body"><p>'+formatted+'</p>'+
-        '<div style="margin-top:12px;display:flex;gap:8px">'+
-          '<button class="btn-sm primary">Clone to KB</button>'+
-          '<button class="btn-sm">Export to Confluence</button>'+
-          '<button class="btn-sm">Add to Client WS</button>'+
-        '</div></div>'+
+    results.innerHTML = sects.map(function(s, i) {
+      var content = pack[s.key] || 'No data for this domain.';
+      var fmt = content.replace(/\n\n/g,'</p><p style="margin-top:8px">').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+      return '<div class="acc-item' + (i === 0 ? ' open' : '') + '">' +
+        '<div class="acc-header" onclick="toggleAcc(this)"><span>' + s.icon + ' ' + s.label + '</span><span class="chevron">&#9654;</span></div>' +
+        '<div class="acc-body"><p>' + fmt + '</p>' +
+        '<div style="margin-top:12px;display:flex;gap:8px">' +
+          '<button class="btn-sm primary">Clone to KB</button>' +
+          '<button class="btn-sm">Export to Confluence</button>' +
+          '<button class="btn-sm">Add to Client WS</button>' +
+        '</div></div>' +
       '</div>';
     }).join('');
     results.classList.add('show');
-  },2200);
+  }, 2400);
 }
 
-function toggleAcc(header){
-  var item=header.parentElement;
-  var wasOpen=item.classList.contains('open');
-  document.querySelectorAll('.acc-item').forEach(function(i){i.classList.remove('open')});
-  if(!wasOpen)item.classList.add('open');
+function toggleAcc(header) {
+  var item = header.parentElement;
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.acc-item').forEach(function(i) { i.classList.remove('open'); });
+  if (!wasOpen) item.classList.add('open');
 }
 
-// ============================================================
-// CLIENT WORKSPACE
-// ============================================================
-function toggleArtifact(toggle){
-  toggle.classList.toggle('on');
-  toggle.classList.toggle('off');
-  var label=toggle.previousElementSibling;
-  label.textContent=toggle.classList.contains('on')?'On':'Off';
+// ==============================================================
+// CLIENT WORKSPACE (DnD)
+// ==============================================================
+var artifacts = [
+  {id:1, name:'KYC Platform PRD v2.1',            meta:'Confluence · BFSI · Updated 2 days ago',     on:true},
+  {id:2, name:'Digital Lending SWOT Analysis',     meta:'Google Drive · BFSI · Updated 3 days ago',   on:true},
+  {id:3, name:'Sprint Velocity Report Q2 2026',    meta:'PowerBI · Delivery · Updated today',         on:true},
+  {id:4, name:'Competitor Analysis: BFSI Platforms',meta:'Confluence · BFSI · Updated 1 week ago',   on:false},
+  {id:5, name:'ROI Model: Digital KYC',            meta:'SharePoint · BFSI · Updated 5 days ago',     on:false},
+  {id:6, name:'GTM Strategy Deck Q3 2026',         meta:'Google Drive · Delivery · Updated 4 days ago',on:true}
+];
+
+var artDragging = null;
+var artDragFrom = null;
+
+function renderArtifacts() {
+  var list = document.getElementById('artifact-list');
+  list.innerHTML = artifacts.map(function(a, idx) {
+    return '<div class="artifact-row" draggable="true" data-idx="' + idx + '" ' +
+      'ondragstart="artDragStart(event,' + idx + ')" ' +
+      'ondragover="artDragOver(event,' + idx + ')" ' +
+      'ondrop="artDrop(event,' + idx + ')" ' +
+      'ondragend="artDragEnd()">' +
+      '<span class="drag-handle">&#8942;</span>' +
+      '<div class="artifact-info">' +
+        '<div class="artifact-name">' + a.name + '</div>' +
+        '<div class="artifact-meta">' + a.meta + '</div>' +
+      '</div>' +
+      '<div class="toggle-wrap">' +
+        '<span style="font-size:11px;color:var(--muted)">' + (a.on ? 'On' : 'Off') + '</span>' +
+        '<div class="toggle ' + (a.on ? 'on' : 'off') + '" onclick="toggleArtifact(' + idx + ')"></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
   updateSharedCount();
 }
 
-function updateSharedCount(){
-  var count=document.querySelectorAll('.toggle.on').length;
-  document.getElementById('shared-count').textContent=count;
+function artDragStart(e, idx) {
+  artDragging = idx;
+  setTimeout(function() {
+    document.querySelectorAll('.artifact-row')[idx].classList.add('dragging');
+  }, 0);
+  e.dataTransfer.effectAllowed = 'move';
 }
 
-function togglePreview(){
-  var preview=document.getElementById('client-preview');
+function artDragOver(e, idx) {
+  e.preventDefault();
+  document.querySelectorAll('.artifact-row').forEach(function(r, i) {
+    r.classList.toggle('drag-target', i === idx && i !== artDragging);
+  });
+}
+
+function artDrop(e, idx) {
+  e.preventDefault();
+  if (artDragging === null || artDragging === idx) return;
+  var moved = artifacts.splice(artDragging, 1)[0];
+  artifacts.splice(idx, 0, moved);
+  renderArtifacts();
+}
+
+function artDragEnd() {
+  artDragging = null;
+  document.querySelectorAll('.artifact-row').forEach(function(r) {
+    r.classList.remove('dragging','drag-target');
+  });
+}
+
+function toggleArtifact(idx) {
+  artifacts[idx].on = !artifacts[idx].on;
+  renderArtifacts();
+}
+
+function updateSharedCount() {
+  var count = artifacts.filter(function(a) { return a.on; }).length;
+  document.getElementById('shared-count').textContent = count;
+}
+
+function togglePreview() {
+  var preview = document.getElementById('client-preview');
   preview.classList.toggle('show');
-  if(preview.classList.contains('show')){
-    var items=document.querySelectorAll('.artifact-row');
-    var html='';
-    items.forEach(function(row){
-      var toggle=row.querySelector('.toggle');
-      if(toggle&&toggle.classList.contains('on')){
-        var name=row.querySelector('.artifact-name').textContent;
-        var meta=row.querySelector('.artifact-meta').textContent;
-        html+='<div class="preview-item"><span style="font-size:18px">&#128196;</span><div><div style="font-weight:500;font-size:13px">'+escHtml(name)+'</div><div style="font-size:11px;color:var(--muted)">'+escHtml(meta)+'</div></div></div>';
-      }
-    });
-    document.getElementById('preview-artifacts').innerHTML=html||'<div style="color:var(--muted);text-align:center;padding:24px">No artifacts shared yet.</div>';
+  if (preview.classList.contains('show')) {
+    var html = artifacts.filter(function(a) { return a.on; }).map(function(a) {
+      return '<div class="preview-item"><span style="font-size:18px">&#128196;</span><div><div style="font-weight:500;font-size:13px">' + escHtml(a.name) + '</div><div style="font-size:11px;color:var(--muted)">' + escHtml(a.meta) + '</div></div></div>';
+    }).join('');
+    document.getElementById('preview-artifacts').innerHTML = html || '<div style="color:var(--muted);text-align:center;padding:24px">No artifacts shared.</div>';
   }
 }
 
-// ============================================================
+// ==============================================================
 // INIT
-// ============================================================
-window.addEventListener('load',function(){
-  renderSearch();
+// ==============================================================
+window.addEventListener('load', function() {
+  filterSearch();
+  renderArtifacts();
+  initKanban();
 });
 </script>
 </body>
