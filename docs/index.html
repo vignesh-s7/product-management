@@ -1,9 +1,9 @@
-<\!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>pm-os — AI-Native PM Platform</title>
+<title>pm-os &mdash; AI-Native PM Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -35,6 +35,14 @@ body{font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh;padding:
 .divider{height:1px;background:#E2E8F0;margin:32px 0}
 .footer{text-align:center;font-size:12px;color:#94A3B8;padding:24px 0}
 .footer a{color:#64748B;text-decoration:none}
+/* Featured banner */
+.featured-banner{background:linear-gradient(135deg,#0F172A,#1E1B4B);border-radius:20px;padding:28px 32px;margin-bottom:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.featured-banner .fl{flex:1}
+.featured-banner .badge{display:inline-block;background:rgba(99,102,241,.3);color:#A5B4FC;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.5px;margin-bottom:12px}
+.featured-banner h2{font-size:22px;font-weight:800;color:#F1F5F9;margin-bottom:6px}
+.featured-banner p{font-size:13px;color:#94A3B8;line-height:1.6}
+.btn-demo{padding:12px 28px;border-radius:12px;background:linear-gradient(135deg,#6366F1,#7C3AED);color:#fff;font-size:14px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 2px 14px rgba(99,102,241,.4);transition:all .2s}
+.btn-demo:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(99,102,241,.5)}
 </style>
 </head>
 <body>
@@ -42,72 +50,94 @@ body{font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh;padding:
   <div class="hero">
     <div class="logo">pm</div>
     <h1>The <span>AI-Native</span> PM<br>Operating System</h1>
-    <p>From first idea to post-launch review. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI — orchestrated for product managers.</p>
+    <p>From first idea to post-launch review. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI &mdash; orchestrated for product managers.</p>
     <div class="hero-btns">
-      <a href="onboarding/index.html" class="btn-primary">✨ Get Started</a>
+      <a href="onboarding/index.html" class="btn-primary">&#10024; Get Started</a>
       <a href="https://github.com/vittobh/pm-os" class="btn-outline">View on GitHub</a>
     </div>
   </div>
 
-  <div class="section-label">Core Platform</div>
+  <!-- FEATURED DEMO BANNER -->
+  <div class="featured-banner">
+    <div class="fl">
+      <span class="badge">ALL PHASES LIVE</span>
+      <h2>Full Platform Demo</h2>
+      <p>Search KB &middot; AI Chat &middot; Reports &middot; Discovery Engine &middot; Client Workspace &mdash; all running with mock data. No login required.</p>
+    </div>
+    <a href="app/" class="btn-demo">&#9654; Launch Platform</a>
+  </div>
+
+  <div class="section-label">Platform Features</div>
   <div class="grid">
+    <a href="app/#search" class="card">
+      <div class="card-icon">&#128269;</div>
+      <div class="card-title">KB Search</div>
+      <div class="card-desc">Federated search across Jira, Confluence, SharePoint, Yammer, and Google Drive. Filter by source and domain.</div>
+      <span class="card-tag tag-blue">Phase 2</span>
+    </a>
+    <a href="app/#chat" class="card">
+      <div class="card-icon">&#9733;</div>
+      <div class="card-title">AI Chat</div>
+      <div class="card-desc">Rovo Chat + Claude over your KB. Generate PRDs, SWOT, competitor analysis, ROI models. Every response cites sources.</div>
+      <span class="card-tag tag-purple">Phase 3 &mdash; AI Tier</span>
+    </a>
+    <a href="app/#reports" class="card">
+      <div class="card-icon">&#128202;</div>
+      <div class="card-title">Reports</div>
+      <div class="card-desc">Sprint velocity, KPI trends, PM time allocation, and KB reuse rate &mdash; powered by PowerBI + Copilot interpretation.</div>
+      <span class="card-tag tag-green">Phase 3</span>
+    </a>
+    <a href="app/#discovery" class="card">
+      <div class="card-icon">&#128270;</div>
+      <div class="card-title">Discovery Engine</div>
+      <div class="card-desc">Auto-generate market analysis, SWOT, competitor landscape, ROI model, compliance checklist, and GTM strategy per domain.</div>
+      <span class="card-tag tag-orange">Phase 5</span>
+    </a>
+    <a href="app/#client" class="card">
+      <div class="card-icon">&#128101;</div>
+      <div class="card-title">Client Workspace</div>
+      <div class="card-desc">Curate artifact sets per client and share a read-only portal. Toggle visibility per artifact, preview as client.</div>
+      <span class="card-tag tag-purple">Phase 4</span>
+    </a>
     <a href="onboarding/index.html" class="card">
-      <div class="card-icon">🚀</div>
+      <div class="card-icon">&#128640;</div>
       <div class="card-title">PM Onboarding</div>
       <div class="card-desc">5-step setup wizard. Connect your tools, choose your tier, configure your first product with goals and KPIs.</div>
-      <span class="card-tag tag-blue">Standard + AI</span>
-    </a>
-    <a href="onboarding/teams.html" class="card">
-      <div class="card-icon">🟣</div>
-      <div class="card-title">Teams Tab</div>
-      <div class="card-desc">pm-os as a Microsoft Teams tab. Auto-reads your org and user context on launch.</div>
-      <span class="card-tag tag-purple">Microsoft Teams</span>
-    </a>
-    <a href="#" class="card">
-      <div class="card-icon">🔍</div>
-      <div class="card-title">KB Search</div>
-      <div class="card-desc">Federated search across Jira, Confluence, SharePoint, Yammer, and Google Drive in one query.</div>
-      <span class="card-tag tag-gray">Coming Phase 2</span>
-    </a>
-    <a href="#" class="card">
-      <div class="card-icon">🤖</div>
-      <div class="card-title">AI Chat</div>
-      <div class="card-desc">Rovo Chat + Claude over your KB. Every response cites sources. Artifact generation and deep research.</div>
-      <span class="card-tag tag-purple">AI Tier</span>
+      <span class="card-tag tag-blue">Phase 1</span>
     </a>
   </div>
 
-  <div class="section-label">Case Studies & PRDs</div>
+  <div class="section-label">Case Studies &amp; PRDs</div>
   <div class="grid">
     <a href="cucp/presentation.html" class="card">
-      <div class="card-icon">📊</div>
+      <div class="card-icon">&#128202;</div>
       <div class="card-title">CuCP 90-Day Rollout</div>
-      <div class="card-desc">Full slide deck for the Coupa Customer Collaboration Program — change management, phased rollout, enablement, and success metrics.</div>
+      <div class="card-desc">Full slide deck for the Coupa Customer Collaboration Program &mdash; change management, phased rollout, enablement, and success metrics.</div>
       <span class="card-tag tag-green">Live Presentation</span>
     </a>
     <a href="https://github.com/vittobh/pm-os/blob/main/prds/00-pm-os-platform.md" class="card">
-      <div class="card-icon">📋</div>
+      <div class="card-icon">&#128203;</div>
       <div class="card-title">Master PRD</div>
-      <div class="card-desc">Full-lifecycle platform PRD — two-tier model, Rovo + M365 + Google integrations, multi-org and client workspace.</div>
+      <div class="card-desc">Full-lifecycle platform PRD &mdash; two-tier model, Rovo + M365 + Google integrations, multi-org and client workspace.</div>
       <span class="card-tag tag-blue">PRD v0.4</span>
     </a>
     <a href="https://github.com/vittobh/pm-os/blob/main/docs/product/SRS.md" class="card">
-      <div class="card-icon">⚙️</div>
+      <div class="card-icon">&#9881;</div>
       <div class="card-title">SRS + FRD</div>
-      <div class="card-desc">System requirements and functional requirements — all integrations, user stories by tier, client workspace, admin.</div>
+      <div class="card-desc">System requirements and functional requirements &mdash; all integrations, user stories by tier, client workspace, admin.</div>
       <span class="card-tag tag-gray">Specs v0.4</span>
     </a>
     <a href="https://github.com/vittobh/pm-os/tree/main/prds" class="card">
-      <div class="card-icon">📁</div>
+      <div class="card-icon">&#128193;</div>
       <div class="card-title">All PRDs</div>
-      <div class="card-desc">9 reference PRDs — Y-Score framework, regulated RAG eval, BFSI credit risk, FHIR/Kafka, healthcare, IoT, and more.</div>
+      <div class="card-desc">9 reference PRDs &mdash; Y-Score framework, regulated RAG eval, BFSI credit risk, FHIR/Kafka, healthcare, IoT, and more.</div>
       <span class="card-tag tag-orange">Portfolio</span>
     </a>
   </div>
 
   <div class="divider"></div>
   <div class="footer">
-    Built by <a href="https://github.com/vittobh">Vignesh Vignesh S</a> · Senior PM · AI / BFSI / Healthcare ·
+    Built by <a href="https://github.com/vittobh">Vignesh Vignesh S</a> &middot; Senior PM &middot; AI / BFSI / Healthcare &middot;
     <a href="https://github.com/vittobh/pm-os">github.com/vittobh/pm-os</a>
   </div>
 </div>
