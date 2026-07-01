@@ -1,6 +1,14 @@
-<\!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+(function() {
+  const session = localStorage.getItem('pm_os_session');
+  if (!session) {
+    window.location.href = '../auth.html?return_to=onboarding/index.html';
+  }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>pm-os — PM Onboarding</title>
@@ -414,7 +422,7 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
         <div class="action-card"><div class="a-icon">👥</div><div class="a-label">Client WS</div></div>
       </div>
       <div class="summary-box" id="summary-box"></div>
-      <button class="btn-full" onclick="alert('Dashboard launching — connect your backend to go live\!')">Go to Dashboard →</button>
+      <button class="btn-full" onclick="window.location.href='../app/index.html'">Go to Dashboard →</button>
     </div>
 
   </div><\!-- /card -->
@@ -507,7 +515,38 @@ function buildSummary() {
     '<strong>Timeline:</strong> ' + timeline;
 }
 
-selectTier('std');
+// Pre-fill user info from session
+document.addEventListener('DOMContentLoaded', () => {
+  const sessionStr = localStorage.getItem('pm_os_session');
+  if (sessionStr) {
+    try {
+      const user = JSON.parse(sessionStr);
+      if (user.name) document.getElementById('pm-name').value = user.name;
+      if (user.org) document.getElementById('pm-org').value = user.org;
+      if (user.role) {
+        const roleSel = document.getElementById('pm-role');
+        if (roleSel) {
+          for (let i = 0; i < roleSel.options.length; i++) {
+            if (roleSel.options[i].text.toLowerCase().includes(user.role.toLowerCase())) {
+              roleSel.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+      if (user.tier) {
+        selectTier(user.tier);
+      } else {
+        selectTier('std');
+      }
+    } catch (e) {
+      console.error(e);
+      selectTier('std');
+    }
+  } else {
+    selectTier('std');
+  }
+});
 </script>
 </body>
 </html>

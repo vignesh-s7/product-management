@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pm-os &mdash; Secure Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F9F9F9;
+  --sidebar: #171717;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+  --accent: #10A37F;
+  --accent-glow: rgba(16, 163, 127, 0.15);
+  --accent2: #8B5CF6;
+  --accent2-glow: rgba(139, 92, 246, 0.15);
+  --text: #0D0D0D;
+  --muted: #676767;
+  --green: #10B981;
+  --red: #EF4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at 50% 50%, #FFFFFF 0%, #F3F4F6 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 440px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.brand-name {
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #0D0D0D 40%, var(--muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.subtitle {
+  font-size: 13.5px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  background: #F3F4F6;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: #FFFFFF;
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-control {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--accent), #0d8769);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--accent-glow);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* SSO buttons */
+.sso-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.sso-btn:hover {
+  background: #F9F9F9;
+  border-color: var(--muted);
+  transform: translateY(-1px);
+}
+
+.sso-btn:active {
+  transform: translateY(0);
+}
+
+.sso-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Interactive Simulation Modal */
+.sim-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.sim-modal.active {
+  display: flex;
+}
+
+.sim-box {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: var(--text);
+}
+
+.sim-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.sim-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.sim-status {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.sim-steps {
+  text-align: left;
+  background: #F9F9F9;
+  border-radius: 12px;
+  padding: 16px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #0d8769;
+  max-height: 140px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+}
+
+.sim-step {
+  margin-bottom: 6px;
+}
+
+/* Glowing background elements */
+.glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 163, 127, 0.08) 0%, rgba(16, 163, 127, 0) 70%);
+  z-index: 1;
+}
+
+.glow-1 {
+  top: -100px;
+  left: -100px;
+}
+
+.glow-2 {
+  bottom: -100px;
+  right: -100px;
+}
+
+.error-msg {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 6px;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<div class="auth-container">
+  <div class="brand">
+    <div class="brand-icon">pm</div>
+    <div class="brand-name">pm-os</div>
+  </div>
+
+  <h2>Enterprise Sign In</h2>
+  <p class="subtitle">Secure access to your Product Management Operating System</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-sso" onclick="switchTab('sso')">Single Sign-On</button>
+    <button class="tab-btn" id="tab-creds" onclick="switchTab('creds')">Credentials</button>
+  </div>
+
+  <!-- SSO TAB -->
+  <div class="tab-content active" id="content-sso">
+    <button class="sso-btn" onclick="startSSO('Microsoft Entra ID', 'Microsoft')">
+      <span class="sso-icon" style="background:#F250221a;color:#F25022">&#9638;</span>
+      <span>Sign in with Microsoft Entra ID</span>
+    </button>
+    <button class="sso-btn" onclick="startSSO('Okta', 'Okta')">
+      <span class="sso-icon" style="background:#007DC11a;color:#007DC1">&#9673;</span>
+      <span>Sign in with Okta</span>
+    </button>
+    <button class="sso-btn" onclick="startSSO('Atlassian Access', 'Atlassian')">
+      <span class="sso-icon" style="background:#0052CC1a;color:#0052CC">&#9650;</span>
+      <span>Sign in with Atlassian Access</span>
+    </button>
+  </div>
+
+  <!-- CREDENTIALS TAB -->
+  <div class="tab-content" id="content-creds">
+    <form id="login-form" onsubmit="handleCredLogin(event)">
+      <div class="form-group">
+        <label for="email">Work Email</label>
+        <input type="email" id="email" class="form-control" placeholder="vignesh.aipm@gmail.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+        <div class="error-msg" id="login-error">Invalid work email or password.</div>
+      </div>
+      <button type="submit" class="btn-primary" id="btn-submit">
+        <span>Sign In</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- SIMULATION MODAL -->
+<div class="sim-modal" id="sim-modal">
+  <div class="sim-box">
+    <div class="sim-spinner"></div>
+    <div class="sim-title" id="sim-title">Connecting to Identity Provider</div>
+    <div class="sim-status" id="sim-status">Handshaking securely...</div>
+    <div class="sim-steps" id="sim-steps"></div>
+  </div>
+</div>
+
+<script>
+// Get return_to parameter
+const params = new URLSearchParams(window.location.search);
+let returnTo = params.get('return_to') || 'app/index.html';
+
+// Normalize returnTo to avoid potential issues (e.g. infinite redirect if returnTo points to auth.html)
+if (returnTo.includes('auth.html')) {
+  returnTo = 'app/index.html';
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('content-' + tab).classList.add('active');
+}
+
+function startSSO(providerName, type) {
+  const modal = document.getElementById('sim-modal');
+  const title = document.getElementById('sim-title');
+  const status = document.getElementById('sim-status');
+  const stepsBox = document.getElementById('sim-steps');
+  
+  modal.classList.add('active');
+  title.textContent = `Sign in with ${providerName}`;
+  status.textContent = "Redirecting to identity server...";
+  stepsBox.innerHTML = "";
+  
+  const steps = [
+    { text: `Initializing OAuth2 payload against ${providerName}...`, delay: 400 },
+    { text: "Requesting identity auth code response...", delay: 800 },
+    { text: `Contacting ${providerName} UserInfo endpoint...`, delay: 1400 },
+    { text: "Verifying signature & JWT token validations...", delay: 2000 },
+    { text: "Successfully authenticated! Syncing user profile metadata...", delay: 2600 }
+  ];
+  
+  steps.forEach(step => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = "sim-step";
+      el.textContent = `> ${step.text}`;
+      stepsBox.appendChild(el);
+      stepsBox.scrollTop = stepsBox.scrollHeight;
+    }, step.delay);
+  });
+  
+  setTimeout(() => {
+    // Generate mock user session
+    const mockUser = {
+      name: "Vignesh Vignesh S",
+      email: type === "Microsoft" ? "vignesh.aipm@microsoft.com" : "vignesh.aipm@gmail.com",
+      org: type === "Microsoft" ? "Acme Corp (Enterprise)" : "Acme Corp",
+      role: "Senior PM",
+      avatar: "V",
+      provider: providerName,
+      tier: "ai"
+    };
+    localStorage.setItem('pm_os_session', JSON.stringify(mockUser));
+    
+    // Redirect
+    window.location.href = returnTo;
+  }, 3200);
+}
+
+function handleCredLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const submitBtn = document.getElementById('btn-submit');
+  const errorMsg = document.getElementById('login-error');
+  
+  errorMsg.style.display = 'none';
+  
+  // Validation check
+  if (!email.includes('@') || password.length < 4) {
+    errorMsg.style.display = 'block';
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span>Signing in...</span>';
+  
+  // Simulate delay
+  setTimeout(() => {
+    const namePart = email.split('@')[0];
+    const nameFormatted = namePart.split('.').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    
+    const mockUser = {
+      name: nameFormatted || "Vignesh Vignesh S",
+      email: email,
+      org: "Acme Corp",
+      role: "Senior PM",
+      avatar: (nameFormatted ? nameFormatted.charAt(0) : "V"),
+      provider: "Credentials",
+      tier: "ai"
+    };
+    
+    localStorage.setItem('pm_os_session', JSON.stringify(mockUser));
+    window.location.href = returnTo;
+  }, 1200);
+}
+</script>
+</body>
+</html>

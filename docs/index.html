@@ -141,5 +141,34 @@ body{font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh;padding:
     <a href="https://github.com/vittobh/pm-os">github.com/vittobh/pm-os</a>
   </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const session = localStorage.getItem('pm_os_session');
+  if (session) {
+    try {
+      const user = JSON.parse(session);
+      const heroBtns = document.querySelector('.hero-btns');
+      if (heroBtns) {
+        heroBtns.innerHTML = `
+          <a href="app/index.html" class="btn-primary">&#128202; Go to Dashboard</a>
+          <a href="#" class="btn-outline" id="sign-out-btn">&#128274; Sign Out (${user.name})</a>
+        `;
+        document.getElementById('sign-out-btn').addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('pm_os_session');
+          window.location.reload();
+        });
+      }
+      const demoBtn = document.querySelector('.btn-demo');
+      if (demoBtn) {
+        demoBtn.innerHTML = '&#9654; Go to Dashboard';
+        demoBtn.href = 'app/';
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+});
+</script>
 </body>
 </html>
