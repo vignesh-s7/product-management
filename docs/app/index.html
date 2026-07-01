@@ -300,6 +300,8 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
     <a href="#" data-section="discovery"><span class="icon">&#128270;</span> Discovery Engine</a>
     <div class="nav-section">Collaboration</div>
     <a href="#" data-section="client"><span class="icon">&#128101;</span> Client Workspace</a>
+    <div class="nav-section">Governance</div>
+    <a href="#" data-section="cucp"><span class="icon">&#128196;</span> CuCP Release Gate</a>
   </nav>
   <div class="sidebar-footer">
     <a href="../onboarding/">Onboarding Wizard</a>
@@ -506,6 +508,68 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
       </div>
     </div>
 
+    <!-- CUCP RELEASE GATE -->
+    <div class="section" id="section-cucp">
+      <div class="auto-hint" id="cucp-auto-hint">Auto Mode is ON &mdash; CuCP release gates are checking validation criteria automatically using live customer telemetry.</div>
+      <div class="grid-4" style="margin-bottom: 24px">
+        <div class="card stat-card"><div class="label">CuCP Coverage</div><div class="value" id="cucp-cov-val">58%</div><div class="delta up">&ge; 50% target</div></div>
+        <div class="card stat-card"><div class="label">PM Satisfaction</div><div class="value">4.2 / 5</div><div class="delta up">&ge; 4.0 target</div></div>
+        <div class="card stat-card"><div class="label">Definition Drift</div><div class="value" style="color:var(--green)">0 Cases</div><div class="delta">Healthy</div></div>
+        <div class="card stat-card"><div class="label">AI Credits Used</div><div class="value">32.4K</div><div class="delta">Fair Use ON</div></div>
+      </div>
+      
+      <div class="card" style="margin-bottom: 24px">
+        <div class="card-title">CuCP Operational Release Gate Tracker</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Track pre-release governance paths for Standard vs. AI capabilities based on the Proportional Governance Principle.</div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:13px" id="cucp-table">
+            <thead>
+              <tr style="border-bottom:2px solid var(--border);text-align:left">
+                <th style="padding:10px 8px;color:var(--muted)">Initiative</th>
+                <th style="padding:10px 8px;color:var(--muted)">Path</th>
+                <th style="padding:10px 8px;color:var(--muted)">Current Phase</th>
+                <th style="padding:10px 8px;color:var(--muted)">CuCP Validation Gates</th>
+                <th style="padding:10px 8px;color:var(--muted)">Governance Status</th>
+                <th style="padding:10px 8px;color:var(--muted);width:50px">Action</th>
+              </tr>
+            </thead>
+            <tbody id="cucp-tbody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Register New Pre-Release Initiative</div>
+        <form id="cucp-form" onsubmit="addCuCPInitiative(event)" style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-row">
+            <div class="form-group" style="flex:2">
+              <label>Initiative Name</label>
+              <input type="text" id="cucp-name" placeholder="e.g. AI Sourcing Assistant v2" required>
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>Capability Path</label>
+              <select id="cucp-type" onchange="updateFormGates()">
+                <option value="standard">Standard Capability</option>
+                <option value="ai">AI Capability</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>Phase</label>
+              <select id="cucp-phase" onchange="updateFormGates()">
+                <option value="EAP">Phase 1: EAP</option>
+                <option value="LA">Phase 2: LA (Std)</option>
+                <option value="Open Beta">Phase 2: Open Beta (AI)</option>
+                <option value="GA">Phase 3: GA</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" style="align-self:flex-start;padding:8px 16px;font-size:13px;width:auto">Add Initiative</button>
+        </form>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -579,7 +643,8 @@ var sections = {
   chat:      {title:'AI Chat', meta:'Phase 3 — Claude + Rovo + Gemini synthesis'},
   reports:   {title:'Reports', meta:'Phase 3 — PowerBI + Copilot interpretation'},
   discovery: {title:'Discovery Engine', meta:'Phase 5 — Auto-generate discovery packs'},
-  client:    {title:'Client Workspace', meta:'Phase 4 — Curated client-facing portal with DnD reorder'}
+  client:    {title:'Client Workspace', meta:'Phase 4 — Curated client-facing portal with DnD reorder'},
+  cucp:      {title:'CuCP Release Gate', meta:'Governance — Customer Collaboration Program (CuCP) operational release gates'}
 };
 
 document.querySelectorAll('nav a').forEach(function(a) {
@@ -606,6 +671,7 @@ function navigate(id) {
   if (id === 'chat' && autoMode) scheduleAutoChat();
   if (id === 'search') filterSearch();
   if (id === 'client') renderArtifacts();
+  if (id === 'cucp') initCuCP();
 }
 
 // ==============================================================
@@ -1184,12 +1250,247 @@ window.addEventListener('load', function() {
   filterSearch();
   renderArtifacts();
   initKanban();
+  initCuCP();
 });
 
 function logout(e) {
   e.preventDefault();
   localStorage.removeItem('pm_os_session');
   window.location.href = '../index.html';
+}
+
+// ==============================================================
+// CUCP GOVERNANCE
+// ==============================================================
+var defaultCuCP = [
+  {
+    name: "Acme Sourcing Optimisation",
+    type: "standard",
+    phase: "LA",
+    gates: {
+      "EAP UX Validated": true,
+      "$0 Order Form Signed": true,
+      "Readiness Gate Checked": true,
+      "Commercial Alignment Approved": false
+    }
+  },
+  {
+    name: "Agentic Negotiator Studio",
+    type: "ai",
+    phase: "Open Beta",
+    gates: {
+      "Model Telemetry Logged": true,
+      "Safety Guardrails Set": true,
+      "UI Toggle Enabled": true,
+      "Fair Use Caps Configured": false
+    }
+  },
+  {
+    name: "Supplier Risk Scoring Model",
+    type: "ai",
+    phase: "EAP",
+    gates: {
+      "Telemetry Logged": true,
+      "AI Credits Configured": true,
+      "High-touch Engagement Active": true
+    }
+  },
+  {
+    name: "Automated Invoice Router",
+    type: "standard",
+    phase: "GA",
+    gates: {
+      "SLA Compliant": true,
+      "GTM Enabled": true,
+      "Fully Monetised": true
+    }
+  }
+];
+
+var cucpData = null;
+try {
+  cucpData = JSON.parse(localStorage.getItem('pm_os_cucp'));
+} catch(e) {}
+if (!cucpData) {
+  cucpData = defaultCuCP;
+}
+
+function saveCuCPToLocal() {
+  localStorage.setItem('pm_os_cucp', JSON.stringify(cucpData));
+}
+
+function initCuCP() {
+  var tbody = document.getElementById('cucp-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  cucpData.forEach(function(item, idx) {
+    var tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid var(--border)';
+    
+    // Name
+    var tdName = document.createElement('td');
+    tdName.style.padding = '12px 8px';
+    tdName.innerHTML = '<strong>' + escHtml(item.name) + '</strong>';
+    tr.appendChild(tdName);
+    
+    // Type
+    var tdType = document.createElement('td');
+    tdType.style.padding = '12px 8px';
+    var isAI = item.type === 'ai';
+    tdType.innerHTML = '<span class="pill ' + (isAI ? 'ai' : '') + '">' + (isAI ? 'AI Capability' : 'Standard') + '</span>';
+    tr.appendChild(tdType);
+    
+    // Phase
+    var tdPhase = document.createElement('td');
+    tdPhase.style.padding = '12px 8px';
+    var phaseClass = '';
+    if (item.phase === 'EAP') phaseClass = 'background:#FFEFD6;color:#A86B00;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
+    else if (item.phase === 'LA') phaseClass = 'background:#DEEBFF;color:#0747A6;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
+    else if (item.phase === 'Open Beta') phaseClass = 'background:#EAE6FF;color:#403294;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
+    else if (item.phase === 'GA') phaseClass = 'background:#E3FCEF;color:#006644;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
+    tdPhase.innerHTML = '<span style="' + phaseClass + '">' + escHtml(item.phase) + '</span>';
+    tr.appendChild(tdPhase);
+    
+    // Gates
+    var tdGates = document.createElement('td');
+    tdGates.style.padding = '12px 8px';
+    var gatesHtml = '<div style="display:flex;flex-direction:column;gap:4px">';
+    var allChecked = true;
+    for (var gName in item.gates) {
+      var isChecked = item.gates[gName];
+      if (!isChecked) allChecked = false;
+      gatesHtml += '<label style="display:flex;align-items:center;gap:6px;cursor:pointer">' +
+                   '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="toggleCuCPGate(' + idx + ',\'' + escHtml(gName) + '\',this.checked)">' +
+                   '<span style="' + (isChecked ? 'color:var(--text)' : 'color:var(--muted);text-decoration:line-through') + '">' + escHtml(gName) + '</span>' +
+                   '</label>';
+    }
+    gatesHtml += '</div>';
+    tdGates.innerHTML = gatesHtml;
+    tr.appendChild(tdGates);
+    
+    // Status
+    var tdStatus = document.createElement('td');
+    tdStatus.style.padding = '12px 8px';
+    if (item.phase === 'GA') {
+      tdStatus.innerHTML = '<span class="status-badge connected">Live in Market</span>';
+    } else if (allChecked) {
+      tdStatus.innerHTML = '<span class="status-badge connected">Gate Approved</span>';
+    } else {
+      tdStatus.innerHTML = '<span class="status-badge pending">Gated Approval</span>';
+    }
+    tr.appendChild(tdStatus);
+    
+    // Delete
+    var tdDelete = document.createElement('td');
+    tdDelete.style.padding = '12px 8px';
+    tdDelete.innerHTML = '<button class="btn-sm" style="color:var(--red);border-color:var(--red);background:transparent" onclick="deleteCuCP(' + idx + ')">Delete</button>';
+    tr.appendChild(tdDelete);
+    
+    tbody.appendChild(tr);
+  });
+  
+  // Calculate coverage stats
+  var eligible = cucpData.length;
+  var runningCuCP = cucpData.filter(function(i) { return i.phase !== 'GA'; }).length;
+  var activeCuCP = cucpData.filter(function(i) {
+    var keys = Object.keys(i.gates);
+    return keys.length > 0 && keys.every(function(k) { return i.gates[k]; });
+  }).length;
+  var covPercent = eligible > 0 ? Math.round((activeCuCP / eligible) * 100) : 0;
+  var covEl = document.getElementById('cucp-cov-val');
+  if (covEl) covEl.textContent = covPercent + '%';
+}
+
+function toggleCuCPGate(idx, gName, checked) {
+  cucpData[idx].gates[gName] = checked;
+  saveCuCPToLocal();
+  initCuCP();
+}
+
+function deleteCuCP(idx) {
+  cucpData.splice(idx, 1);
+  saveCuCPToLocal();
+  initCuCP();
+}
+
+function addCuCPInitiative(e) {
+  e.preventDefault();
+  var name = document.getElementById('cucp-name').value;
+  var type = document.getElementById('cucp-type').value;
+  var phase = document.getElementById('cucp-phase').value;
+  
+  // Assign default gates based on path and phase
+  var gates = {};
+  if (type === 'standard') {
+    if (phase === 'EAP') {
+      gates["UX Validated"] = false;
+      gates["$0 Order Form Signed"] = false;
+    } else if (phase === 'LA') {
+      gates["Cohort Approved"] = false;
+      gates["$0 Order Form Signed"] = false;
+      gates["Readiness Gate Approved"] = false;
+    } else if (phase === 'GA') {
+      gates["Production Ready"] = false;
+      gates["GTM Enabled"] = false;
+    }
+  } else {
+    // AI Capability
+    if (phase === 'EAP') {
+      gates["Telemetry Logged"] = false;
+      gates["AI Credits Configured"] = false;
+      gates["High-touch Engagement Active"] = false;
+    } else if (phase === 'Open Beta') {
+      gates["Model Telemetry Active"] = false;
+      gates["Safety Guardrails Set"] = false;
+      gates["UI Toggle Configured"] = false;
+      gates["Fair Use Caps Enabled"] = false;
+    } else if (phase === 'GA') {
+      gates["Model Fine-tuned"] = false;
+      gates["Supported & SLA Compliant"] = false;
+      gates["GTM Enabled"] = false;
+    }
+  }
+  
+  cucpData.push({
+    name: name,
+    type: type,
+    phase: phase,
+    gates: gates
+  });
+  
+  saveCuCPToLocal();
+  initCuCP();
+  
+  document.getElementById('cucp-name').value = '';
+}
+
+function updateFormGates() {
+  var type = document.getElementById('cucp-type').value;
+  var selectPhase = document.getElementById('cucp-phase');
+  var currentVal = selectPhase.value;
+  
+  // Rebuild select options depending on path (Standard vs AI)
+  selectPhase.innerHTML = '';
+  if (type === 'standard') {
+    var opt1 = document.createElement('option'); opt1.value = 'EAP'; opt1.textContent = 'Phase 1: EAP (Closed Beta)';
+    var opt2 = document.createElement('option'); opt2.value = 'LA'; opt2.textContent = 'Phase 2: LA (Limited Availability)';
+    var opt3 = document.createElement('option'); opt3.value = 'GA'; opt3.textContent = 'Phase 3: GA (General Release)';
+    selectPhase.appendChild(opt1);
+    selectPhase.appendChild(opt2);
+    selectPhase.appendChild(opt3);
+    if (currentVal === 'Open Beta') selectPhase.value = 'LA';
+    else selectPhase.value = currentVal;
+  } else {
+    var opt1 = document.createElement('option'); opt1.value = 'EAP'; opt1.textContent = 'Phase 1: EAP (Closed Beta)';
+    var opt2 = document.createElement('option'); opt2.value = 'Open Beta'; opt2.textContent = 'Phase 2: Open Beta (Early Access)';
+    var opt3 = document.createElement('option'); opt3.value = 'GA'; opt3.textContent = 'Phase 3: GA (General Release)';
+    selectPhase.appendChild(opt1);
+    selectPhase.appendChild(opt2);
+    selectPhase.appendChild(opt3);
+    if (currentVal === 'LA') selectPhase.value = 'Open Beta';
+    else selectPhase.value = currentVal;
+  }
 }
 </script>
 </body>
