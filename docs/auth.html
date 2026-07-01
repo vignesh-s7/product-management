@@ -10,15 +10,17 @@
   --bg: #F9F9F9;
   --sidebar: #171717;
   --card: #FFFFFF;
-  --border: #E5E7EB;
-  --accent: #10A37F;
-  --accent-glow: rgba(16, 163, 127, 0.15);
-  --accent2: #8B5CF6;
-  --accent2-glow: rgba(139, 92, 246, 0.15);
-  --text: #0D0D0D;
-  --muted: #676767;
-  --green: #10B981;
-  --red: #EF4444;
+  --border: #DFE1E6;
+  --accent: #0052CC; /* Jira Blue */
+  --accent-hover: #0747A6;
+  --accent-glow: rgba(0, 82, 204, 0.1);
+  --accent2: #10A37F; /* ChatGPT Green */
+  --accent2-hover: #0d8769;
+  --accent2-glow: rgba(16, 163, 127, 0.15);
+  --text: #172B4D;
+  --muted: #5E6C84;
+  --green: #36B37E;
+  --red: #FF5630;
 }
 
 * {
@@ -174,7 +176,7 @@ h2 {
 .btn-primary {
   width: 100%;
   padding: 13px;
-  background: linear-gradient(135deg, var(--accent), #0d8769);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   border: none;
   border-radius: 12px;
   color: #fff;
