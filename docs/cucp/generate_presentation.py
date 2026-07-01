@@ -241,10 +241,10 @@ def create_presentation(output_path):
     p.font.color.rgb = COLOR_BLUE
     
     bullets_c1 = [
-        "Definition: Built on deterministic logic and structured workflows (no AI).",
-        "Examples: New sourcing dashboards, workflow routing rules, UI redesigns.",
-        "Pre-GA Focus: Validate operational readiness, scalability, support enablement.",
-        "Cohort Sizes: Controlled, small customer cohorts (5-10 max) are sufficient."
+        "Definition: Deterministic logic and workflows (no AI involved). E.g., dashboards, routing rules.",
+        "Focus: Validate operational readiness, scalability, support enablement.",
+        "Gating: Closed Beta (EAP) and Limited Availability (LA) require a $0 Order Form.",
+        "Exit: LA phase gates readiness with commercial alignment before General Availability."
     ]
     for b in bullets_c1:
         p_b = tf_c1.add_paragraph()
@@ -273,10 +273,10 @@ def create_presentation(output_path):
     p.font.color.rgb = COLOR_GREEN
     
     bullets_c2 = [
-        "Definition: Powered by ML/LLMs. Probabilistic models requiring user feedback loop.",
-        "Examples: Copilot context recommendations, Agent Studio autonomous workflows.",
-        "Pre-GA Focus: Model tuning, trust/safety guardrails, telemetry integration.",
-        "Cohort Gating: Widescale cohort feedback; benefits from frictionless Open Beta."
+        "Definition: Powered by ML/LLMs. Probabilistic models. E.g., Copilots, Agent Studio.",
+        "Focus: Model tuning, trust/safety guardrails, telemetry integration.",
+        "Billing: EAP & Open Beta are free of charge via customer AI Credits.",
+        "Gating: Open Beta is enabled via UI toggle (no $0 Order Forms; utilizes Fair Use Caps)."
     ]
     for b in bullets_c2:
         p_b = tf_c2.add_paragraph()
