@@ -100,9 +100,9 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
 </head>
 <body>
 <div class="deck">
-<div class="slide-counter" id="counter">1 / 6</div>
+<div class="slide-counter" id="counter">1 / 7</div>
 
-<\!-- SLIDE 1: Title -->
+<!-- SLIDE 1: Title -->
 <div class="slide active" id="s1">
   <div class="s1-label">Coupa · Sr. Lead, P&T Operations · 90-Day Plan</div>
   <div class="s1-line"></div>
@@ -116,7 +116,7 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
   </div>
 </div>
 
-<\!-- SLIDE 2: Challenge + Framing -->
+<!-- SLIDE 2: Challenge + Framing -->
 <div class="slide" id="s2">
   <h1 class="slide-h">The Challenge — and the Reframe</h1>
   <p class="slide-sub">Change management starts with understanding the resistance, then flipping the narrative.</p>
@@ -142,12 +142,41 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
   </div>
   <div class="reframe">
     <div class="reframe-quote">The message that lands: <span>"CuCP is your evidence kit — not a compliance checklist."</span><br>
-    <span style="font-size:14px;font-weight:400;color:#94A3B8">Structured EAP data protects PMs at GA. It answers "how do we know this is ready?" with customer signal, not gut feel.</span></div>
+    <span style="font-size:14px;font-weight:400;color:#5E6C84">Structured EAP data protects PMs at GA. It answers "how do we know this is ready?" with customer signal, not gut feel.</span></div>
   </div>
 </div>
 
-<\!-- SLIDE 3: 90-Day Rollout -->
+<!-- SLIDE 3: Standard vs. AI -->
 <div class="slide" id="s3">
+  <h1 class="slide-h">Capability Classifications: Standard vs. AI</h1>
+  <p class="slide-sub">Pre-GA validation strategies are structured to match the risk profile of each release path.</p>
+  <div class="s2-cols">
+    <div class="problem-box" style="border-left: 4px solid var(--accent)">
+      <div class="box-title" style="color: var(--accent)">Standard Capabilities</div>
+      <ul class="bullet-list" style="font-size: 13px; line-height: 1.9">
+        <li><strong>Definition:</strong> Built on deterministic logic and structured workflows (no AI involved).</li>
+        <li><strong>Examples:</strong> Sourcing dashboards, routing rules, UI redesigns.</li>
+        <li><strong>Pre-GA Focus:</strong> Validate operational readiness, scalability, support enablement.</li>
+        <li><strong>Cohort Sizes:</strong> Controlled customer cohorts (5-10 max) are sufficient.</li>
+      </ul>
+    </div>
+    <div class="problem-box" style="border-left: 4px solid var(--accent2)">
+      <div class="box-title" style="color: var(--accent2)">AI Capabilities (AI-Assisted & Agentic)</div>
+      <ul class="bullet-list" style="font-size: 13px; line-height: 1.9">
+        <li><strong>Definition:</strong> Powered by ML/LLMs. Probabilistic models requiring user feedback loop.</li>
+        <li><strong>Examples:</strong> Copilot context recommendations, Agent Studio autonomous workflows.</li>
+        <li><strong>Pre-GA Focus:</strong> Model tuning, trust/safety guardrails, telemetry integration.</li>
+        <li><strong>Cohort Gating:</strong> Widescale cohort feedback; benefits from frictionless Open Beta.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="reframe" style="background: linear-gradient(135deg, #DEEBFF, #EAE6FF); margin-top: 20px; padding: 18px">
+    <div class="reframe-quote" style="font-size: 15px">The Principle of Proportional Governance: <span style="font-weight: 500; font-size: 14px; color: #172B4D">The level of release gating must align to feature risk and complexity. Pre-GA phases are optional and variable based on PM assessment.</span></div>
+  </div>
+</div>
+
+<!-- SLIDE 4: 90-Day Rollout -->
+<div class="slide" id="s4">
   <h1 class="slide-h">90-Day Rollout: Pilot → Learn → Scale</h1>
   <p class="slide-sub">No big-bang mandate. Build trust through service, then scale on proven evidence.</p>
   <div class="phase-row">
@@ -193,8 +222,8 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
   </div>
 </div>
 
-<\!-- SLIDE 4: Enablement -->
-<div class="slide" id="s4">
+<!-- SLIDE 5: Enablement -->
+<div class="slide" id="s5">
   <h1 class="slide-h">Enablement &amp; Support Model</h1>
   <p class="slide-sub">Four pillars that make CuCP stupidly easy to run — before it becomes expected.</p>
   <div class="en-grid">
@@ -225,8 +254,8 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
   </div>
 </div>
 
-<\!-- SLIDE 5: Metrics -->
-<div class="slide" id="s5">
+<!-- SLIDE 6: Metrics -->
+<div class="slide" id="s6">
   <h1 class="slide-h">Measuring Initial Success</h1>
   <p class="slide-sub">Six metrics prove the rollout is working. One leading indicator matters most in the first 90 days.</p>
   <table class="metrics-table">
@@ -262,19 +291,19 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
       <td><span class="metric-tag lead">Leading</span></td>
     </tr>
   </table>
-  <div style="margin-top:14px;font-size:12.5px;color:#475569">⭐ If PMs feel CuCP helps — scaling is pull, not push. Fix the playbook before mandating.</div>
+  <div style="margin-top:14px;font-size:12.5px;color:#7A5200;font-weight:bold">⭐ If PMs feel CuCP helps — scaling is pull, not push. Fix the playbook before mandating.</div>
 </div>
 
-<\!-- SLIDE 6: Day 90 Vision -->
-<div class="slide" id="s6">
+<!-- SLIDE 7: Day 90 Vision -->
+<div class="slide" id="s7">
   <h1 class="slide-h">What Day 90 Looks Like</h1>
   <p class="slide-sub">Three outcomes that prove the CuCP rollout succeeded — and what I need from leadership to get there.</p>
   <div class="vision-cols">
     <div class="vision-box">
       <h3>Evidence of Success</h3>
       <ul class="vision-list">
-        <li>≥ 50% eligible releases running CuCP</li>
-        <li>PM satisfaction ≥ 4.0 / 5.0</li>
+        <li>&ge; 50% eligible releases running CuCP</li>
+        <li>PM satisfaction &ge; 4.0 / 5.0</li>
         <li>2–3 champion PMs advocating internally</li>
         <li>Self-serve KB live — zero dependency on me</li>
         <li>Leadership dashboard showing programme health</li>
@@ -316,11 +345,12 @@ p.slide-sub{font-size:14px;color:#5E6C84;margin-bottom:24px}
   <div class="nav-dot" onclick="goTo(4)"></div>
   <div class="nav-dot" onclick="goTo(5)"></div>
   <div class="nav-dot" onclick="goTo(6)"></div>
+  <div class="nav-dot" onclick="goTo(7)"></div>
   <button class="nav-btn" onclick="next()">›</button>
 </div>
 
 <script>
-let cur = 1, total = 6;
+let cur = 1, total = 7;
 function goTo(n) {
   document.getElementById('s'+cur).classList.remove('active');
   document.querySelectorAll('.nav-dot')[cur-1].classList.remove('active');
