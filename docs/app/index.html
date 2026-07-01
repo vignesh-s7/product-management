@@ -585,6 +585,7 @@ var activeReport = 'velocity';
 var chartInstances = {};
 var selectedDomain = 'bfsi';
 var currentFilters = {source:'all', domain:'all'};
+var autoCuCPTimer = null;
 
 // ==============================================================
 // AUTO MODE
@@ -602,8 +603,10 @@ function toggleAutoMode() {
   if (autoMode) {
     startAutoReport();
     scheduleAutoChat();
+    startAutoCuCP();
   } else {
     clearInterval(autoReportTimer);
+    clearInterval(autoCuCPTimer);
   }
 }
 
@@ -631,6 +634,45 @@ function scheduleAutoChat() {
       messages.scrollTop = messages.scrollHeight;
     }
   }, 3500);
+}
+
+function startAutoCuCP() {
+  clearInterval(autoCuCPTimer);
+  if (!autoMode) return;
+  autoCuCPTimer = setInterval(function() {
+    if (document.getElementById('section-cucp').classList.contains('active')) {
+      for (var i = 0; i < cucpData.length; i++) {
+        var item = cucpData[i];
+        if (item.phase === 'GA') continue;
+        for (var gName in item.gates) {
+          if (!item.gates[gName]) {
+            item.gates[gName] = true;
+            saveCuCPToLocal();
+            initCuCP();
+            var hint = document.getElementById('cucp-auto-hint');
+            if (hint) {
+              hint.innerHTML = 'Auto Mode &mdash; Telemetry verified: <strong>' + escHtml(gName) + '</strong> for ' + escHtml(item.name);
+              setTimeout(function() {
+                if (autoMode) {
+                  hint.innerHTML = 'Auto Mode is ON &mdash; CuCP release gates are checking validation criteria automatically using live customer telemetry.';
+                }
+              }, 3000);
+            }
+            return;
+          }
+        }
+      }
+      cucpData.forEach(function(item) {
+        if (item.phase !== 'GA') {
+          for (var k in item.gates) {
+            item.gates[k] = false;
+          }
+        }
+      });
+      saveCuCPToLocal();
+      initCuCP();
+    }
+  }, 4000);
 }
 
 // ==============================================================
