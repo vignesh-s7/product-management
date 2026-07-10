@@ -1,6 +1,6 @@
 # ROADMAP — pm-os Platform
 
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** Active
 **Last updated:** 2026-06-30
 **Linked PRD:** prds/00-pm-os-platform.md

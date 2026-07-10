@@ -1,7 +1,7 @@
 # PRD 07 — Wellness IoT RAG
 
 **Domain:** Healthcare · IoT
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

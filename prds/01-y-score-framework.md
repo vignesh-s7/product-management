@@ -1,7 +1,7 @@
 # PRD 01 — Y-Score Framework
 
 **Domain:** PM tooling · framework
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

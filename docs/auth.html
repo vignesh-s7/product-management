@@ -455,7 +455,7 @@ function startSSO(providerName, type) {
   setTimeout(() => {
     // Generate mock user session
     const mockUser = {
-      name: "Vignesh Vignesh S",
+      name: "Vignesh AIPM",
       email: type === "Microsoft" ? "vignesh.aipm@microsoft.com" : "vignesh.aipm@gmail.com",
       org: type === "Microsoft" ? "Acme Corp (Enterprise)" : "Acme Corp",
       role: "Senior PM",
@@ -494,7 +494,7 @@ function handleCredLogin(event) {
     const nameFormatted = namePart.split('.').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     
     const mockUser = {
-      name: nameFormatted || "Vignesh Vignesh S",
+      name: nameFormatted || "Vignesh AIPM",
       email: email,
       org: "Acme Corp",
       role: "Senior PM",

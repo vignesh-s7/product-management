@@ -52,4 +52,4 @@ Compliance dimension auto-checks against domain:
 - `generic` → baseline SOC 2 + privacy review
 
 ## Author
-Vignesh Vignesh S — distilled from 10 years shipping AI in regulated BFSI / healthcare environments.
+Vignesh AIPM — distilled from 10 years shipping AI in regulated BFSI / healthcare environments.

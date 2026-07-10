@@ -3,12 +3,12 @@
   "manifestVersion": "1.16",
   "version": "1.0.0",
   "id": "pm-os-onboarding-tab",
-  "packageName": "com.vittobh.pmos.onboarding",
+  "packageName": "com.vvs-pm.pmos.onboarding",
   "developer": {
-    "name": "Vignesh Vignesh S",
-    "websiteUrl": "https://vittobh.github.io/pm-os",
-    "privacyUrl": "https://vittobh.github.io/pm-os/onboarding/",
-    "termsOfUseUrl": "https://vittobh.github.io/pm-os/onboarding/"
+    "name": "Vignesh AIPM",
+    "websiteUrl": "https://vvs-pm.github.io/pm-os",
+    "privacyUrl": "https://vvs-pm.github.io/pm-os/onboarding/",
+    "termsOfUseUrl": "https://vvs-pm.github.io/pm-os/onboarding/"
   },
   "name": { "short": "pm-os", "full": "pm-os: AI-Native PM Platform" },
   "description": {
@@ -21,26 +21,26 @@
     {
       "entityId": "onboarding",
       "name": "Get Started",
-      "contentUrl": "https://vittobh.github.io/pm-os/onboarding/teams.html",
-      "websiteUrl": "https://vittobh.github.io/pm-os/onboarding/",
+      "contentUrl": "https://vvs-pm.github.io/pm-os/onboarding/teams.html",
+      "websiteUrl": "https://vvs-pm.github.io/pm-os/onboarding/",
       "scopes": ["personal", "team"]
     },
     {
       "entityId": "cucp-deck",
       "name": "CuCP Rollout",
-      "contentUrl": "https://vittobh.github.io/pm-os/cucp/presentation.html",
-      "websiteUrl": "https://vittobh.github.io/pm-os/cucp/presentation.html",
+      "contentUrl": "https://vvs-pm.github.io/pm-os/cucp/presentation.html",
+      "websiteUrl": "https://vvs-pm.github.io/pm-os/cucp/presentation.html",
       "scopes": ["personal", "team"]
     }
   ],
   "configurableTabs": [
     {
-      "configurationUrl": "https://vittobh.github.io/pm-os/onboarding/teams.html?config=1",
+      "configurationUrl": "https://vvs-pm.github.io/pm-os/onboarding/teams.html?config=1",
       "canUpdateConfiguration": true,
       "scopes": ["team", "groupChat"],
       "supportedSharePointHosts": ["sharePointFullPage", "sharePointWebPart"]
     }
   ],
   "permissions": ["identity", "messageTeamMembers"],
-  "validDomains": ["vittobh.github.io"]
+  "validDomains": ["vvs-pm.github.io"]
 }

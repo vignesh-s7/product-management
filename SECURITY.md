@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-Please open an issue tagged `security` or email Vignesh2025@gmail.com. Response target: 48 hours.
+Please open an issue tagged `security` or email vigneshaipm@gmail.com. Response target: 48 hours.
 
 ## Supported Versions
 

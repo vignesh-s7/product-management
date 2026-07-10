@@ -1,6 +1,6 @@
 # SRS — pm-os Platform (v0.4)
 
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** Draft v0.4
 **Linked PRD:** prds/00-pm-os-platform.md
 

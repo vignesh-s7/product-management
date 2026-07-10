@@ -1,7 +1,7 @@
 # PRD 03 — Multi-Agent Credit Risk Reference
 
 **Domain:** BFSI · Agentic AI
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

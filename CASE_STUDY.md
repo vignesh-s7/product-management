@@ -54,8 +54,8 @@ An AI PM can codify their own workflow as public tooling. The tool is not the va
 
 ---
 
-- 🌐 [Live app](https://vittobh.github.io/pm-os/)
-- 📖 [Repo](https://github.com/vittobh/pm-os)
+- 🌐 [Live app](https://vvs-pm.github.io/pm-os/)
+- 📖 [Repo](https://github.com/vvs-pm/pm-os)
 - 🧠 [prd-to-sdlc skill](./.claude/skills/prd-to-sdlc/SKILL.md)
 - ⚡ [y-score-readiness skill](./.claude/skills/y-score-readiness/SKILL.md)
 - 📅 Feedback / collaboration: [book 15 min](https://cal.com/Vignesh/15min)

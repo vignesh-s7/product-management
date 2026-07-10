@@ -1,15 +1,15 @@
 # pm-os — AI-Native PM Operating System
 
-**Author:** Vignesh Vignesh S · Senior PM · AI / BFSI / Healthcare
+**Author:** Vignesh AIPM · Senior PM · AI / BFSI / Healthcare
 ## About
 
 **pm-os** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Manager, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Manager for teams shipping AI features in regulated industries.
 
-**Live application:** https://vittobh.github.io/pm-os/
+**Live application:** https://vvs-pm.github.io/pm-os/
 
 ---
 
-**Live:** [vittobh.github.io/pm-os](https://vittobh.github.io/pm-os)
+**Live:** [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os)
 **Status:** Active · v0.4
 
 ---
@@ -71,10 +71,10 @@ Input: PRD → MetaGPT (architecture) → OpenHands (code) → Promptfoo (QA) �
 
 | Page | URL |
 |------|-----|
-| Landing | [vittobh.github.io/pm-os](https://vittobh.github.io/pm-os) |
-| PM Onboarding | [vittobh.github.io/pm-os/onboarding](https://vittobh.github.io/pm-os/onboarding/) |
-| CuCP Slide Deck | [vittobh.github.io/pm-os/cucp/presentation.html](https://vittobh.github.io/pm-os/cucp/presentation.html) |
-| Teams Tab | [vittobh.github.io/pm-os/onboarding/teams.html](https://vittobh.github.io/pm-os/onboarding/teams.html) |
+| Landing | [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os) |
+| PM Onboarding | [vvs-pm.github.io/pm-os/onboarding](https://vvs-pm.github.io/pm-os/onboarding/) |
+| CuCP Slide Deck | [vvs-pm.github.io/pm-os/cucp/presentation.html](https://vvs-pm.github.io/pm-os/cucp/presentation.html) |
+| Teams Tab | [vvs-pm.github.io/pm-os/onboarding/teams.html](https://vvs-pm.github.io/pm-os/onboarding/teams.html) |
 
 ---
 
@@ -132,7 +132,7 @@ pm-os builds on existing enterprise AI — it does not reinvent it:
 ## Getting Started
 
 ```bash
-git clone https://github.com/vittobh/pm-os.git
+git clone https://github.com/vvs-pm/pm-os.git
 cd pm-os
 # Set API credentials
 export ANTHROPIC_API_KEY=your_key
@@ -141,7 +141,7 @@ export CLOUDFLARE_API_TOKEN=your_token
 bash orchestrate.sh prds/00-pm-os-platform.md
 ```
 
-Or open the live onboarding: [vittobh.github.io/pm-os/onboarding](https://vittobh.github.io/pm-os/onboarding/)
+Or open the live onboarding: [vvs-pm.github.io/pm-os/onboarding](https://vvs-pm.github.io/pm-os/onboarding/)
 
 ---
 
@@ -151,4 +151,9 @@ Or open the live onboarding: [vittobh.github.io/pm-os/onboarding](https://vittob
 
 ---
 
-*Built by [Vignesh Vignesh S](https://github.com/vittobh) · Senior PM · AI / BFSI / Healthcare*
+*Built by [Vignesh AIPM](https://github.com/vvs-pm) · Senior PM · AI / BFSI / Healthcare*
+
+## Ownership
+
+- Organization: `vvs-pm`
+- Owner: Vignesh AIPM

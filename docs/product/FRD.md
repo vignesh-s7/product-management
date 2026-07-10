@@ -1,6 +1,6 @@
 # FRD — pm-os Platform (v0.4)
 
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** Draft v0.4
 **Linked SRS:** docs/product/SRS.md
 

@@ -99,7 +99,7 @@ def create_presentation(output_path):
 
     # Meta Section
     meta_items = [
-        ("Presented by", "Vignesh Vignesh S"),
+        ("Presented by", "Vignesh AIPM"),
         ("Role", "Sr. Lead, P&T Operations"),
         ("Programme", "Customer Collaboration (CuCP)"),
         ("Scope", "Days 1–90")

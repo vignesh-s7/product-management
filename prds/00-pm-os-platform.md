@@ -1,7 +1,7 @@
 # PRD 00 — pm-os Platform: AI-Native PM Operating System
 
 **Domain:** PM tooling · platform · B2B SaaS
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** Active · v0.4
 **Linked:** docs/product/SRS.md · docs/product/FRD.md · docs/product/ARCHITECTURE.md
 

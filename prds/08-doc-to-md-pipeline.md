@@ -1,7 +1,7 @@
 # PRD 08 — Doc to Markdown Pipeline
 
 **Domain:** DevTools · LLM context
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

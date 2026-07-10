@@ -1,7 +1,7 @@
 # PRD 06 — Awesome Regulated AI PM
 
 **Domain:** Curation · SEO
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

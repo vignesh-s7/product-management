@@ -4,7 +4,7 @@ This project follows the [Contributor Covenant v2.1](https://www.contributor-cov
 
 ## Reporting
 
-Concerns → Vignesh2025@gmail.com. All reports handled confidentially.
+Concerns → vigneshaipm@gmail.com. All reports handled confidentially.
 
 ## Enforcement
 

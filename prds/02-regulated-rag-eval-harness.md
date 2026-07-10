@@ -1,7 +1,7 @@
 # PRD 02 — Regulated RAG Eval Harness
 
 **Domain:** Eval · BFSI · Healthcare
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

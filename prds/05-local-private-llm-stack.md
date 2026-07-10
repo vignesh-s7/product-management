@@ -1,7 +1,7 @@
 # PRD 05 — Local Private LLM Stack
 
 **Domain:** Regulated AI · Privacy
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem

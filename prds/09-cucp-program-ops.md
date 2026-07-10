@@ -1,7 +1,7 @@
 # PRD 09 — CuCP 90-Day Rollout: Customer Collaboration Program Operationalisation
 
 **Domain:** P&T Operations · Program Management
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP · Coupa Sr. Lead P&T Operations — Case Study
 **Live Deck:** [docs/cucp/presentation.html](../docs/cucp/presentation.html)
 
@@ -71,7 +71,7 @@ on risk/complexity/operational impact.
 A 90-day plan to implement and scale the Customer Collaboration Program — from paper
 framework to predictable launch engine.
 
-**Presented by:** Vignesh Vignesh S · Sr. Lead, P&T Operations · Coupa
+**Presented by:** Vignesh AIPM · Sr. Lead, P&T Operations · Coupa
 
 ---
 

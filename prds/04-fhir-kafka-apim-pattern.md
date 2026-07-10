@@ -1,7 +1,7 @@
 # PRD 04 — FHIR + Kafka + APIM Pattern
 
 **Domain:** Healthcare interop
-**Author:** Vignesh Vignesh S
+**Author:** Vignesh AIPM
 **Status:** MVP
 
 ## Problem
