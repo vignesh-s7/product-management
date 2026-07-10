@@ -1,6 +1,14 @@
 # pm-os — AI-Native PM Operating System
 
 **Author:** Vignesh Vignesh S · Senior PM · AI / BFSI / Healthcare
+## About
+
+**pm-os** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Manager, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Manager for teams shipping AI features in regulated industries.
+
+**Live application:** https://vittobh.github.io/pm-os/
+
+---
+
 **Live:** [vittobh.github.io/pm-os](https://vittobh.github.io/pm-os)
 **Status:** Active · v0.4
 
