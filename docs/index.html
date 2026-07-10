@@ -43,10 +43,16 @@ body{font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh;padding:
 .featured-banner p{font-size:13px;color:#94A3B8;line-height:1.6}
 .btn-demo{padding:12px 28px;border-radius:12px;background:linear-gradient(135deg,#6366F1,#7C3AED);color:#fff;font-size:14px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 2px 14px rgba(99,102,241,.4);transition:all .2s}
 .btn-demo:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(99,102,241,.5)}
+.demo-data{position:fixed;z-index:10;top:12px;right:12px;background:#172B4D;color:#fff;border:1px solid #334155;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:700;box-shadow:0 2px 8px rgba(15,23,42,.2)}
+.skip-link{position:absolute;left:-9999px;top:8px;background:#fff;color:#172B4D;padding:8px 12px;border-radius:6px;z-index:20}
+.skip-link:focus{left:8px}
+:focus-visible{outline:3px solid #F59E0B;outline-offset:3px}
 </style>
 </head>
 <body>
-<div class="shell">
+<a class="skip-link" href="#portfolio-main">Skip to content</a>
+<div class="demo-data" aria-label="Portfolio demonstration using sample data">DEMO DATA</div>
+<div class="shell" id="portfolio-main">
   <div class="hero">
     <div class="logo">pm</div>
     <h1>The <span>AI-Native</span> PM<br>Operating System</h1>
@@ -60,9 +66,9 @@ body{font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh;padding:
   <!-- FEATURED DEMO BANNER -->
   <div class="featured-banner">
     <div class="fl">
-      <span class="badge">ALL PHASES LIVE</span>
+      <span class="badge">INTERACTIVE PORTFOLIO DEMO</span>
       <h2>Full Platform Demo</h2>
-      <p>Search KB &middot; AI Chat &middot; Reports &middot; Discovery Engine &middot; Client Workspace &mdash; all running with mock data. No login required.</p>
+      <p>Search KB &middot; AI Chat &middot; Reports &middot; Discovery Engine &middot; Client Workspace &mdash; simulated with sample data. No login required.</p>
     </div>
     <a href="app/" class="btn-demo">&#9654; Launch Platform</a>
   </div>
@@ -141,34 +147,5 @@ body{font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh;padding:
     <a href="https://github.com/vvs-pm/pm-os">github.com/vvs-pm/pm-os</a>
   </div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const session = localStorage.getItem('pm_os_session');
-  if (session) {
-    try {
-      const user = JSON.parse(session);
-      const heroBtns = document.querySelector('.hero-btns');
-      if (heroBtns) {
-        heroBtns.innerHTML = `
-          <a href="app/index.html" class="btn-primary">&#128202; Go to Dashboard</a>
-          <a href="#" class="btn-outline" id="sign-out-btn">&#128274; Sign Out (${user.name})</a>
-        `;
-        document.getElementById('sign-out-btn').addEventListener('click', (e) => {
-          e.preventDefault();
-          localStorage.removeItem('pm_os_session');
-          window.location.reload();
-        });
-      }
-      const demoBtn = document.querySelector('.btn-demo');
-      if (demoBtn) {
-        demoBtn.innerHTML = '&#9654; Go to Dashboard';
-        demoBtn.href = 'app/';
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-});
-</script>
 </body>
 </html>

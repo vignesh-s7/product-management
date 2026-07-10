@@ -1,40 +1,31 @@
-# Limitations & API Key Requirements
+# Demo Limitations and Production Boundary
 
-This prototype is **front-end-only with mock data**. Real AI features require API keys and (for most calls) a server-side proxy due to browser CORS.
+PM-OS is a static, front-end portfolio demonstration. It uses sample data and does not authenticate users, call AI providers, connect enterprise tools, or persist data outside the current browser.
 
-## API keys (stored in browser localStorage only — never on a server)
+## What the demo does
 
-Open browser DevTools → Console and run **one** of:
+| Capability | Demo behavior |
+|---|---|
+| Onboarding | Configures a sample workspace in memory |
+| Kanban and client workspace | Stores validated demo state in browser `localStorage` |
+| AI chat and discovery | Returns fixed sample responses; no model is called |
+| Jira, Confluence, Microsoft 365, Google Workspace | Shows proposed integration UX only |
+| Reports | Renders sample metrics only |
+| Authentication | None; "Enter Demo" opens a public static experience |
 
-```js
-localStorage.setItem('ANTHROPIC_API_KEY', 'sk-ant-...');
-localStorage.setItem('OPENAI_API_KEY',    'sk-...');
-localStorage.setItem('GEMINI_API_KEY',    'AIza...');
-localStorage.setItem('GROK_API_KEY',      'xai-...');
-```
+Do not enter confidential, customer, credential, or production information.
 
-Then reload. The "Live AI" badge will appear and supported buttons will attempt real calls.
+## Credential policy
 
-## CORS reality (2026)
-- **Anthropic Messages API** — supports CORS for `anthropic-dangerous-direct-browser-access: true`, but for production you should proxy via your own server.
-- **OpenAI / Gemini / Grok** — generally block direct browser calls; need a server proxy or Cloudflare Worker.
-- **Whisper / Ollama / vLLM** — local; require a backend you run yourself.
+Provider credentials must never be stored in browser code, browser storage, repository files, or public GitHub Actions logs. A production implementation must keep credentials in a managed server-side secret store and expose only narrowly scoped backend endpoints.
 
-## What's mocked vs real in this prototype
-| Capability | Status | Becomes real with |
-|---|---|---|
-| All forms / mock data | ✅ works locally | — |
-| LLM calls | 🔶 mock by default | Anthropic key + browser-direct flag, or proxy |
-| Voice (Whisper) | 🔶 Web Speech API fallback | Run Whisper locally |
-| Vector RAG | 🔶 mocked | Qdrant / pgvector + embeddings provider |
-| Third-party integrations (Stripe, Jira, Square, Twilio, Health Connect) | 🔶 mocked | OAuth setup + server |
-| Persistence | 🔶 in-memory only | SQLite / Postgres backend |
+## Production requirements
 
-## Recommended path to production
-1. Front this prototype with a small FastAPI / Cloudflare Worker proxy.
-2. Inject API keys server-side; clients never see them.
-3. Replace mock data with real persistence.
-4. Wire MCP servers for the third-party integrations.
-5. Add Promptfoo / Langfuse for eval + observability.
+1. Add a backend authorization boundary and a supported identity provider.
+2. Enforce tenant isolation and role checks server-side.
+3. Replace sample integrations with audited OAuth applications and scoped tokens.
+4. Store durable product data in an access-controlled database.
+5. Add provider timeouts, retries, cost limits, evidence metadata, and human approval gates.
+6. Run security, accessibility, migration, and end-to-end release checks before deployment.
 
-See **`AI_USE_CASES.md`** for the full agentic upgrade plan.
+See `AI_USE_CASES.md` and `ROADMAP.md` for planned architecture. Planned features are not live capabilities.

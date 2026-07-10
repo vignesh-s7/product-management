@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-(function() {
-  const session = localStorage.getItem('pm_os_session');
-  if (!session) {
-    window.location.href = '../auth.html?return_to=app/index.html';
-  }
-})();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PM-OS Platform | Full Demo</title>
@@ -149,7 +141,7 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 .msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700}
 .msg.assistant .msg-avatar{background:var(--accent2);color:#fff}
 .msg.user .msg-avatar{background:#e5e7eb;color:var(--text)}
-.msg-body{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.6;color:var(--text)}
+.msg-body{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.6;color:var(--text);white-space:pre-wrap}
 .msg.user .msg-body{background:var(--jira-blue-light);border-color:#b3d4ff;color:#0747a6}
 .msg-sources{margin-top:8px;font-size:11px;color:var(--muted)}
 .msg-sources span{background:#fff;border:1px solid var(--border);border-radius:4px;padding:2px 6px;margin-right:4px}
@@ -279,9 +271,23 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 .auto-hint{background:rgba(54,179,126,.05);border:1px solid rgba(54,179,126,.15);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--green);margin-bottom:16px;display:none}
 .auto-hint.show{display:block}
+.demo-data{position:fixed;z-index:100;right:14px;bottom:14px;background:#172B4D;color:#fff;border:1px solid #334155;border-radius:8px;padding:7px 11px;font-size:10px;font-weight:700;box-shadow:0 2px 8px rgba(15,23,42,.25)}
+.skip-link{position:fixed;left:-9999px;top:8px;background:#fff;color:#172B4D;border:2px solid #0052CC;padding:8px 12px;border-radius:6px;z-index:101}
+.skip-link:focus{left:8px}
+:focus-visible{outline:3px solid #F59E0B;outline-offset:3px}
+button.qa-card,button.auto-toggle,button.add-kcard,button.acc-header,button.toggle{font:inherit;text-align:left}
+button.qa-card{width:100%}
+button.auto-toggle{border:0}
+button.add-kcard{width:100%;background:transparent;border:0}
+button.acc-header{width:100%;border:0}
+button.toggle{border:0;padding:0}
+.move-controls{display:flex;gap:4px;margin-left:8px}
+.move-controls button{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:4px;padding:3px 6px;cursor:pointer}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#workspace-content">Skip to workspace</a>
+<div class="demo-data" aria-label="Portfolio demonstration using sample data">DEMO DATA</div>
 
 <!-- SIDEBAR -->
 <aside id="sidebar">
@@ -291,7 +297,7 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
   </div>
   <nav>
     <div class="nav-section">Workspace</div>
-    <a href="#" class="active" data-section="dashboard"><span class="icon">&#9632;</span> Dashboard</a>
+    <a href="#" class="active" data-section="dashboard" aria-current="page"><span class="icon">&#9632;</span> Dashboard</a>
     <a href="#" data-section="kanban"><span class="icon">&#9723;</span> Kanban Board</a>
     <a href="#" data-section="search"><span class="icon">&#128269;</span> Search KB</a>
     <div class="nav-section">Intelligence</div>
@@ -307,26 +313,26 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
     <a href="../onboarding/">Onboarding Wizard</a>
     <a href="../cucp/presentation.html">CuCP Case Study</a>
     <a href="https://github.com/vvs-pm/pm-os" target="_blank">GitHub Repo</a>
-    <a href="#" id="logout-btn" onclick="logout(event)" style="color:var(--red);margin-top:8px;display:block;font-weight:600">&#128274; Sign Out</a>
+    <a href="../index.html" style="margin-top:8px;display:block;font-weight:600">Back to Portfolio</a>
     <div style="margin-top:8px;font-size:10px">v0.5 &mdash; DnD + Auto Mode</div>
   </div>
 </aside>
 
 <!-- MAIN -->
 <main id="main">
-  <div class="topbar">
+  <div class="topbar" id="workspace-content" tabindex="-1">
     <div>
       <h1 id="page-title">Dashboard</h1>
       <div class="meta" id="page-meta">PM-OS &mdash; All phases with DnD + Auto Mode</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
       <span class="auto-badge" id="auto-badge">AUTO ON</span>
-      <div class="auto-toggle" id="auto-toggle" onclick="toggleAutoMode()">
+      <button type="button" class="auto-toggle" id="auto-toggle" onclick="toggleAutoMode()" role="switch" aria-checked="false" aria-label="Toggle automatic demo activity">
         <div class="dot"></div>
         <span class="label">Auto Mode</span>
-      </div>
-      <span style="font-size:12px;color:var(--muted)" id="user-org">Acme Corp</span>
-      <div style="width:32px;height:32px;background:var(--badge-ai);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700" id="user-avatar">V</div>
+      </button>
+      <span style="font-size:12px;color:var(--muted)" id="user-org">Sample workspace</span>
+      <div style="width:32px;height:32px;background:var(--badge-ai);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700" id="user-avatar" title="Demo profile">D</div>
     </div>
   </div>
 
@@ -344,12 +350,12 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
       <div class="grid-2" style="margin-bottom:24px">
         <div class="card">
           <div class="card-title">Connected Tools</div>
-          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Atlassian Rovo</div><span class="status-badge connected">Connected</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128200;</span> Microsoft 365 Copilot</div><span class="status-badge connected">Connected</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Google Workspace + Gemini</div><span class="status-badge connected">Connected</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128202;</span> PowerBI + Copilot</div><span class="status-badge connected">Connected</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#9733;</span> Claude Sonnet 4.6</div><span class="status-badge connected">Active</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128101;</span> Microsoft Teams</div><span class="status-badge pending">Pending Auth</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Atlassian Rovo</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128200;</span> Microsoft 365 Copilot</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Google Workspace + Gemini</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128202;</span> PowerBI + Copilot</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#9733;</span> AI assistant</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128101;</span> Microsoft Teams</div><span class="status-badge pending">Not connected</span></div>
         </div>
         <div class="card">
           <div class="card-title">Recent Activity</div>
@@ -362,10 +368,10 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
       <div class="card">
         <div class="card-title">Quick Actions</div>
         <div class="qa-grid">
-          <div class="qa-card" onclick="navigate('kanban')"><div class="qa-icon">&#9723;</div><div class="qa-title">Kanban Board</div><div class="qa-desc">Drag and drop stories across Backlog, Sprint, Review, Done</div></div>
-          <div class="qa-card" onclick="navigate('chat')"><div class="qa-icon">&#9733;</div><div class="qa-title">Ask AI Assistant</div><div class="qa-desc">Generate PRDs, SWOT, competitor analysis, ROI models</div></div>
-          <div class="qa-card" onclick="navigate('discovery')"><div class="qa-icon">&#128270;</div><div class="qa-title">Discovery Engine</div><div class="qa-desc">Auto-generate market analysis for any domain</div></div>
-          <div class="qa-card" onclick="navigate('client')"><div class="qa-icon">&#128101;</div><div class="qa-title">Client Workspace</div><div class="qa-desc">Drag to reorder &amp; share curated artifact sets</div></div>
+          <button type="button" class="qa-card" onclick="navigate('kanban')"><span class="qa-icon">&#9723;</span><span class="qa-title">Kanban Board</span><span class="qa-desc">Move stories across Backlog, Sprint, Review, Done</span></button>
+          <button type="button" class="qa-card" onclick="navigate('chat')"><span class="qa-icon">&#9733;</span><span class="qa-title">Ask AI Assistant</span><span class="qa-desc">Explore simulated PRDs, SWOT, competitor analysis, and ROI models</span></button>
+          <button type="button" class="qa-card" onclick="navigate('discovery')"><span class="qa-icon">&#128270;</span><span class="qa-title">Discovery Engine</span><span class="qa-desc">Generate a sample market-analysis pack</span></button>
+          <button type="button" class="qa-card" onclick="navigate('client')"><span class="qa-icon">&#128101;</span><span class="qa-title">Client Workspace</span><span class="qa-desc">Reorder and preview a sample artifact set</span></button>
         </div>
       </div>
     </div>
@@ -595,6 +601,7 @@ function toggleAutoMode() {
   var toggle = document.getElementById('auto-toggle');
   var badge = document.getElementById('auto-badge');
   toggle.classList.toggle('on', autoMode);
+  toggle.setAttribute('aria-checked', String(autoMode));
   badge.classList.toggle('show', autoMode);
   // Show/hide all hints
   document.querySelectorAll('.auto-hint').forEach(function(h) {
@@ -630,7 +637,7 @@ function scheduleAutoChat() {
   setTimeout(function() {
     if (autoMode && document.getElementById('section-chat').classList.contains('active')) {
       var messages = document.getElementById('chat-messages');
-      messages.innerHTML += '<div class="msg assistant"><div class="msg-avatar">AI</div><div><div class="msg-body"><strong>Auto Mode insight:</strong> Based on your recent Jira activity (BFSI-204 in Review), I noticed the KYC acceptance criteria gap. Want me to generate a gap analysis?</div></div></div>';
+      appendChatMessage(messages, 'assistant', 'AI', 'Auto Mode insight: Sample Jira activity suggests a KYC acceptance-criteria gap. Want a demo gap analysis?');
       messages.scrollTop = messages.scrollHeight;
     }
   }, 3500);
@@ -651,10 +658,10 @@ function startAutoCuCP() {
             initCuCP();
             var hint = document.getElementById('cucp-auto-hint');
             if (hint) {
-              hint.innerHTML = 'Auto Mode &mdash; Telemetry verified: <strong>' + escHtml(gName) + '</strong> for ' + escHtml(item.name);
+              hint.textContent = 'Auto Mode demo: marked "' + gName + '" complete for ' + item.name + '.';
               setTimeout(function() {
                 if (autoMode) {
-                  hint.innerHTML = 'Auto Mode is ON &mdash; CuCP release gates are checking validation criteria automatically using live customer telemetry.';
+                  hint.textContent = 'Auto Mode is ON - sample release gates are changing automatically for demonstration.';
                 }
               }, 3000);
             }
@@ -697,9 +704,15 @@ document.querySelectorAll('nav a').forEach(function(a) {
 });
 
 function navigate(id) {
-  document.querySelectorAll('nav a').forEach(function(a) { a.classList.remove('active'); });
+  document.querySelectorAll('nav a').forEach(function(a) {
+    a.classList.remove('active');
+    a.removeAttribute('aria-current');
+  });
   var navEl = document.querySelector('nav a[data-section="' + id + '"]');
-  if (navEl) navEl.classList.add('active');
+  if (navEl) {
+    navEl.classList.add('active');
+    navEl.setAttribute('aria-current', 'page');
+  }
   document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
   var sec = document.getElementById('section-' + id);
   if (sec) sec.classList.add('active');
@@ -719,14 +732,26 @@ function navigate(id) {
 // ==============================================================
 // KANBAN DnD
 // ==============================================================
-var kanbanData = null;
-try {
-  var savedKanban = localStorage.getItem('pm_os_kanban');
-  if (savedKanban) kanbanData = JSON.parse(savedKanban);
-} catch (e) { console.error(e); }
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
 
-if (!kanbanData) {
-  kanbanData = {
+function readLocalJSON(key, maxBytes) {
+  try {
+    var raw = localStorage.getItem(key);
+    if (!raw || raw.length > maxBytes) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    localStorage.removeItem(key);
+    return null;
+  }
+}
+
+function isBoundedString(value, maxLength) {
+  return typeof value === 'string' && value.length > 0 && value.length <= maxLength;
+}
+
+var defaultKanban = {
     backlog: [
       {id:'BFSI-208', title:'Aadhaar OTP fallback for eKYC edge cases', sp:3, domain:'bfsi', priority:'high', assignee:'PR'},
       {id:'KYC-15',   title:'Video KYC session timeout handling',          sp:2, domain:'bfsi', priority:'med', assignee:'RK'},
@@ -748,7 +773,26 @@ if (!kanbanData) {
       {id:'KYC-10',   title:'Liveness detection API integration',          sp:8, domain:'bfsi', priority:'high', assignee:'PR'}
     ]
   };
+
+function isKanbanCard(card) {
+  return isPlainObject(card) &&
+    isBoundedString(card.id, 20) && /^[A-Z0-9-]+$/.test(card.id) &&
+    isBoundedString(card.title, 160) &&
+    Number.isInteger(card.sp) && card.sp >= 1 && card.sp <= 13 &&
+    ['bfsi', 'healthcare', 'saas'].includes(card.domain) &&
+    ['high', 'med', 'low'].includes(card.priority) &&
+    isBoundedString(card.assignee, 3) && /^[A-Z]{1,3}$/.test(card.assignee);
 }
+
+function isKanbanState(value) {
+  var columns = ['backlog', 'sprint', 'review', 'done'];
+  return isPlainObject(value) && Object.keys(value).length === columns.length && columns.every(function(column) {
+    return Array.isArray(value[column]) && value[column].length <= 50 && value[column].every(isKanbanCard);
+  });
+}
+
+var savedKanban = readLocalJSON('pm_os_kanban', 50000);
+var kanbanData = isKanbanState(savedKanban) ? savedKanban : defaultKanban;
 
 function saveKanbanToLocal() {
   try {
@@ -768,24 +812,42 @@ var dragFromCol = null;
 
 function initKanban() {
   var board = document.getElementById('kanban-board');
-  board.innerHTML = '';
+  board.replaceChildren();
   Object.keys(kanbanData).forEach(function(colId) {
     var col = document.createElement('div');
     col.className = 'kanban-col';
     col.dataset.col = colId;
     var meta = colMeta[colId];
     var cards = kanbanData[colId];
-    col.innerHTML =
-      '<div class="kanban-col-header">' +
-        '<span class="col-title" style="color:' + meta.color + '">' + meta.label + '</span>' +
-        '<span class="col-count">' + cards.length + '</span>' +
-      '</div>' +
-      '<div class="kanban-cards" id="col-' + colId + '" ' +
-        'ondragover="event.preventDefault();this.classList.add(\'drag-over-col\')" ' +
-        'ondragleave="this.classList.remove(\'drag-over-col\')" ' +
-        'ondrop="dropCard(event,\'' + colId + '\')">' +
-      '</div>' +
-      '<div class="add-kcard" onclick="addCardToCol(\'' + colId + '\')">+ Add story</div>';
+
+    var header = document.createElement('div');
+    header.className = 'kanban-col-header';
+    var title = document.createElement('span');
+    title.className = 'col-title';
+    title.style.color = meta.color;
+    title.textContent = meta.label;
+    var count = document.createElement('span');
+    count.className = 'col-count';
+    count.textContent = String(cards.length);
+    header.append(title, count);
+
+    var cardList = document.createElement('div');
+    cardList.className = 'kanban-cards';
+    cardList.id = 'col-' + colId;
+    cardList.setAttribute('aria-label', meta.label + ' stories');
+    cardList.addEventListener('dragover', function(event) {
+      event.preventDefault();
+      cardList.classList.add('drag-over-col');
+    });
+    cardList.addEventListener('dragleave', function() { cardList.classList.remove('drag-over-col'); });
+    cardList.addEventListener('drop', function(event) { dropCard(event, colId); });
+
+    var addButton = document.createElement('button');
+    addButton.type = 'button';
+    addButton.className = 'add-kcard';
+    addButton.textContent = '+ Add story';
+    addButton.addEventListener('click', function() { addCardToCol(colId); });
+    col.append(header, cardList, addButton);
     board.appendChild(col);
   });
   Object.keys(kanbanData).forEach(function(colId) {
@@ -800,18 +862,45 @@ function renderCard(card, colId) {
   if (!container) return;
   var el = document.createElement('div');
   el.className = 'kcard';
-  el.id = 'kcard-' + card.id;
+  el.id = 'kcard-' + card.id.replace(/[^A-Z0-9-]/g, '');
   el.draggable = true;
-  el.innerHTML =
-    '<div class="kcard-priority ' + card.priority + '"></div>' +
-    '<div class="kcard-title">' + card.id + ': ' + card.title + '</div>' +
-    '<div class="kcard-meta">' +
-      '<div class="kcard-tags"><span class="kcard-tag ' + card.domain + '">' + card.domain.toUpperCase() + '</span></div>' +
-      '<div style="display:flex;align-items:center;gap:6px">' +
-        '<span class="kcard-sp">' + card.sp + ' SP</span>' +
-        '<span class="kcard-assignee" style="background:' + assigneeColor(card.assignee) + '">' + card.assignee + '</span>' +
-      '</div>' +
-    '</div>';
+  el.tabIndex = 0;
+  var priority = document.createElement('div');
+  priority.className = 'kcard-priority ' + card.priority;
+  var title = document.createElement('div');
+  title.className = 'kcard-title';
+  title.textContent = card.id + ': ' + card.title;
+  var meta = document.createElement('div');
+  meta.className = 'kcard-meta';
+  var tags = document.createElement('div');
+  tags.className = 'kcard-tags';
+  var tag = document.createElement('span');
+  tag.className = 'kcard-tag ' + card.domain;
+  tag.textContent = card.domain.toUpperCase();
+  tags.appendChild(tag);
+  var detail = document.createElement('div');
+  detail.style.cssText = 'display:flex;align-items:center;gap:6px';
+  var points = document.createElement('span');
+  points.className = 'kcard-sp';
+  points.textContent = card.sp + ' SP';
+  var assignee = document.createElement('span');
+  assignee.className = 'kcard-assignee';
+  assignee.style.background = assigneeColor(card.assignee);
+  assignee.textContent = card.assignee;
+  detail.append(points, assignee);
+  meta.append(tags, detail);
+
+  var controls = document.createElement('div');
+  controls.className = 'move-controls';
+  [-1, 1].forEach(function(direction) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = direction < 0 ? 'Move left' : 'Move right';
+    button.setAttribute('aria-label', button.textContent + ': ' + card.title);
+    button.addEventListener('click', function() { moveCard(card.id, colId, direction); });
+    controls.appendChild(button);
+  });
+  el.append(priority, title, meta, controls);
   el.addEventListener('dragstart', function(e) {
     dragCard = card;
     dragFromCol = colId;
@@ -839,15 +928,30 @@ function dropCard(e, targetCol) {
   initKanban();
 }
 
+function moveCard(cardId, sourceCol, direction) {
+  var columns = Object.keys(colMeta);
+  var targetIndex = columns.indexOf(sourceCol) + direction;
+  if (targetIndex < 0 || targetIndex >= columns.length) return;
+  var cardIndex = kanbanData[sourceCol].findIndex(function(card) { return card.id === cardId; });
+  if (cardIndex < 0) return;
+  var moved = kanbanData[sourceCol].splice(cardIndex, 1)[0];
+  kanbanData[columns[targetIndex]].push(moved);
+  saveKanbanToLocal();
+  initKanban();
+}
+
 function addCard() { addCardToCol('backlog'); }
 function addCardToCol(colId) {
   var title = prompt('Story title:');
   if (!title) return;
-  var sp = parseInt(prompt('Story points (1-13):') || '3');
+  title = title.trim().slice(0, 160);
+  if (!title) return;
+  var sp = parseInt(prompt('Story points (1-13):') || '3', 10);
+  if (!Number.isInteger(sp) || sp < 1 || sp > 13) sp = 3;
   var domains = ['bfsi','healthcare','saas'];
   var domain = domains[Math.floor(Math.random() * domains.length)];
   var id = 'NEW-' + Math.floor(Math.random() * 900 + 100);
-  kanbanData[colId].push({id: id, title: title, sp: sp || 3, domain: domain, priority: 'med', assignee: 'VG'});
+  kanbanData[colId].push({id: id, title: title, sp: sp, domain: domain, priority: 'med', assignee: 'VG'});
   saveKanbanToLocal();
   initKanban();
 }
@@ -997,13 +1101,41 @@ function sendSuggestion(text) {
   sendChat();
 }
 
+function appendChatMessage(messages, kind, avatarText, bodyText, sources, id) {
+  var message = document.createElement('div');
+  message.className = 'msg ' + kind;
+  if (id) message.id = id;
+  var avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = avatarText;
+  var bodyWrap = document.createElement('div');
+  var body = document.createElement('div');
+  body.className = 'msg-body';
+  body.textContent = bodyText;
+  bodyWrap.appendChild(body);
+  if (Array.isArray(sources) && sources.length) {
+    var sourceList = document.createElement('div');
+    sourceList.className = 'msg-sources';
+    sourceList.appendChild(document.createTextNode('Sample sources: '));
+    sources.slice(0, 10).forEach(function(source) {
+      var chip = document.createElement('span');
+      chip.textContent = String(source).slice(0, 120);
+      sourceList.appendChild(chip);
+    });
+    bodyWrap.appendChild(sourceList);
+  }
+  message.append(avatar, bodyWrap);
+  messages.appendChild(message);
+  return message;
+}
+
 function sendChat() {
   var input = document.getElementById('chat-input');
   var text = input.value.trim();
   if (!text) return;
   input.value = '';
   var messages = document.getElementById('chat-messages');
-  messages.innerHTML += '<div class="msg user"><div class="msg-avatar">V</div><div><div class="msg-body">' + escHtml(text) + '</div></div></div>';
+  appendChatMessage(messages, 'user', 'You', text.slice(0, 2000));
   messages.scrollTop = messages.scrollHeight;
   var lower = text.toLowerCase();
   var match = null;
@@ -1016,14 +1148,14 @@ function sendChat() {
   }
   if (!match) match = {response:'I can help with: KYC PRDs, SWOT analysis, competitor research, ROI models, compliance checklists, and SaaS discovery. Try one of the suggestions above!', sources:[]};
   var typingId = 'typing-' + Date.now();
-  messages.innerHTML += '<div class="msg assistant" id="' + typingId + '"><div class="msg-avatar">AI</div><div><div class="msg-body"><span class="typing-cursor">|</span></div></div></div>';
+  appendChatMessage(messages, 'assistant', 'AI', '|', [], typingId);
   messages.scrollTop = messages.scrollHeight;
   setTimeout(function() {
     var el = document.getElementById(typingId);
     if (!el) return;
-    var fmt = match.response.replace(/\n\n/g,'</p><p style="margin-top:8px">').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-    var sourcesHtml = match.sources && match.sources.length ? '<div class="msg-sources">Sources: ' + match.sources.map(function(s){return '<span>'+s+'</span>';}).join('') + '</div>' : '';
-    el.querySelector('.msg-body').innerHTML = '<p>' + fmt + '</p>' + sourcesHtml;
+    var response = String(match.response).replace(/\*\*/g, '');
+    var replacement = appendChatMessage(messages, 'assistant', 'AI', response, match.sources);
+    el.replaceWith(replacement);
     messages.scrollTop = messages.scrollHeight;
   }, 900);
 }
@@ -1142,19 +1274,39 @@ function runDiscovery() {
       {key:'compliance',label:'Compliance Checklist',icon:'&#9989;'},
       {key:'gtm',label:'GTM Strategy',icon:'&#128640;'}
     ];
-    results.innerHTML = sects.map(function(s, i) {
-      var content = pack[s.key] || 'No data for this domain.';
-      var fmt = content.replace(/\n\n/g,'</p><p style="margin-top:8px">').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-      return '<div class="acc-item' + (i === 0 ? ' open' : '') + '">' +
-        '<div class="acc-header" onclick="toggleAcc(this)"><span>' + s.icon + ' ' + s.label + '</span><span class="chevron">&#9654;</span></div>' +
-        '<div class="acc-body"><p>' + fmt + '</p>' +
-        '<div style="margin-top:12px;display:flex;gap:8px">' +
-          '<button class="btn-sm primary">Clone to KB</button>' +
-          '<button class="btn-sm">Export to Confluence</button>' +
-          '<button class="btn-sm">Add to Client WS</button>' +
-        '</div></div>' +
-      '</div>';
-    }).join('');
+    results.replaceChildren();
+    sects.forEach(function(section, index) {
+      var item = document.createElement('div');
+      item.className = 'acc-item' + (index === 0 ? ' open' : '');
+      var header = document.createElement('button');
+      header.type = 'button';
+      header.className = 'acc-header';
+      header.setAttribute('aria-expanded', String(index === 0));
+      header.addEventListener('click', function() { toggleAcc(header); });
+      var label = document.createElement('span');
+      label.textContent = section.label;
+      var chevron = document.createElement('span');
+      chevron.className = 'chevron';
+      chevron.textContent = '>';
+      header.append(label, chevron);
+      var body = document.createElement('div');
+      body.className = 'acc-body';
+      var content = document.createElement('p');
+      content.style.whiteSpace = 'pre-wrap';
+      content.textContent = String(pack[section.key] || 'No data for this domain.').replace(/\*\*/g, '');
+      var actions = document.createElement('div');
+      actions.style.cssText = 'margin-top:12px;display:flex;gap:8px;flex-wrap:wrap';
+      ['Clone to KB', 'Export to Confluence', 'Add to Client WS'].forEach(function(action, actionIndex) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn-sm' + (actionIndex === 0 ? ' primary' : '');
+        button.textContent = action + ' (demo)';
+        actions.appendChild(button);
+      });
+      body.append(content, actions);
+      item.append(header, body);
+      results.appendChild(item);
+    });
     results.classList.add('show');
   }, 2400);
 }
@@ -1162,21 +1314,21 @@ function runDiscovery() {
 function toggleAcc(header) {
   var item = header.parentElement;
   var wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.acc-item').forEach(function(i) { i.classList.remove('open'); });
-  if (!wasOpen) item.classList.add('open');
+  document.querySelectorAll('.acc-item').forEach(function(i) {
+    i.classList.remove('open');
+    var button = i.querySelector('.acc-header');
+    if (button) button.setAttribute('aria-expanded', 'false');
+  });
+  if (!wasOpen) {
+    item.classList.add('open');
+    header.setAttribute('aria-expanded', 'true');
+  }
 }
 
 // ==============================================================
 // CLIENT WORKSPACE (DnD)
 // ==============================================================
-var artifacts = null;
-try {
-  var savedArtifacts = localStorage.getItem('pm_os_artifacts');
-  if (savedArtifacts) artifacts = JSON.parse(savedArtifacts);
-} catch (e) { console.error(e); }
-
-if (!artifacts) {
-  artifacts = [
+var defaultArtifacts = [
     {id:1, name:'KYC Platform PRD v2.1',            meta:'Confluence · BFSI · Updated 2 days ago',     on:true},
     {id:2, name:'Digital Lending SWOT Analysis',     meta:'Google Drive · BFSI · Updated 3 days ago',   on:true},
     {id:3, name:'Sprint Velocity Report Q2 2026',    meta:'PowerBI · Delivery · Updated today',         on:true},
@@ -1184,7 +1336,16 @@ if (!artifacts) {
     {id:5, name:'ROI Model: Digital KYC',            meta:'SharePoint · BFSI · Updated 5 days ago',     on:false},
     {id:6, name:'GTM Strategy Deck Q3 2026',         meta:'Google Drive · Delivery · Updated 4 days ago',on:true}
   ];
+
+function isArtifact(value) {
+  return isPlainObject(value) && Number.isInteger(value.id) && value.id > 0 && value.id <= 100000 &&
+    isBoundedString(value.name, 160) && isBoundedString(value.meta, 240) && typeof value.on === 'boolean';
 }
+
+var savedArtifacts = readLocalJSON('pm_os_artifacts', 50000);
+var artifacts = Array.isArray(savedArtifacts) && savedArtifacts.length <= 50 && savedArtifacts.every(isArtifact)
+  ? savedArtifacts
+  : defaultArtifacts;
 
 function saveArtifactsToLocal() {
   try {
@@ -1197,24 +1358,65 @@ var artDragFrom = null;
 
 function renderArtifacts() {
   var list = document.getElementById('artifact-list');
-  list.innerHTML = artifacts.map(function(a, idx) {
-    return '<div class="artifact-row" draggable="true" data-idx="' + idx + '" ' +
-      'ondragstart="artDragStart(event,' + idx + ')" ' +
-      'ondragover="artDragOver(event,' + idx + ')" ' +
-      'ondrop="artDrop(event,' + idx + ')" ' +
-      'ondragend="artDragEnd()">' +
-      '<span class="drag-handle">&#8942;</span>' +
-      '<div class="artifact-info">' +
-        '<div class="artifact-name">' + a.name + '</div>' +
-        '<div class="artifact-meta">' + a.meta + '</div>' +
-      '</div>' +
-      '<div class="toggle-wrap">' +
-        '<span style="font-size:11px;color:var(--muted)">' + (a.on ? 'On' : 'Off') + '</span>' +
-        '<div class="toggle ' + (a.on ? 'on' : 'off') + '" onclick="toggleArtifact(' + idx + ')"></div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  list.replaceChildren();
+  artifacts.forEach(function(artifact, idx) {
+    var row = document.createElement('div');
+    row.className = 'artifact-row';
+    row.draggable = true;
+    row.dataset.idx = String(idx);
+    row.addEventListener('dragstart', function(event) { artDragStart(event, idx); });
+    row.addEventListener('dragover', function(event) { artDragOver(event, idx); });
+    row.addEventListener('drop', function(event) { artDrop(event, idx); });
+    row.addEventListener('dragend', artDragEnd);
+    var handle = document.createElement('span');
+    handle.className = 'drag-handle';
+    handle.setAttribute('aria-hidden', 'true');
+    handle.textContent = '::';
+    var info = document.createElement('div');
+    info.className = 'artifact-info';
+    var name = document.createElement('div');
+    name.className = 'artifact-name';
+    name.textContent = artifact.name;
+    var meta = document.createElement('div');
+    meta.className = 'artifact-meta';
+    meta.textContent = artifact.meta;
+    info.append(name, meta);
+    var controls = document.createElement('div');
+    controls.className = 'move-controls';
+    [-1, 1].forEach(function(direction) {
+      var move = document.createElement('button');
+      move.type = 'button';
+      move.textContent = direction < 0 ? 'Up' : 'Down';
+      move.setAttribute('aria-label', 'Move ' + artifact.name + ' ' + move.textContent.toLowerCase());
+      move.addEventListener('click', function() { moveArtifact(idx, direction); });
+      controls.appendChild(move);
+    });
+    var toggleWrap = document.createElement('div');
+    toggleWrap.className = 'toggle-wrap';
+    var state = document.createElement('span');
+    state.style.cssText = 'font-size:11px;color:var(--muted)';
+    state.textContent = artifact.on ? 'On' : 'Off';
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'toggle ' + (artifact.on ? 'on' : 'off');
+    toggle.setAttribute('role', 'switch');
+    toggle.setAttribute('aria-checked', String(artifact.on));
+    toggle.setAttribute('aria-label', 'Share ' + artifact.name);
+    toggle.addEventListener('click', function() { toggleArtifact(idx); });
+    toggleWrap.append(state, toggle);
+    row.append(handle, info, controls, toggleWrap);
+    list.appendChild(row);
+  });
   updateSharedCount();
+}
+
+function moveArtifact(idx, direction) {
+  var target = idx + direction;
+  if (target < 0 || target >= artifacts.length) return;
+  var moved = artifacts.splice(idx, 1)[0];
+  artifacts.splice(target, 0, moved);
+  saveArtifactsToLocal();
+  renderArtifacts();
 }
 
 function artDragStart(e, idx) {
@@ -1263,10 +1465,33 @@ function togglePreview() {
   var preview = document.getElementById('client-preview');
   preview.classList.toggle('show');
   if (preview.classList.contains('show')) {
-    var html = artifacts.filter(function(a) { return a.on; }).map(function(a) {
-      return '<div class="preview-item"><span style="font-size:18px">&#128196;</span><div><div style="font-weight:500;font-size:13px">' + escHtml(a.name) + '</div><div style="font-size:11px;color:var(--muted)">' + escHtml(a.meta) + '</div></div></div>';
-    }).join('');
-    document.getElementById('preview-artifacts').innerHTML = html || '<div style="color:var(--muted);text-align:center;padding:24px">No artifacts shared.</div>';
+    var container = document.getElementById('preview-artifacts');
+    container.replaceChildren();
+    var shared = artifacts.filter(function(artifact) { return artifact.on; });
+    if (!shared.length) {
+      var empty = document.createElement('div');
+      empty.style.cssText = 'color:var(--muted);text-align:center;padding:24px';
+      empty.textContent = 'No artifacts shared.';
+      container.appendChild(empty);
+      return;
+    }
+    shared.forEach(function(artifact) {
+      var item = document.createElement('div');
+      item.className = 'preview-item';
+      var icon = document.createElement('span');
+      icon.style.fontSize = '18px';
+      icon.textContent = 'Document';
+      var detail = document.createElement('div');
+      var name = document.createElement('div');
+      name.style.cssText = 'font-weight:500;font-size:13px';
+      name.textContent = artifact.name;
+      var meta = document.createElement('div');
+      meta.style.cssText = 'font-size:11px;color:var(--muted)';
+      meta.textContent = artifact.meta;
+      detail.append(name, meta);
+      item.append(icon, detail);
+      container.appendChild(item);
+    });
   }
 }
 
@@ -1274,32 +1499,11 @@ function togglePreview() {
 // INIT
 // ==============================================================
 window.addEventListener('load', function() {
-  const sessionStr = localStorage.getItem('pm_os_session');
-  if (sessionStr) {
-    try {
-      const user = JSON.parse(sessionStr);
-      const orgEl = document.getElementById('user-org');
-      const avatarEl = document.getElementById('user-avatar');
-      if (orgEl) orgEl.textContent = user.org || 'Acme Corp';
-      if (avatarEl) {
-        avatarEl.textContent = user.avatar || user.name.charAt(0);
-        avatarEl.title = user.name + ' (' + user.role + ')';
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
   filterSearch();
   renderArtifacts();
   initKanban();
   initCuCP();
 });
-
-function logout(e) {
-  e.preventDefault();
-  localStorage.removeItem('pm_os_session');
-  window.location.href = '../index.html';
-}
 
 // ==============================================================
 // CUCP GOVERNANCE
@@ -1349,22 +1553,31 @@ var defaultCuCP = [
   }
 ];
 
-var cucpData = null;
-try {
-  cucpData = JSON.parse(localStorage.getItem('pm_os_cucp'));
-} catch(e) {}
-if (!cucpData) {
-  cucpData = defaultCuCP;
+function isCuCPItem(item) {
+  if (!isPlainObject(item) || !isBoundedString(item.name, 160) ||
+      !['standard', 'ai'].includes(item.type) ||
+      !['EAP', 'LA', 'Open Beta', 'GA'].includes(item.phase) || !isPlainObject(item.gates)) return false;
+  var gateNames = Object.keys(item.gates);
+  return gateNames.length <= 20 && gateNames.every(function(name) {
+    return /^[A-Za-z0-9 ()/&.-]{1,80}$/.test(name) && typeof item.gates[name] === 'boolean';
+  });
 }
 
+var savedCuCP = readLocalJSON('pm_os_cucp', 50000);
+var cucpData = Array.isArray(savedCuCP) && savedCuCP.length <= 50 && savedCuCP.every(isCuCPItem)
+  ? savedCuCP
+  : defaultCuCP;
+
 function saveCuCPToLocal() {
-  localStorage.setItem('pm_os_cucp', JSON.stringify(cucpData));
+  try {
+    localStorage.setItem('pm_os_cucp', JSON.stringify(cucpData));
+  } catch (e) { console.error(e); }
 }
 
 function initCuCP() {
   var tbody = document.getElementById('cucp-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '';
+  tbody.replaceChildren();
   
   cucpData.forEach(function(item, idx) {
     var tr = document.createElement('tr');
@@ -1373,14 +1586,19 @@ function initCuCP() {
     // Name
     var tdName = document.createElement('td');
     tdName.style.padding = '12px 8px';
-    tdName.innerHTML = '<strong>' + escHtml(item.name) + '</strong>';
+    var name = document.createElement('strong');
+    name.textContent = item.name;
+    tdName.appendChild(name);
     tr.appendChild(tdName);
     
     // Type
     var tdType = document.createElement('td');
     tdType.style.padding = '12px 8px';
     var isAI = item.type === 'ai';
-    tdType.innerHTML = '<span class="pill ' + (isAI ? 'ai' : '') + '">' + (isAI ? 'AI Capability' : 'Standard') + '</span>';
+    var type = document.createElement('span');
+    type.className = 'pill' + (isAI ? ' ai' : '');
+    type.textContent = isAI ? 'AI Capability' : 'Standard';
+    tdType.appendChild(type);
     tr.appendChild(tdType);
     
     // Phase
@@ -1391,42 +1609,57 @@ function initCuCP() {
     else if (item.phase === 'LA') phaseClass = 'background:#DEEBFF;color:#0747A6;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
     else if (item.phase === 'Open Beta') phaseClass = 'background:#EAE6FF;color:#403294;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
     else if (item.phase === 'GA') phaseClass = 'background:#E3FCEF;color:#006644;font-weight:600;padding:2px 8px;border-radius:4px;font-size:11px';
-    tdPhase.innerHTML = '<span style="' + phaseClass + '">' + escHtml(item.phase) + '</span>';
+    var phase = document.createElement('span');
+    phase.style.cssText = phaseClass;
+    phase.textContent = item.phase;
+    tdPhase.appendChild(phase);
     tr.appendChild(tdPhase);
     
     // Gates
     var tdGates = document.createElement('td');
     tdGates.style.padding = '12px 8px';
-    var gatesHtml = '<div style="display:flex;flex-direction:column;gap:4px">';
+    var gates = document.createElement('div');
+    gates.style.cssText = 'display:flex;flex-direction:column;gap:4px';
     var allChecked = true;
     for (var gName in item.gates) {
       var isChecked = item.gates[gName];
       if (!isChecked) allChecked = false;
-      gatesHtml += '<label style="display:flex;align-items:center;gap:6px;cursor:pointer">' +
-                   '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="toggleCuCPGate(' + idx + ',\'' + escHtml(gName) + '\',this.checked)">' +
-                   '<span style="' + (isChecked ? 'color:var(--text)' : 'color:var(--muted);text-decoration:line-through') + '">' + escHtml(gName) + '</span>' +
-                   '</label>';
+      var label = document.createElement('label');
+      label.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer';
+      var checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = isChecked;
+      (function(gateName, input) {
+        input.addEventListener('change', function() { toggleCuCPGate(idx, gateName, input.checked); });
+      })(gName, checkbox);
+      var gateLabel = document.createElement('span');
+      gateLabel.style.cssText = isChecked ? 'color:var(--text)' : 'color:var(--muted);text-decoration:line-through';
+      gateLabel.textContent = gName;
+      label.append(checkbox, gateLabel);
+      gates.appendChild(label);
     }
-    gatesHtml += '</div>';
-    tdGates.innerHTML = gatesHtml;
+    tdGates.appendChild(gates);
     tr.appendChild(tdGates);
     
     // Status
     var tdStatus = document.createElement('td');
     tdStatus.style.padding = '12px 8px';
-    if (item.phase === 'GA') {
-      tdStatus.innerHTML = '<span class="status-badge connected">Live in Market</span>';
-    } else if (allChecked) {
-      tdStatus.innerHTML = '<span class="status-badge connected">Gate Approved</span>';
-    } else {
-      tdStatus.innerHTML = '<span class="status-badge pending">Gated Approval</span>';
-    }
+    var status = document.createElement('span');
+    status.className = 'status-badge ' + ((item.phase === 'GA' || allChecked) ? 'connected' : 'pending');
+    status.textContent = item.phase === 'GA' ? 'Sample: released' : (allChecked ? 'Sample: approved' : 'Sample: gated');
+    tdStatus.appendChild(status);
     tr.appendChild(tdStatus);
     
     // Delete
     var tdDelete = document.createElement('td');
     tdDelete.style.padding = '12px 8px';
-    tdDelete.innerHTML = '<button class="btn-sm" style="color:var(--red);border-color:var(--red);background:transparent" onclick="deleteCuCP(' + idx + ')">Delete</button>';
+    var deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'btn-sm';
+    deleteButton.style.cssText = 'color:var(--red);border-color:var(--red);background:transparent';
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', function() { deleteCuCP(idx); });
+    tdDelete.appendChild(deleteButton);
     tr.appendChild(tdDelete);
     
     tbody.appendChild(tr);

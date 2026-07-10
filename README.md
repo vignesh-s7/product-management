@@ -5,12 +5,14 @@
 
 **pm-os** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Manager, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Manager for teams shipping AI features in regulated industries.
 
-**Live application:** https://vvs-pm.github.io/pm-os/
+**Interactive portfolio demo:** https://vvs-pm.github.io/pm-os/
 
 ---
 
 **Live:** [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os)
-**Status:** Active · v0.4
+**Status:** Static portfolio demo · sample data · no authentication or live integrations
+
+> PM-OS demonstrates product workflows and UI concepts. It does not authenticate users, call AI providers, connect enterprise systems, or process production data. See [LIMITATIONS.md](LIMITATIONS.md).
 
 ---
 
@@ -129,19 +131,9 @@ pm-os builds on existing enterprise AI — it does not reinvent it:
 
 ---
 
-## Getting Started
+## Explore the Demo
 
-```bash
-git clone https://github.com/vvs-pm/pm-os.git
-cd pm-os
-# Set API credentials
-export ANTHROPIC_API_KEY=your_key
-export CLOUDFLARE_API_TOKEN=your_token
-# Run orchestrator against any PRD
-bash orchestrate.sh prds/00-pm-os-platform.md
-```
-
-Or open the live onboarding: [vvs-pm.github.io/pm-os/onboarding](https://vvs-pm.github.io/pm-os/onboarding/)
+Open [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os/) or the [sample onboarding flow](https://vvs-pm.github.io/pm-os/onboarding/). No account, API key, or external connection is required. Do not enter confidential information.
 
 ---
 
