@@ -1,37 +1,89 @@
-name: prd-pipeline
+name: PRD pipeline
 
 on:
-  push:
+  pull_request:
+    branches: [dev, main]
     paths:
-      - 'prds/**.md'
+      - "prds/*.md"
+  push:
+    branches: [main]
+    paths:
+      - "prds/*.md"
   workflow_dispatch:
     inputs:
       prd:
-        description: 'PRD path (e.g. prds/01-y-score-framework.md)'
+        description: "PRD path, for example prds/01-y-score-framework.md"
         required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prd-pipeline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  run-crew:
+  validate-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - name: Detect changed PRD
-        id: prd
-        run: |
-          if [ -n "${{ inputs.prd }}" ]; then
-            echo "path=${{ inputs.prd }}" >> $GITHUB_OUTPUT
-          else
-            echo "path=$(git diff --name-only HEAD^ HEAD | grep '^prds/.*\.md$' | head -1)" >> $GITHUB_OUTPUT
-          fi
-      - name: Run orchestrator
-        if: steps.prd.outputs.path != ''
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: ./orchestrate.sh "${{ steps.prd.outputs.path }}"
-      - name: Upload artifacts
-        if: steps.prd.outputs.path != ''
-        uses: actions/upload-artifact@v4
+      - name: Check out pull request
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
-          name: sdlc-output
+          fetch-depth: 0
+      - name: Validate changed PRD paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          while IFS= read -r path; do
+            [[ -z "$path" ]] && continue
+            found=1
+            [[ "$path" =~ ^prds/[A-Za-z0-9._-]+\.md$ ]] || { echo "Invalid PRD path" >&2; exit 1; }
+            [[ -f "$path" ]] || { echo "PRD file missing" >&2; exit 1; }
+          done < <(git diff --name-only --diff-filter=ACMRT "$BASE_SHA" "$HEAD_SHA" -- prds/)
+          [[ "$found" -eq 1 ]] || { echo "No changed PRD found" >&2; exit 1; }
+
+  trusted-run:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out trusted revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 2
+      - name: Select and validate PRD
+        id: prd
+        env:
+          INPUT_PRD: ${{ inputs.prd }}
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            prd="$INPUT_PRD"
+          else
+            prd="$(git diff --name-only --diff-filter=ACMRT "$BEFORE_SHA" "$GITHUB_SHA" -- prds/ | head -n 1)"
+          fi
+          [[ "$prd" =~ ^prds/[A-Za-z0-9._-]+\.md$ ]] || { echo "Invalid PRD path" >&2; exit 1; }
+          [[ -f "$prd" ]] || { echo "PRD file missing" >&2; exit 1; }
+          echo "path=$prd" >> "$GITHUB_OUTPUT"
+      - name: Run deterministic demo orchestrator
+        env:
+          PRD_PATH: ${{ steps.prd.outputs.path }}
+        shell: bash
+        run: ./orchestrate.sh "$PRD_PATH"
+      - name: Upload generated demo package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sdlc-output-${{ github.run_id }}
           path: outputs/
+          if-no-files-found: error
+          retention-days: 1
