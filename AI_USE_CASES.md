@@ -1,4 +1,4 @@
-# AI Use Cases (2026) — pm-os Console
+# AI Use Cases (2026) — productowner-skill Console
 
 The Console itself is the meta-AI use case. It composes:
 - **MetaGPT** (47K★) — Architect / Engineer / QA roles
@@ -27,7 +27,7 @@ The Console itself is the meta-AI use case. It composes:
 ## Cost envelope per PRD run
 | Stage | Tokens | Cost @ 2026 rates |
 |---|---|---|
-| PM Gate (Y-Score) | 2k / 500 | $0.01 |
+| PO Gate (Y-Score) | 2k / 500 | $0.01 |
 | Architect | 8k / 3k | $0.06 |
 | Engineer (OpenHands loop) | 30k / 10k | $0.25 |
 | QA (Promptfoo) | 5k / 1k | $0.03 |

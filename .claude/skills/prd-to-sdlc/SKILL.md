@@ -1,6 +1,6 @@
 ---
 name: prd-to-sdlc
-description: Convert a one-page PRD into a full SDLC artifact set — architecture, DB schema, code skeleton, eval harness, and deploy config — by routing through MetaGPT / OpenHands / Promptfoo with PM-grade guardrails baked in (Y-Score readiness, regulated-AI checks, anti-hallucination patterns).
+description: Convert a one-page PRD into a full SDLC artifact set — architecture, DB schema, code skeleton, eval harness, and deploy config — by routing through MetaGPT / OpenHands / Promptfoo with PO-grade guardrails baked in (Y-Score readiness, regulated-AI checks, anti-hallucination patterns).
 ---
 
 # prd-to-sdlc
@@ -11,7 +11,7 @@ A reusable Claude Skill that takes a PRD and produces a deployable SDLC bundle.
 - User says "turn this PRD into a project"
 - User says "scaffold the repo for [PRD path]"
 - User invokes `/prd-to-sdlc <prd.md>`
-- A new file lands in `prds/` on the `pm-os` repo
+- A new file lands in `prds/` on the `productowner-skill` repo
 
 ## Inputs
 | Field | Required | Notes |
@@ -22,7 +22,7 @@ A reusable Claude Skill that takes a PRD and produces a deployable SDLC bundle.
 
 ## Stages
 
-### 1. PM gate — Y-Score readiness
+### 1. PO gate — Y-Score readiness
 Score the PRD against 7 dimensions: problem clarity, target user, success metric, constraints, compliance, eval plan, rollback. Block if score < 70%. *See `.claude/skills/y-score-readiness/`.*
 
 ### 2. Architect
@@ -51,7 +51,7 @@ outputs/<slug>/
 ├── code/
 ├── evals/
 ├── wrangler.toml
-└── README.md            # auto-generated, attribution to pm-os + upstream
+└── README.md            # auto-generated, attribution to productowner-skill + upstream
 ```
 
 ## Guardrails (always on)

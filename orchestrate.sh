@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# pm-os orchestrator — thin shim that routes a PRD through upstream agent crews.
+# productowner-skill orchestrator — thin shim that routes a PRD through upstream agent crews.
 # Heavy lifting: MetaGPT (arch/code), OpenHands (autonomous coding), Promptfoo (eval).
 set -euo pipefail
 
@@ -11,12 +11,12 @@ NAME=$(basename "$PRD" .md | sed 's/^[0-9]*-//')
 OUT="outputs/$NAME"
 mkdir -p "$OUT"
 
-echo "▶ pm-os: $NAME"
+echo "▶ productowner-skill: $NAME"
 echo "  PRD: $PRD"
 echo "  Out: $OUT"
 
-# ── Stage 1: PM gate — Y-Score readiness check ──────────────────────────────
-echo "[1/6] PM gate — Y-Score readiness check"
+# ── Stage 1: PO gate — Y-Score readiness check ──────────────────────────────
+echo "[1/6] PO gate — Y-Score readiness check"
 # TODO: invoke .claude/skills/y-score-readiness/ via Claude
 cp "$PRD" "$OUT/PRD.md"
 

@@ -179,7 +179,7 @@ def create_presentation(output_path):
     p.font.color.rgb = COLOR_GREEN
     
     bullets_r = [
-        "Lead with PM pain — not programme goals",
+        "Lead with PO pain — not programme goals",
         "Find proto-champions already doing EAP work",
         "Make first experience frictionless — I absorb the admin",
         "Their story converts sceptics, mine doesn't"
@@ -305,7 +305,7 @@ def create_presentation(output_path):
     p.font.color.rgb = COLOR_BLUE
     
     p_g2 = tf_gov.add_paragraph()
-    p_g2.text = "The level of release gating must align to feature risk, complexity, and operational impact. Pre-GA (LA & Open Beta) phases are optional and variable. The PM determines if Phase 2 is required based on features."
+    p_g2.text = "The level of release gating must align to feature risk, complexity, and operational impact. Pre-GA (LA & Open Beta) phases are optional and variable. The PO determines if Phase 2 is required based on features."
     p_g2.font.name = 'Segoe UI'
     p_g2.font.size = Pt(12)
     p_g2.font.color.rgb = COLOR_DARK
@@ -332,7 +332,7 @@ def create_presentation(output_path):
             "I act as embedded CuCP Concierge",
             "Weekly retros — cut admin overhead",
             "Capture before/after evidence",
-            "Activate PM champions"
+            "Activate PO champions"
         ], "Playbook v1.0 + champion stories", COLOR_BLUE_LIGHT, COLOR_BLUE),
         ("Phase 3", "Days 61–90", "Scale & Institutionalise", COLOR_GREEN, [
             "All-hands enablement session",
@@ -414,7 +414,7 @@ def create_presentation(output_path):
     add_header(slide5, "Enablement & Support Model", "Four pillars that make CuCP stupidly easy to run — before it becomes expected.")
 
     pillars = [
-        ("🎯", "CuCP Concierge (Days 1–60)", "I act as the operational support for pilot PMs. They learn the process; I handle templates, customer invites, and exit criteria tracking. PM overhead: near zero.", "High-touch during pilot"),
+        ("🎯", "CuCP Concierge (Days 1–60)", "I act as the operational support for pilot PMs. They learn the process; I handle templates, customer invites, and exit criteria tracking. PO overhead: near zero.", "High-touch during pilot"),
         ("📋", "Playbook + Cheat Sheets", "Two 1-page cheat sheets: Standard capability path and AI capability path. Separate because their pre-GA goals, cohort sizes, and exit criteria differ meaningfully.", "Self-serve from Day 60"),
         ("💬", "#cucp-support + Office Hours", "Live Slack channel for real-time questions. Weekly 30-min open office hours for the first 90 days. PMs get answers in minutes, not days — reduces perceived friction.", "Async + sync support"),
         ("🏆", "Champion-Led Rollout", "Pilot PMs present at the all-hands enablement session — not me. Peer stories are far more credible than top-down messaging for converting sceptics.", "Peer credibility > authority")
@@ -503,12 +503,12 @@ def create_presentation(output_path):
         p.font.color.rgb = COLOR_MUTED
 
     rows_data = [
-        ("⭐ PM Satisfaction Score — \"Is CuCP helping?\"", "—", "≥ 4.0 / 5.0", "Post-pilot survey", "LEADING"),
+        ("⭐ PO Satisfaction Score — \"Is CuCP helping?\"", "—", "≥ 4.0 / 5.0", "Post-pilot survey", "LEADING"),
         ("% eligible releases using CuCP", "0% (ad-hoc)", "≥ 50%", "Release tracker", "LAGGING"),
         ("EAP → GA cycle time", "Measure Days 1–30", "No regression; –10%", "Release logs", "LAGGING"),
         ("Definition drift incidents", "Unmeasured", "Tracked; 0 in pilots", "EAP/LA retros", "LEADING"),
         ("Customer participation rate", "—", "≥ 70% invited engage", "CuCP tracker", "LAGGING"),
-        ("PM admin time per release cycle", "—", "< 2 hours", "PM self-report", "LEADING")
+        ("PO admin time per release cycle", "—", "< 2 hours", "PO self-report", "LEADING")
     ]
 
     for row_idx, row in enumerate(rows_data):
@@ -572,7 +572,7 @@ def create_presentation(output_path):
     
     bullets_v1 = [
         "≥ 50% eligible releases running CuCP",
-        "PM satisfaction score ≥ 4.0 / 5.0",
+        "PO satisfaction score ≥ 4.0 / 5.0",
         "2–3 champion PMs advocating internally",
         "Self-serve KB live — zero dependency on me"
     ]

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pm-os — PM Onboarding</title>
+<title>productowner-skill — PO Onboarding</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -129,8 +129,8 @@ button.chip{background-color:transparent}
 <div class="shell" id="onboarding-main">
 
   <div class="brand">
-    <div class="brand-icon">pm</div>
-    <div><span class="brand-name">pm-os</span><span class="brand-tag">AI-Native PM Platform</span></div>
+    <div class="brand-icon">PO</div>
+    <div><span class="brand-name">productowner-skill</span><span class="brand-tag">AI-Native PO Platform</span></div>
   </div>
 
   <!-- Progress: 6 steps -->
@@ -152,19 +152,19 @@ button.chip{background-color:transparent}
 
     <!-- STEP 1: Profile -->
     <div class="step active" id="step-1">
-      <h2>Welcome to pm-os 👋</h2>
+      <h2>Welcome to productowner-skill 👋</h2>
       <p class="sub">Configure a sample workspace in five steps. This portfolio demo does not create an account or connect external systems.</p>
       <div class="row">
-        <div class="field"><label for="pm-name">Full Name</label><input id="pm-name" maxlength="80" placeholder="Vignesh AIPM"></div>
+        <div class="field"><label for="PO-name">Full Name</label><input id="PO-name" maxlength="80" placeholder="Vignesh AIPM"></div>
         <div class="field"><label>Role</label>
-          <select id="pm-role">
-            <option>Product Manager</option><option>Senior PM</option>
-            <option>PM Lead / Manager</option><option>CPO / VP Product</option>
-            <option>P&T Ops Lead</option><option>Consultant PM</option>
+          <select id="PO-role">
+            <option>Product Owner</option><option>Senior PO</option>
+            <option>PO Lead / Manager</option><option>CPO / VP Product</option>
+            <option>P&T Ops Lead</option><option>Consultant PO</option>
           </select>
         </div>
       </div>
-      <div class="field"><label for="pm-org">Organisation</label><input id="pm-org" maxlength="120" placeholder="e.g. Example organisation"></div>
+      <div class="field"><label for="PO-org">Organisation</label><input id="PO-org" maxlength="120" placeholder="e.g. Example organisation"></div>
       <div class="field">
         <label>Domain Expertise <span style="font-weight:400;color:#94A3B8">(select all that apply)</span></label>
         <div class="chips" id="domain-chips">
@@ -258,9 +258,9 @@ button.chip{background-color:transparent}
             <li>Federated KB search</li>
             <li>Reuse artifact URLs</li>
             <li>PowerBI + Looker embed</li>
-            <li>PM templates library</li>
+            <li>PO templates library</li>
             <li>Client workspace view</li>
-            <li>Multi-PM org KB</li>
+            <li>Multi-PO org KB</li>
           </ul>
         </div>
         <div class="tier-card" id="tier-ai" onclick="selectTier('ai')">
@@ -286,7 +286,7 @@ button.chip{background-color:transparent}
     <!-- STEP 4: Project Setup -->
     <div class="step" id="step-4">
       <h2>Tell us about your project</h2>
-      <p class="sub">pm-os tailors your KB, templates, and compliance checks based on your project context.</p>
+      <p class="sub">productowner-skill tailors your KB, templates, and compliance checks based on your project context.</p>
 
       <div class="field">
         <label>Is this a new or existing project?</label>
@@ -346,7 +346,7 @@ button.chip{background-color:transparent}
     <!-- STEP 5: Goals, KPIs, Outputs -->
     <div class="step" id="step-5">
       <h2>Goals, KPIs & expected outputs</h2>
-      <p class="sub">pm-os uses this to pre-configure your discovery pack, reporting templates, and AI artifact suggestions.</p>
+      <p class="sub">productowner-skill uses this to pre-configure your discovery pack, reporting templates, and AI artifact suggestions.</p>
 
       <div class="field"><label>Primary Goal</label>
         <select id="goal-primary">
@@ -374,7 +374,7 @@ button.chip{background-color:transparent}
       </div>
 
       <div class="field">
-        <label>Outputs you need pm-os to generate</label>
+        <label>Outputs you need productowner-skill to generate</label>
         <div class="output-chips" id="output-chips">
           <div class="chip" onclick="toggleChip(this)">PRD</div>
           <div class="chip" onclick="toggleChip(this)">SWOT Analysis</div>
@@ -412,7 +412,7 @@ button.chip{background-color:transparent}
       <div style="text-align:center">
         <div class="ready-icon">✓</div>
         <h2 id="ready-heading">You're all set\!</h2>
-        <p class="sub" style="margin-bottom:4px">pm-os is configured. Your discovery pack is being prepared.</p>
+        <p class="sub" style="margin-bottom:4px">productowner-skill is configured. Your discovery pack is being prepared.</p>
       </div>
       <div class="actions-grid">
         <div class="action-card"><div class="a-icon">🔍</div><div class="a-label">Search KB</div></div>
@@ -501,9 +501,9 @@ function getSelectedKPIs() {
 }
 
 function buildSummary() {
-  const name = document.getElementById('pm-name').value.trim().slice(0, 80) || 'PM';
-  const org = document.getElementById('pm-org').value.trim().slice(0, 120) || 'your org';
-  const role = document.getElementById('pm-role').value;
+  const name = document.getElementById('PO-name').value.trim().slice(0, 80) || 'PO';
+  const org = document.getElementById('PO-org').value.trim().slice(0, 120) || 'your org';
+  const role = document.getElementById('PO-role').value;
   const prod = document.getElementById('prod-name').value.trim().slice(0, 120) || 'Not set';
   const domain = document.getElementById('prod-domain').value;
   const goal = document.getElementById('goal-primary').value;
@@ -516,7 +516,7 @@ function buildSummary() {
   const summary = document.getElementById('summary-box');
   summary.replaceChildren();
   [
-    ['PM', role + ' · ' + org],
+    ['PO', role + ' · ' + org],
     ['Tier', selectedTier === 'ai' ? 'AI demo' : 'Standard demo'],
     ['Selected tools', connList],
     ['Project', (projType === 'new' ? 'New' : 'Existing') + ' · ' + prod + ' · ' + domain],

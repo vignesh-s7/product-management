@@ -1,19 +1,19 @@
-# Case study — pm-os
+# Case study — productowner-skill
 
-*A Senior PM's operating system: turn a PRD into a full SDLC by orchestrating Claude Skills + MetaGPT + Promptfoo. Public MVP shipped 2026-06 as v1.0.*
+*A Senior PO's operating system: turn a PRD into a full SDLC by orchestrating Claude Skills + MetaGPT + Promptfoo. Public MVP shipped 2026-06 as v1.0.*
 
 ## Problem
 
-Every regulated-AI product I've PM'd in the last 3 years started the same way: PRD written in Confluence, architecture on a whiteboard, evals discovered 6 weeks in when the model fails an edge case. The SDLC steps exist, but they don't ladder to each other. Every handoff loses fidelity.
+Every regulated-AI product I've PO'd in the last 3 years started the same way: PRD written in Confluence, architecture on a whiteboard, evals discovered 6 weeks in when the model fails an edge case. The SDLC steps exist, but they don't ladder to each other. Every handoff loses fidelity.
 
-Question: can a single-PM operating system reduce the PRD-to-eval-ready distance from weeks to hours, without hallucinating requirements?
+Question: can a single-PO operating system reduce the PRD-to-eval-ready distance from weeks to hours, without hallucinating requirements?
 
 ## Approach
 
 Three composed layers, each doing one thing:
 
 1. **Claude Skills** (`prd-to-sdlc`, `y-score-readiness`) — canonical prompts that transform a PRD into structured artifacts (FRD, SRS, ADRs, initial eval cases). Not free-form generation. Structured output only.
-2. **MetaGPT** — takes structured artifacts and produces architecture diagrams + starter code scaffolds. Runs as a multi-role agent (PM, architect, engineer, QA).
+2. **MetaGPT** — takes structured artifacts and produces architecture diagrams + starter code scaffolds. Runs as a multi-role agent (PO, architect, engineer, QA).
 3. **Promptfoo** — auto-generates an initial eval suite from the PRD's acceptance criteria. Every requirement becomes a case; every non-goal becomes a negative case.
 
 Output: a release-ready SDLC package — FRD, SRS, architecture diagram, scaffold code, eval suite that can run in CI on day one.
@@ -44,18 +44,18 @@ What didn't work:
 
 What's next in v2.0:
 
-- Wire `pm-os` output directly to `agentic-compliance-evals` for eval schema compatibility
+- Wire `productowner-skill` output directly to `agentic-compliance-evals` for eval schema compatibility
 - Add ADR generation from PRD assumptions
 - Publish 3rd Claude Skill: `postmortem-from-eval-failure`
 
 ## What this proves
 
-An AI PM can codify their own workflow as public tooling. The tool is not the value — *the ability to expose how you PM* is the value. This case study, the tool, and the outcome are the artifact.
+An AI PO can codify their own workflow as public tooling. The tool is not the value — *the ability to expose how you PO* is the value. This case study, the tool, and the outcome are the artifact.
 
 ---
 
-- 🌐 [Live app](https://vvs-pm.github.io/pm-os/)
-- 📖 [Repo](https://github.com/vvs-pm/pm-os)
+- 🌐 [Live app](https://vvs-PO.github.io/productowner-skill/)
+- 📖 [Repo](https://github.com/vvs-PO/productowner-skill)
 - 🧠 [prd-to-sdlc skill](./.claude/skills/prd-to-sdlc/SKILL.md)
 - ⚡ [y-score-readiness skill](./.claude/skills/y-score-readiness/SKILL.md)
 - 📅 Feedback / collaboration: [book 15 min](https://cal.com/Vignesh/15min)

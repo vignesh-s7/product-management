@@ -58,13 +58,13 @@ Week 2-3:  Early adopter PMs (2-3 most customer-curious)
             └── They become internal evangelists, not top-down enforcers
 Week 3-4:  CS + Sales Leaders
             └── CuCP needs their customer access; frame as mutual benefit
-Week 4-6:  Wider PM team (14+ PMs)
+Week 4-6:  Wider PO team (14+ PMs)
             └── By now, 2-3 pilots have early wins to share
 Week 6-8:  Engineering Partners
             └── Show them how CuCP reduces scope creep on their side
 ```
 
-**Critical:** Do NOT launch to the full PM team in week 1. Pilots first. Social proof is the strongest adoption driver in professional networks.
+**Critical:** Do NOT launch to the full PO team in week 1. Pilots first. Social proof is the strongest adoption driver in professional networks.
 
 ### 1.4 The "CuCP Concierge" Model
 
@@ -89,11 +89,11 @@ A dedicated CuCP Concierge role (can be the Sr. Lead P&T Operations in the first
 | Option | Pro | Con | Verdict |
 |--------|-----|-----|---------|
 | Mandate full rollout Day 1 | Fast coverage | Resistance hardens, compliance-only behavior, no genuine adoption | REJECTED |
-| Voluntary opt-in forever | Low resistance | Never reaches critical mass, creates two-tier PM culture | REJECTED |
+| Voluntary opt-in forever | Low resistance | Never reaches critical mass, creates two-tier PO culture | REJECTED |
 | Pilot → Expand → Embed | Evidence-driven expansion, generates internal evangelists, allows process refinement before scale | Slower initial coverage | SELECTED |
 
 **Pilot selection criteria:**
-1. PM is customer-curious (not necessarily most senior)
+1. PO is customer-curious (not necessarily most senior)
 2. Product area has active CSM relationship with 3+ referenceable accounts
 3. Upcoming launch or major feature decision in weeks 30-60 (so CuCP output is immediately usable)
 4. Domain complexity is medium (not the most complex product area — want first wins to be clean)
@@ -108,9 +108,9 @@ A dedicated CuCP Concierge role (can be the Sr. Lead P&T Operations in the first
 | Audit existing customer touchpoints | Sr. Lead P&T + CS | Gap map: what customer signal exists, what's missing |
 | Align with CPO/VP on CuCP as planning input | Sr. Lead P&T | Sponsor memo: CuCP evidence required in QBR decks by Day 90 |
 | Draft CuCP playbook v0.1 (not final) | Sr. Lead P&T | 8-page playbook: roles, templates, session formats, outputs |
-| Map 3 pilot PMs to 3 customer accounts | Sr. Lead P&T + CS | Pilot charter: PM + account + session date confirmed |
+| Map 3 pilot PMs to 3 customer accounts | Sr. Lead P&T + CS | Pilot charter: PO + account + session date confirmed |
 
-**Day 30 checkpoint:** 3 pilots scoped, playbook drafted, sponsor aligned, no PM has been mandated — only invited.
+**Day 30 checkpoint:** 3 pilots scoped, playbook drafted, sponsor aligned, no PO has been mandated — only invited.
 
 ### Phase 2: Pilot (Days 31–60) — "Prove the value"
 
@@ -118,12 +118,12 @@ A dedicated CuCP Concierge role (can be the Sr. Lead P&T Operations in the first
 
 | Action | Owner | Output |
 |--------|-------|--------|
-| Run CuCP Session 1 (PM-1 + Account A) | Concierge + PM-1 | Session notes, feature impact scores, verbatim quote bank |
-| Run CuCP Session 2 (PM-2 + Account B) | Concierge + PM-2 | JTBD synthesis, 3 actionable backlog items identified |
-| Run CuCP Session 3 (PM-3 + Account C) | Concierge + PM-3 | Roadmap risk flag surfaced: customer expectation vs. planned scope |
+| Run CuCP Session 1 (PO-1 + Account A) | Concierge + PO-1 | Session notes, feature impact scores, verbatim quote bank |
+| Run CuCP Session 2 (PO-2 + Account B) | Concierge + PO-2 | JTBD synthesis, 3 actionable backlog items identified |
+| Run CuCP Session 3 (PO-3 + Account C) | Concierge + PO-3 | Roadmap risk flag surfaced: customer expectation vs. planned scope |
 | Post-session synthesis for each | Concierge | Structured Confluence page per session (standardised format) |
-| PM Retrospective: what worked / what didn't | All 3 pilot PMs | Playbook v0.2 with real learnings baked in |
-| "Early Wins" internal comms | Sr. Lead P&T | 1-slide summary shared in PM all-hands: what CuCP found |
+| PO Retrospective: what worked / what didn't | All 3 pilot PMs | Playbook v0.2 with real learnings baked in |
+| "Early Wins" internal comms | Sr. Lead P&T | 1-slide summary shared in PO all-hands: what CuCP found |
 
 **Day 60 checkpoint:** 3 sessions completed, 3 Confluence pages live, 1 backlog item per session actioned, playbook v0.2 published, 3 PMs are now voluntary advocates.
 
@@ -131,18 +131,18 @@ A dedicated CuCP Concierge role (can be the Sr. Lead P&T Operations in the first
 
 ### Phase 3: Scale (Days 61–90) — "Embed and measure"
 
-**Objective:** Expand to full PM team, embed CuCP into the operating rhythm, hand off to PMs from Concierge.
+**Objective:** Expand to full PO team, embed CuCP into the operating rhythm, hand off to PMs from Concierge.
 
 | Action | Owner | Output |
 |--------|-------|--------|
-| PM-wide CuCP training workshop (90 min) | Sr. Lead P&T | All PMs trained on session facilitation, note-taking, scoring |
+| PO-wide CuCP training workshop (90 min) | Sr. Lead P&T | All PMs trained on session facilitation, note-taking, scoring |
 | CuCP embedded in sprint planning template | Sr. Lead P&T + EM | "Customer evidence" section added to sprint review template |
-| Assign each PM their own CuCP account pairing | Sr. Lead P&T + CS | 8-10 PM-to-account pairings established |
+| Assign each PO their own CuCP account pairing | Sr. Lead P&T + CS | 8-10 PO-to-account pairings established |
 | Sessions 4-10 run (remaining PMs) | Individual PMs (Concierge available) | Expanded evidence base; PMs begin facilitating independently |
 | CuCP dashboard live | Sr. Lead P&T | Metrics visible to leadership: sessions run, issues surfaced, actions taken |
 | 90-Day review deck to CPO | Sr. Lead P&T | Evidence-based assessment: what worked, what to adjust, ask for Q2 resources |
 
-**Day 90 checkpoint:** Full PM team has run or is scheduled for their first session; CuCP outputs feeding into Q3 planning cycle; metrics dashboard live.
+**Day 90 checkpoint:** Full PO team has run or is scheduled for their first session; CuCP outputs feeding into Q3 planning cycle; metrics dashboard live.
 
 ---
 
@@ -156,12 +156,12 @@ Layer 4 — EMBED (Day 60+)
   PMs self-serve with templates; Concierge = escalation only
 
 Layer 3 — PRACTICE (Day 30-60)
-  Supervised live sessions; Concierge co-facilitates first session per PM
+  Supervised live sessions; Concierge co-facilitates first session per PO
   Real-time coaching; post-session debrief (15 min)
 
 Layer 2 — LEARN (Day 15-30)
   90-min workshop: "The CuCP Method" — JTBD, session design, scoring
-  Role-play simulation: PM + Concierge mock session
+  Role-play simulation: PO + Concierge mock session
   Playbook issued; Confluence templates live
 
 Layer 1 — AWARE (Day 1-15)
@@ -172,7 +172,7 @@ Layer 1 — AWARE (Day 1-15)
 
 ### 3.2 Template Stack (What PMs Actually Get)
 
-Every PM receives a working toolkit on Day 30:
+Every PO receives a working toolkit on Day 30:
 
 | Template | Format | Purpose |
 |----------|--------|---------|
@@ -180,7 +180,7 @@ Every PM receives a working toolkit on Day 30:
 | Note-Taking Framework | Confluence | JTBD capture, friction logging, sentiment scoring (1-5) |
 | Feature Impact Scoring Rubric | Confluence | Customer-stated vs. inferred importance; effort vs. value matrix |
 | Post-Session Synthesis Template | Confluence | Learnings → Actions → Backlog items → Quote bank |
-| PM-to-Customer Pairing Matrix | Jira | Which PM owns which account relationship |
+| PO-to-Customer Pairing Matrix | Jira | Which PO owns which account relationship |
 | CuCP Health Dashboard | Confluence/Jira | Sessions run, open actions, NPS delta, feature adoption rate |
 
 ### 3.3 The Concierge Handoff Curve
@@ -188,10 +188,10 @@ Every PM receives a working toolkit on Day 30:
 The Sr. Lead P&T Ops starts as high-touch Concierge and progressively hands off:
 
 ```
-Days 1-30:   Concierge does 80% of logistics. PM shows up and runs the call.
-Days 31-60:  Concierge co-facilitates. PM leads. Concierge synthesises.
-Days 61-75:  PM runs independently. Concierge reviews synthesis output.
-Days 76-90:  PM fully self-sufficient. Concierge = quality check + escalation.
+Days 1-30:   Concierge does 80% of logistics. PO shows up and runs the call.
+Days 31-60:  Concierge co-facilitates. PO leads. Concierge synthesises.
+Days 61-75:  PO runs independently. Concierge reviews synthesis output.
+Days 76-90:  PO fully self-sufficient. Concierge = quality check + escalation.
 Day 91+:     Concierge role transitions to programme governance & metrics.
 ```
 
@@ -199,13 +199,13 @@ Day 91+:     Concierge role transitions to programme governance & metrics.
 
 ### 3.4 Resistance Playbook
 
-| Resistance Type | PM Persona | Response Tactic |
+| Resistance Type | PO Persona | Response Tactic |
 |----------------|-----------|-----------------|
-| "No time" | High-velocity PM | Show 45-min session format; offer to handle 100% of scheduling + prep |
-| "My customers are too busy" | Enterprise PM | Work with CSM to embed CuCP into existing QBR / EBR agenda |
-| "I already know what they want" | Senior PM | Ask to share their evidence; offer CuCP as validation, not discovery |
-| "This won't change anything" | Cynical PM | Show Day 60 pilot output: "This surfaced a blocker 6 weeks before launch" |
-| "What if the customer says something bad?" | Risk-averse PM | Frame: "Better to know now than at GA. CuCP is pre-launch insurance." |
+| "No time" | High-velocity PO | Show 45-min session format; offer to handle 100% of scheduling + prep |
+| "My customers are too busy" | Enterprise PO | Work with CSM to embed CuCP into existing QBR / EBR agenda |
+| "I already know what they want" | Senior PO | Ask to share their evidence; offer CuCP as validation, not discovery |
+| "This won't change anything" | Cynical PO | Show Day 60 pilot output: "This surfaced a blocker 6 weeks before launch" |
+| "What if the customer says something bad?" | Risk-averse PO | Frame: "Better to know now than at GA. CuCP is pre-launch insurance." |
 
 ---
 
@@ -230,7 +230,7 @@ Leadership sees all three. Activity metrics are internal; outcome metrics go in 
 |--------|-----------|-----------|-----------|--------|
 | CuCP sessions scheduled | 3 | 8 | 15 | Jira / Calendar |
 | CuCP sessions completed | 2 | 6 | 12 | Confluence session pages |
-| PMs with ≥1 completed session | 3 | 6 | 10 | PM tracking sheet |
+| PMs with ≥1 completed session | 3 | 6 | 10 | PO tracking sheet |
 | Post-session synthesis pages created | 2 | 6 | 12 | Confluence |
 | Backlog items created from CuCP | 3 | 10 | 20 | Jira |
 
@@ -238,7 +238,7 @@ Leadership sees all three. Activity metrics are internal; outcome metrics go in 
 
 | Metric | Definition | Target | Source |
 |--------|-----------|--------|--------|
-| Session quality score | PM self-rates session value 1-5 | ≥ 3.8 avg | PM survey |
+| Session quality score | PO self-rates session value 1-5 | ≥ 3.8 avg | PO survey |
 | Synthesis completeness | % synthesis pages with all 4 sections filled | ≥ 80% | Confluence audit |
 | Customer return rate | % customers willing to do a follow-up session | ≥ 70% | CS confirmation |
 | Time-to-synthesis | Hours between session end and synthesis published | ≤ 48hr | Confluence timestamps |
@@ -248,7 +248,7 @@ Leadership sees all three. Activity metrics are internal; outcome metrics go in 
 
 | Metric | Definition | Target D90 | Lagging/Leading | Business Link |
 |--------|-----------|-----------|----------------|---------------|
-| **PM satisfaction** ⭐ | PM self-report: "CuCP helps me do my job better" (1-5) | ≥ 4.0 | Leading | Internal adoption sustainability |
+| **PO satisfaction** ⭐ | PO self-report: "CuCP helps me do my job better" (1-5) | ≥ 4.0 | Leading | Internal adoption sustainability |
 | Feature adoption delta | % change in feature adoption for CuCP-informed features vs. non-CuCP | +15% | Lagging | Product-market fit |
 | Rework rate reduction | % reduction in post-launch scope changes for CuCP features | -20% | Lagging | Engineering efficiency |
 | Customer NPS delta | NPS change for accounts in CuCP program vs. control group | +8 pts | Lagging | Retention / expansion |
@@ -263,7 +263,7 @@ At Day 90, the CPO asks two questions. The program is succeeding if we can answe
 → Answer: Yes. [X] backlog items were created from CuCP that would not have existed otherwise. [Y] features were descoped based on customer feedback. [Z] launch-blocking issues were surfaced in advance.
 
 **Q2: "Are PMs better at their jobs because of CuCP?"**
-→ Answer: Yes. PM satisfaction score is [X]. [Y] PMs voluntarily ran their second session without being asked. Time-to-evidence dropped from [X days] to [Y days].
+→ Answer: Yes. PO satisfaction score is [X]. [Y] PMs voluntarily ran their second session without being asked. Time-to-evidence dropped from [X days] to [Y days].
 
 ### 4.4 Leading Indicator Early Warning System
 
@@ -272,7 +272,7 @@ If any of these signals appear before Day 60, escalate immediately:
 | Red Flag | What It Signals | Intervention |
 |----------|----------------|-------------|
 | Session completion rate < 50% | Scheduling friction too high | Concierge takes over all logistics |
-| PM satisfaction < 3.0 after first session | Session design not valuable | Redesign agenda; add more structured discussion prompts |
+| PO satisfaction < 3.0 after first session | Session design not valuable | Redesign agenda; add more structured discussion prompts |
 | < 1 backlog item per session | Synthesis not actionable | Add "3 specific actions" field to synthesis template; make it mandatory |
 | Customer decline rate > 40% | CS not bought in / customer fatigue | Re-engage CS leadership; offer incentive for customer participation |
 | No sponsor mention in planning cycle | Executive air cover fading | Request CPO to name CuCP explicitly in next planning kickoff |
@@ -303,19 +303,19 @@ If any of these signals appear before Day 60, escalate immediately:
 | Phase | Days | Focus | Gate |
 |-------|------|-------|------|
 | Listen | 1-30 | Pain mapping, pilot selection, sponsor alignment | 3 pilots scoped + sponsor memo signed |
-| Pilot | 31-60 | 3 sessions, synthesis, social proof | 3 Confluence pages + 3 PM advocates |
+| Pilot | 31-60 | 3 sessions, synthesis, social proof | 3 Confluence pages + 3 PO advocates |
 | Scale | 61-90 | Full team training, independent facilitation, metrics dashboard | 10+ sessions, dashboard live |
 
 - Why pilot-first: evidence beats mandate; first wins create internal evangelists
-- Pilot selection: customer-curious PM + active CSM relationship + imminent launch decision
+- Pilot selection: customer-curious PO + active CSM relationship + imminent launch decision
 
 ### Slide 4: Enablement — The Concierge Model
 **Title:** "We make the first session impossible to fail."
 
 - Four-layer stack: Aware → Learn → Practice → Embed
 - Template toolkit: 6 ready-to-use Confluence templates live Day 30
-- Concierge handoff curve: 80% logistics support in Month 1 → PM fully independent by Day 90
-- Resistance playbook: specific responses for 5 PM resistance personas
+- Concierge handoff curve: 80% logistics support in Month 1 → PO fully independent by Day 90
+- Resistance playbook: specific responses for 5 PO resistance personas
 - Failure mode: don't let Concierge dependency persist past Day 60
 
 ### Slide 5: Success Metrics — Leading Before Lagging
@@ -323,11 +323,11 @@ If any of these signals appear before Day 60, escalate immediately:
 
 **Leading indicators (tracked weekly):**
 - Sessions completed on schedule
-- PM satisfaction after first session (target: ≥ 3.8/5)
+- PO satisfaction after first session (target: ≥ 3.8/5)
 - Time-to-synthesis ≤ 48 hours
 
 **Outcome indicators (D90 QBR):**
-- ⭐ PM satisfaction ≥ 4.0 ("CuCP makes me better at my job")
+- ⭐ PO satisfaction ≥ 4.0 ("CuCP makes me better at my job")
 - Feature adoption delta +15% for CuCP-informed features
 - ≥ 3 launch-blocking issues surfaced pre-GA
 
@@ -343,17 +343,17 @@ If any of these signals appear before Day 60, escalate immediately:
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|-----------|
 | CS team not scheduling customer access | High | Critical | SLA with CS leadership: 5 business days to confirmed session |
-| PM satisfaction scores low after pilot | Medium | High | Redesign session agenda; reduce from 60 to 45 min; add more structured prompts |
+| PO satisfaction scores low after pilot | Medium | High | Redesign session agenda; reduce from 60 to 45 min; add more structured prompts |
 | Sponsor deprioritises mid-program | Medium | Critical | Embed CuCP output as required field in planning template — structural, not dependent on sponsor attention |
 | Customer fatigue / low participation | Low | High | Rotate accounts; integrate into existing QBR/EBR rhythm rather than creating new touchpoints |
-| Synthesis quality inconsistent | High | Medium | Mandatory template + Concierge quality check for first 3 sessions per PM |
-| Engineering team ignores CuCP outputs | Medium | High | Embed CuCP evidence into story definition-of-ready; requires PM + EM joint agreement |
+| Synthesis quality inconsistent | High | Medium | Mandatory template + Concierge quality check for first 3 sessions per PO |
+| Engineering team ignores CuCP outputs | Medium | High | Embed CuCP evidence into story definition-of-ready; requires PO + EM joint agreement |
 
 ---
 
 ## Appendix B: What "Good" Looks Like at Day 90
 
-A PM who has gone through CuCP properly should be able to say:
+A PO who has gone through CuCP properly should be able to say:
 
 > "I ran two sessions with two enterprise accounts before this sprint. I walked in knowing what they're struggling with, what they've asked for and not gotten, and what they're planning to do if we don't ship this. My sprint goal is written in their language. My acceptance criteria came from their actual workflow. If this feature underperforms at launch, I'll know within a week because I'm tracking the three things they said they'd do differently."
 
@@ -363,4 +363,4 @@ That is the outcome. The 90-day plan is the path to it.
 
 *Document: prds/10-cucp-90day-rollout-deep-analysis.md*
 *Author: svignesh-aipm | vignesh.aipm@gmail.com*
-*Repository: vvs-pm/pm-os*
+*Repository: vvs-PO/productowner-skill*

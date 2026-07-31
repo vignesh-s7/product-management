@@ -1,6 +1,6 @@
 # PRD 01 — Y-Score Framework
 
-**Domain:** PM tooling · framework
+**Domain:** PO tooling · framework
 **Author:** Vignesh AIPM
 **Status:** MVP
 
@@ -8,7 +8,7 @@
 PMs ship AI features without a shared rubric for "is this ready to launch?" Subjective gut-checks lead to premature launches in regulated domains (BFSI, healthcare) where rollback is expensive or impossible.
 
 ## Target user
-Product managers and product owners shipping AI/GenAI features in regulated industries.
+Product Owners and product owners shipping AI/GenAI features in regulated industries.
 
 ## Solution
 A 7-dimension scoring rubric — the **Y-Score** — that scores a pilot/MVP against launch-readiness criteria. Each dimension is weighted; total ≥ 70% gates launch.

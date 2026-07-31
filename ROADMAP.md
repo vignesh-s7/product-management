@@ -1,15 +1,15 @@
-# ROADMAP — pm-os Platform
+# ROADMAP — productowner-skill Platform
 
 **Author:** Vignesh AIPM
 **Status:** Active
 **Last updated:** 2026-06-30
-**Linked PRD:** prds/00-pm-os-platform.md
+**Linked PRD:** prds/00-productowner-skill-platform.md
 
 ---
 
 ## Vision
 
-pm-os becomes the default PM operating layer for product teams and consulting engagements —
+productowner-skill becomes the default PO operating layer for product teams and consulting engagements —
 the system that connects every knowledge source, generates every artifact, and learns from every product.
 
 ---
@@ -22,7 +22,7 @@ the system that connects every knowledge source, generates every artifact, and l
 |-------------|--------|
 | Master PRD (v0.4) | ✅ Done |
 | SRS + FRD (v0.4) | ✅ Done |
-| PM Onboarding UI (6-step wizard) | ✅ Done |
+| PO Onboarding UI (6-step wizard) | ✅ Done |
 | GitHub Pages deployment | ✅ Done |
 | Microsoft Teams tab + manifest | ✅ Done |
 | CuCP 90-day rollout slide deck | ✅ Done |
@@ -42,9 +42,9 @@ the system that connects every knowledge source, generates every artifact, and l
 | Artifact tagging: domain · stage · type · compliance | Q3 2026 |
 | "Clone to KB" action from any search result | Q3 2026 |
 | Shared Library (anonymised cross-org templates) | Q3 2026 |
-| PowerBI standard embed (4 pre-built PM templates) | Q3 2026 |
+| PowerBI standard embed (4 pre-built PO templates) | Q3 2026 |
 | Looker embed integration | Q3 2026 |
-| PM Lead team dashboard (release health, reuse rate) | Q3 2026 |
+| PO Lead team dashboard (release health, reuse rate) | Q3 2026 |
 
 ---
 
@@ -72,7 +72,7 @@ the system that connects every knowledge source, generates every artifact, and l
 | Deliverable | Target |
 |-------------|--------|
 | Client Workspace tenant isolation | Q1 2027 |
-| Per-artifact visibility toggle (PM controls what client sees) | Q1 2027 |
+| Per-artifact visibility toggle (PO controls what client sees) | Q1 2027 |
 | Client dashboard: milestones · KPIs · AI status summary | Q1 2027 |
 | Client invite link (no Atlassian/M365/Google licence required) | Q1 2027 |
 | Workspace archive on engagement close (ZIP + audit log) | Q1 2027 |
@@ -112,7 +112,7 @@ the system that connects every knowledge source, generates every artifact, and l
 
 ## Principles of Proportional Delivery
 
-Borrowed from the Coupa CuCP framework — applied to pm-os itself:
+Borrowed from the Coupa CuCP framework — applied to productowner-skill itself:
 
 - Each phase ships something usable before the next begins
 - Standard tier always ships before AI tier (cost-safe, broader adoption)

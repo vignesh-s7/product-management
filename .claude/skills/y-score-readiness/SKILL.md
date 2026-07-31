@@ -1,11 +1,11 @@
 ---
 name: y-score-readiness
-description: Score a PRD or pilot against the 7-dimension Y-Score launch-readiness rubric (problem clarity, target user, success metric, constraints, compliance, eval plan, rollback). Returns a 0-100 score plus per-dimension findings and a go / no-go recommendation. Use when a PM is deciding whether a pilot is ready to launch, especially in BFSI / healthcare / regulated domains.
+description: Score a PRD or pilot against the 7-dimension Y-Score launch-readiness rubric (problem clarity, target user, success metric, constraints, compliance, eval plan, rollback). Returns a 0-100 score plus per-dimension findings and a go / no-go recommendation. Use when a PO is deciding whether a pilot is ready to launch, especially in BFSI / healthcare / regulated domains.
 ---
 
 # y-score-readiness
 
-The PM gate that runs before `prd-to-sdlc` produces any artifacts. Refuses to proceed if score < 70.
+The PO gate that runs before `prd-to-sdlc` produces any artifacts. Refuses to proceed if score < 70.
 
 ## When to trigger
 - `/y-score <prd.md>`

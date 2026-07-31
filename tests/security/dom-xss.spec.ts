@@ -23,8 +23,8 @@ test('stored Kanban and artifact text never executes as HTML', async ({ page }) 
 
 test('onboarding summary treats form values as text', async ({ page }) => {
   await page.goto('/onboarding/index.html');
-  await page.locator('#pm-name').fill(payload);
-  await page.locator('#pm-org').fill(payload);
+  await page.locator('#PO-name').fill(payload);
+  await page.locator('#PO-org').fill(payload);
   await page.evaluate(() => (window as any).goTo(6));
   await expect(page.locator('#summary-box')).toContainText(payload);
   expect(await page.evaluate(() => Boolean((window as any).__xss))).toBe(false);

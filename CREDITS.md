@@ -1,9 +1,9 @@
 # Credits
 
-`pm-os` is composition, not invention. Deep thanks to the OSS crews this platform stands on:
+`productowner-skill` is composition, not invention. Deep thanks to the OSS crews this platform stands on:
 
 ## Agent orchestration
-- **[MetaGPT](https://github.com/geekan/MetaGPT)** by @geekan — multi-agent software company (PM, Architect, Engineer, QA). The canonical PRD→SDLC pattern.
+- **[MetaGPT](https://github.com/geekan/MetaGPT)** by @geekan — multi-agent software company (PO, Architect, Engineer, QA). The canonical PRD→SDLC pattern.
 - **[OpenHands](https://github.com/All-Hands-AI/OpenHands)** by All Hands AI — autonomous dev agent that writes, runs, and debugs code.
 - **[Aider](https://github.com/Aider-AI/aider)** by @paul-gauthier — pair-programmer for surgical edits.
 - **[LangGraph](https://github.com/langchain-ai/langgraph)** by LangChain — stateful orchestration primitives.
@@ -31,9 +31,9 @@
 ## Deploy
 - **[Cloudflare Pages](https://pages.cloudflare.com)** + **[Wrangler](https://github.com/cloudflare/workers-sdk)** — free public hosting.
 
-## PM influences
-- [Lenny Rachitsky](https://www.lennysnewsletter.com) — PM craft.
-- [Aakash Gupta](https://www.news.aakashg.com) — AI-PM workflows.
+## PO influences
+- [Lenny Rachitsky](https://www.lennysnewsletter.com) — PO craft.
+- [Aakash Gupta](https://www.news.aakashg.com) — AI-PO workflows.
 - [Eugene Yan](https://eugeneyan.com) — applied ML / eval thinking.
 - [Shreya Shankar](https://www.sh-reya.com) — LLM eval research.
 

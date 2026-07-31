@@ -1,6 +1,6 @@
-# PRD 00 — pm-os Platform: AI-Native PM Operating System
+# PRD 00 — productowner-skill Platform: AI-Native PO Operating System
 
-**Domain:** PM tooling · platform · B2B SaaS
+**Domain:** PO tooling · platform · B2B SaaS
 **Author:** Vignesh AIPM
 **Status:** Active · v0.4
 **Linked:** docs/product/SRS.md · docs/product/FRD.md · docs/product/ARCHITECTURE.md
@@ -9,18 +9,18 @@
 
 ## Problem
 
-Product managers carry the full cognitive load of a product from first idea to post-launch review.
+Product Owners carry the full cognitive load of a product from first idea to post-launch review.
 Every artifact — market research, SWOT, competitor matrix, PRD, prioritisation backlog, KPI plan,
 release strategy — is produced manually, from scratch, for every product.
 
 Tools like Confluence, SharePoint, Jira, and Yammer hold institutional knowledge — but:
 - PMs search each tool separately with no unified view
 - Nothing is reused across products, teams, or clients
-- AI exists in each tool in isolation (Atlassian Rovo, M365 Copilot) but is not orchestrated into a PM workflow
+- AI exists in each tool in isolation (Atlassian Rovo, M365 Copilot) but is not orchestrated into a PO workflow
 - When a consulting team delivers a product for a client, all that knowledge disappears — not packaged, not reusable
 
-The compounding cost: 60–80% of a PM's working week on documentation and re-work,
-multiplied across every PM in the organisation.
+The compounding cost: 60–80% of a PO's working week on documentation and re-work,
+multiplied across every PO in the organisation.
 
 ---
 
@@ -29,15 +29,15 @@ multiplied across every PM in the organisation.
 ### Internal (Org Use)
 | Role | Need |
 |------|------|
-| Product Manager | Find and reuse artifacts; AI-assisted research and drafting |
-| PM Lead / Manager | Team-level KB visibility; release health dashboards |
+| Product Owner | Find and reuse artifacts; AI-assisted research and drafting |
+| PO Lead / Manager | Team-level KB visibility; release health dashboards |
 | Admin / P&T Ops | Connect tools, manage tiers, monitor adoption |
 
 ### External (Client Delivery)
 | Role | Need |
 |------|------|
-| Consulting PM / Engagement Lead | Package deliverables into reusable client KB |
-| Client PM | Access shared artifacts; track programme status |
+| Consulting PO / Engagement Lead | Package deliverables into reusable client KB |
+| Client PO | Access shared artifacts; track programme status |
 | Client Stakeholder | Read-only dashboards and summary views |
 
 ---
@@ -47,8 +47,8 @@ multiplied across every PM in the organisation.
 ### Deployment Modes
 | Mode | Who Uses It | Description |
 |------|------------|-------------|
-| **Org Workspace** | Internal PM team | Shared KB across all PMs in the org; role-based access |
-| **Client Workspace** | Consulting delivery | Separate tenant per client; PM team creates, client views |
+| **Org Workspace** | Internal PO team | Shared KB across all PMs in the org; role-based access |
+| **Client Workspace** | Consulting delivery | Separate tenant per client; PO team creates, client views |
 | **Shared Library** | Cross-org / cross-client | Reusable template library (anonymised, tagged by domain) |
 
 ### User Tiers
@@ -64,15 +64,15 @@ multiplied across every PM in the organisation.
 
 ## Build-on-Existing-AI Strategy
 
-pm-os does NOT rebuild what already exists. It orchestrates:
+productowner-skill does NOT rebuild what already exists. It orchestrates:
 
-| Layer | Existing Tool Used | pm-os Adds |
+| Layer | Existing Tool Used | productowner-skill Adds |
 |-------|-------------------|-----------|
-| Confluence + Jira search & AI | **Atlassian Rovo** (Rovo Search + Rovo Chat) | PM-specific query templates, KB tagging, cross-product patterns |
+| Confluence + Jira search & AI | **Atlassian Rovo** (Rovo Search + Rovo Chat) | PO-specific query templates, KB tagging, cross-product patterns |
 | SharePoint + Yammer + Teams search | **Microsoft 365 Copilot / Graph API** | Unified result view alongside Atlassian sources |
-| PowerBI reporting | **PowerBI Embed API + PowerBI Copilot** | Pre-built PM templates, cross-org aggregation |
-| AI chat | **Rovo Chat (Atlassian)** + **Claude API** for pm-os-specific reasoning | PM workflow context, KB citations, artifact generation |
-| Document generation | **Confluence AI** (create page from prompt) | Structured PM templates (PRD, SWOT, ROI, release plan) |
+| PowerBI reporting | **PowerBI Embed API + PowerBI Copilot** | Pre-built PO templates, cross-org aggregation |
+| AI chat | **Rovo Chat (Atlassian)** + **Claude API** for productowner-skill-specific reasoning | PO workflow context, KB citations, artifact generation |
+| Document generation | **Confluence AI** (create page from prompt) | Structured PO templates (PRD, SWOT, ROI, release plan) |
 | Backlog + stories | **Jira AI** (epic breakdown, story generation) | Domain-specific acceptance criteria, compliance tags |
 
 ---
@@ -106,31 +106,31 @@ Output:
 - Shared Library: anonymised org templates available across client engagements
 
 ### 4. Reporting & Interpret Layer
-- Standard: PowerBI embed, 4 pre-built PM templates
+- Standard: PowerBI embed, 4 pre-built PO templates
 - AI: PowerBI Copilot for natural language queries + screenshot interpretation
-- Multi-PM view: PM Lead sees team-level release health, KB coverage, adoption metrics
+- Multi-PO view: PO Lead sees team-level release health, KB coverage, adoption metrics
 - Client dashboard: programme status, milestone tracking, shared KPIs
 
 ---
 
-## Multi-PM Workflow
+## Multi-PO Workflow
 
 ```
-PM Lead sets up Org Workspace
+PO Lead sets up Org Workspace
     → connects Jira + Confluence (Rovo) + SharePoint + Yammer (M365)
-    → assigns Standard / AI tier per PM
+    → assigns Standard / AI tier per PO
 
-PM starts new product
+PO starts new product
     → Discovery Engine: AI searches org KB for prior similar work
     → Surfaces: "3 prior BFSI products found — reuse their SWOT and compliance map?"
-    → PM accepts / edits → saves to org KB tagged to this product
+    → PO accepts / edits → saves to org KB tagged to this product
 
-PM ships artifact to client
+PO ships artifact to client
     → Creates Client Workspace
     → Selects artifacts to share (PRD summary, KPI dashboard, release plan)
-    → Client PM sees read-only view + AI summary of programme status
+    → Client PO sees read-only view + AI summary of programme status
 
-PM Lead monitors
+PO Lead monitors
     → Team dashboard: which products are in flight, KB reuse rate, release velocity
     → Surfaces patterns: "BFSI products avg 3 weeks longer in EAP — investigate"
 ```
@@ -156,8 +156,8 @@ PM Lead monitors
 |-----|----------|--------|
 | Time to first discovery pack | 2–3 days | < 2 hours |
 | KB artifact reuse rate (product #3+) | 0% | > 60% |
-| PM documentation time | ~60% of week | < 20% |
-| Cross-PM KB contributions per month | 0 | > 5 per PM |
+| PO documentation time | ~60% of week | < 20% |
+| Cross-PO KB contributions per month | 0 | > 5 per PO |
 | Client workspace adoption | N/A | ≥ 1 per engagement |
 | Shared Library template reuse across clients | 0 | > 40% of engagements |
 
@@ -167,7 +167,7 @@ PM Lead monitors
 
 | Phase | What Ships | Who Benefits |
 |-------|-----------|-------------|
-| 1 | Org Workspace + Rovo KB search (Jira + Confluence) | Internal PM team |
+| 1 | Org Workspace + Rovo KB search (Jira + Confluence) | Internal PO team |
 | 2 | M365 search (SharePoint + Yammer) + PowerBI embed | Full org Standard tier |
 | 3 | AI tier: Rovo Chat + Claude + PowerBI Copilot | AI-tier PMs |
 | 4 | Client Workspace + client sharing | Consulting / delivery teams |
@@ -182,7 +182,7 @@ PM Lead monitors
 - AI outputs cite sources with URL (EU AI Act Art. 13)
 - Standard tier: zero LLM cost (Rovo + M365 search only)
 - Client data isolation: client workspaces are separate tenants, never cross-contaminated
-- Rovo / M365 Copilot licences required for AI search (pm-os doesn't replace, it orchestrates)
+- Rovo / M365 Copilot licences required for AI search (productowner-skill doesn't replace, it orchestrates)
 
 ---
 

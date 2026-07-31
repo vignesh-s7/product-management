@@ -1,6 +1,6 @@
 # Demo Limitations and Production Boundary
 
-PM-OS is a static, front-end portfolio demonstration. It uses sample data and does not authenticate users, call AI providers, connect enterprise tools, or persist data outside the current browser.
+productowner-skill is a static, front-end portfolio demonstration. It uses sample data and does not authenticate users, call AI providers, connect enterprise tools, or persist data outside the current browser.
 
 ## What the demo does
 

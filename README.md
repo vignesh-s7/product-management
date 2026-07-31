@@ -1,36 +1,36 @@
-# pm-os — AI-Native PM Operating System
+# productowner-skill — AI-Native PO Operating System
 
-**Author:** Vignesh AIPM · Senior PM · AI / BFSI / Healthcare
+**Author:** Vignesh AIPM · Senior PO · AI / BFSI / Healthcare
 ## About
 
-**pm-os** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Manager, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Manager for teams shipping AI features in regulated industries.
+**productowner-skill** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Owner, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Owner for teams shipping AI features in regulated industries.
 
-**Interactive portfolio demo:** https://vvs-pm.github.io/pm-os/
+**Interactive portfolio demo:** https://vvs-PO.github.io/productowner-skill/
 
 ---
 
-**Live:** [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os)
+**Live:** [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill)
 **Status:** Static portfolio demo · sample data · no authentication or live integrations
 
-> PM-OS demonstrates product workflows and UI concepts. It does not authenticate users, call AI providers, connect enterprise systems, or process production data. See [LIMITATIONS.md](LIMITATIONS.md).
+> productowner-skill demonstrates product workflows and UI concepts. It does not authenticate users, call AI providers, connect enterprise systems, or process production data. See [LIMITATIONS.md](LIMITATIONS.md).
 
 ---
 
-## What is pm-os?
+## What is productowner-skill?
 
-pm-os is a full-lifecycle PM operating system that takes a product from first idea to post-launch review — generating every artifact a PM needs along the way.
+productowner-skill is a full-lifecycle PO operating system that takes a product from first idea to post-launch review — generating every artifact a PO needs along the way.
 
-It does not replace Jira, Confluence, SharePoint, or Google Workspace. It **orchestrates** them, adding a PM-specific workflow layer on top of Atlassian Rovo, Microsoft 365 Copilot, Google Workspace AI, and Claude.
+It does not replace Jira, Confluence, SharePoint, or Google Workspace. It **orchestrates** them, adding a PO-specific workflow layer on top of Atlassian Rovo, Microsoft 365 Copilot, Google Workspace AI, and Claude.
 
 ---
 
 ## The Problem
 
-Product managers spend 60–80% of their working week on documentation and re-work:
+Product Owners spend 60–80% of their working week on documentation and re-work:
 
 - Market research, SWOT, competitor analysis, ROI models — produced from scratch every time
 - Jira, Confluence, SharePoint, Yammer, Google Drive searched separately with no unified view
-- AI exists in each tool (Rovo, M365 Copilot, Gemini) but is not connected into a PM workflow
+- AI exists in each tool (Rovo, M365 Copilot, Gemini) but is not connected into a PO workflow
 - Nothing is reused across products, teams, or client engagements
 
 ---
@@ -42,8 +42,8 @@ Product managers spend 60–80% of their working week on documentation and re-wo
 | **Search** | Federated KB search: Jira + Confluence (Rovo) · SharePoint + Yammer + Teams (M365) · Google Drive + Docs (Google API) | Same + AI chat grounded in KB (Rovo Chat + Claude) |
 | **Reporting** | Embedded PowerBI + Looker standard templates | PowerBI Copilot + Looker AI — natural language queries and screenshot interpretation |
 | **Research** | Browse + reuse artifact URLs | Deep research: internal KB + web, structured report (Quick / Standard / Deep) |
-| **Artifacts** | PM templates library — clone and edit | AI-generated drafts: SWOT, PRD, ROI model, KPI plan, release strategy |
-| **Org** | Multi-PM org KB · Client workspace (read-only) | AI-summarised client status · cross-product pattern recognition |
+| **Artifacts** | PO templates library — clone and edit | AI-generated drafts: SWOT, PRD, ROI model, KPI plan, release strategy |
+| **Org** | Multi-PO org KB · Client workspace (read-only) | AI-summarised client status · cross-product pattern recognition |
 
 ---
 
@@ -61,10 +61,10 @@ Output: prioritised backlog (RICE/WSJF/MoSCoW) · KPI plan · Y-Score gate · be
 - Indexed across: Jira, Confluence (Rovo) · SharePoint, Yammer, Teams (M365) · Google Drive, Docs (Google API)
 - Every artifact tagged: domain · stage · product-type · compliance-regime
 - Standard: search + reuse URLs · AI: Rovo Chat + Claude, cited responses
-- Client workspace: PM creates, client views — no Atlassian/M365 licence required for client
+- Client workspace: PO creates, client views — no Atlassian/M365 licence required for client
 - Shared Library: anonymised templates reusable across all client engagements
 
-### 4. Code Pipeline (original pm-os)
+### 4. Code Pipeline (original productowner-skill)
 Input: PRD → MetaGPT (architecture) → OpenHands (code) → Promptfoo (QA) → Cloudflare (deploy)
 
 ---
@@ -73,26 +73,26 @@ Input: PRD → MetaGPT (architecture) → OpenHands (code) → Promptfoo (QA) �
 
 | Page | URL |
 |------|-----|
-| Landing | [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os) |
-| PM Onboarding | [vvs-pm.github.io/pm-os/onboarding](https://vvs-pm.github.io/pm-os/onboarding/) |
-| CuCP Slide Deck | [vvs-pm.github.io/pm-os/cucp/presentation.html](https://vvs-pm.github.io/pm-os/cucp/presentation.html) |
-| Teams Tab | [vvs-pm.github.io/pm-os/onboarding/teams.html](https://vvs-pm.github.io/pm-os/onboarding/teams.html) |
+| Landing | [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill) |
+| PO Onboarding | [vvs-PO.github.io/productowner-skill/onboarding](https://vvs-PO.github.io/productowner-skill/onboarding/) |
+| CuCP Slide Deck | [vvs-PO.github.io/productowner-skill/cucp/presentation.html](https://vvs-PO.github.io/productowner-skill/cucp/presentation.html) |
+| Teams Tab | [vvs-PO.github.io/productowner-skill/onboarding/teams.html](https://vvs-PO.github.io/productowner-skill/onboarding/teams.html) |
 
 ---
 
 ## Repository Structure
 
 ```
-pm-os/
+productowner-skill/
 ├── prds/                          # Reference PRDs
-│   ├── 00-pm-os-platform.md       # Master platform PRD (v0.4)
+│   ├── 00-productowner-skill-platform.md       # Master platform PRD (v0.4)
 │   ├── 01-y-score-framework.md    # Launch readiness framework
 │   ├── 02–08-*.md                 # Domain reference PRDs
 │   └── 09-cucp-program-ops.md    # Coupa CuCP 90-day rollout
 ├── docs/                          # GitHub Pages (live site)
 │   ├── index.html                 # Landing page
 │   ├── onboarding/
-│   │   ├── index.html             # 6-step PM onboarding wizard
+│   │   ├── index.html             # 6-step PO onboarding wizard
 │   │   ├── teams.html             # Microsoft Teams entry point
 │   │   └── manifest.json          # Teams app manifest
 │   ├── cucp/
@@ -108,15 +108,15 @@ pm-os/
 
 ## Integration Strategy
 
-pm-os builds on existing enterprise AI — it does not reinvent it:
+productowner-skill builds on existing enterprise AI — it does not reinvent it:
 
-| Layer | Tool Used | pm-os Adds |
+| Layer | Tool Used | productowner-skill Adds |
 |-------|-----------|-----------|
-| Jira + Confluence search + AI | Atlassian Rovo (Search + Chat) | PM templates, KB tagging, cross-product patterns |
+| Jira + Confluence search + AI | Atlassian Rovo (Search + Chat) | PO templates, KB tagging, cross-product patterns |
 | SharePoint + Yammer + Teams | Microsoft 365 Copilot / Graph API | Unified view alongside Atlassian |
 | Google Drive + Docs + Chat | Google Workspace API + Gemini | Same unified view, Google-native orgs |
-| PowerBI + Looker reports | PowerBI Embed + Copilot · Looker API | PM pre-built templates, AI narrative layer |
-| AI chat + artifact generation | Rovo Chat + Claude Sonnet 4.6 | PM workflow context, cited KB responses |
+| PowerBI + Looker reports | PowerBI Embed + Copilot · Looker API | PO pre-built templates, AI narrative layer |
+| AI chat + artifact generation | Rovo Chat + Claude Sonnet 4.6 | PO workflow context, cited KB responses |
 
 ---
 
@@ -133,7 +133,7 @@ pm-os builds on existing enterprise AI — it does not reinvent it:
 
 ## Explore the Demo
 
-Open [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os/) or the [sample onboarding flow](https://vvs-pm.github.io/pm-os/onboarding/). No account, API key, or external connection is required. Do not enter confidential information.
+Open [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill/) or the [sample onboarding flow](https://vvs-PO.github.io/productowner-skill/onboarding/). No account, API key, or external connection is required. Do not enter confidential information.
 
 ---
 
@@ -143,9 +143,9 @@ Open [vvs-pm.github.io/pm-os](https://vvs-pm.github.io/pm-os/) or the [sample on
 
 ---
 
-*Built by [Vignesh AIPM](https://github.com/vvs-pm) · Senior PM · AI / BFSI / Healthcare*
+*Built by [Vignesh AIPM](https://github.com/vvs-PO) · Senior PO · AI / BFSI / Healthcare*
 
 ## Ownership
 
-- Organization: `vvs-pm`
+- Organization: `vvs-PO`
 - Owner: Vignesh AIPM

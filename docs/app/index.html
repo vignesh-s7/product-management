@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PM-OS Platform | Full Demo</title>
+<title>productowner-skill Platform | Full Demo</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
@@ -292,8 +292,8 @@ button.toggle{border:0;padding:0}
 <!-- SIDEBAR -->
 <aside id="sidebar">
   <div class="logo">
-    <h2>pm<span>-os</span><span class="badge-ai">AI Tier</span></h2>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">PM Operating System</div>
+    <h2>PO<span>-os</span><span class="badge-ai">AI Tier</span></h2>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">PO Operating System</div>
   </div>
   <nav>
     <div class="nav-section">Workspace</div>
@@ -312,7 +312,7 @@ button.toggle{border:0;padding:0}
   <div class="sidebar-footer">
     <a href="../onboarding/">Onboarding Wizard</a>
     <a href="../cucp/presentation.html">CuCP Case Study</a>
-    <a href="https://github.com/vvs-pm/pm-os" target="_blank">GitHub Repo</a>
+    <a href="https://github.com/vvs-PO/productowner-skill" target="_blank">GitHub Repo</a>
     <a href="../index.html" style="margin-top:8px;display:block;font-weight:600">Back to Portfolio</a>
     <div style="margin-top:8px;font-size:10px">v0.5 &mdash; DnD + Auto Mode</div>
   </div>
@@ -323,7 +323,7 @@ button.toggle{border:0;padding:0}
   <div class="topbar" id="workspace-content" tabindex="-1">
     <div>
       <h1 id="page-title">Dashboard</h1>
-      <div class="meta" id="page-meta">PM-OS &mdash; All phases with DnD + Auto Mode</div>
+      <div class="meta" id="page-meta">productowner-skill &mdash; All phases with DnD + Auto Mode</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
       <span class="auto-badge" id="auto-badge">AUTO ON</span>
@@ -427,7 +427,7 @@ button.toggle{border:0;padding:0}
         <button onclick="sendSuggestion('Generate KYC PRD for BFSI')">Generate KYC PRD</button>
         <button onclick="sendSuggestion('Run SWOT analysis for digital lending')">SWOT: digital lending</button>
         <button onclick="sendSuggestion('Competitor analysis: healthcare SaaS platforms')">Competitor analysis</button>
-        <button onclick="sendSuggestion('Build ROI model for PM-OS')">ROI model</button>
+        <button onclick="sendSuggestion('Build ROI model for productowner-skill')">ROI model</button>
         <button onclick="sendSuggestion('Compliance checklist for HIPAA')">HIPAA compliance</button>
         <button onclick="sendSuggestion('Discovery pack for SaaS onboarding flow')">SaaS discovery pack</button>
       </div>
@@ -436,7 +436,7 @@ button.toggle{border:0;padding:0}
           <div class="msg assistant">
             <div class="msg-avatar">AI</div>
             <div>
-              <div class="msg-body">Hi! I'm your PM-OS AI assistant, powered by <strong>Claude Sonnet 4.6 + Atlassian Rovo + Gemini</strong>. I can generate PRDs, SWOT analyses, competitor research, ROI models, compliance checklists, and discovery packs. What would you like to build?</div>
+              <div class="msg-body">Hi! I'm your productowner-skill AI assistant, powered by <strong>Claude Sonnet 4.6 + Atlassian Rovo + Gemini</strong>. I can generate PRDs, SWOT analyses, competitor research, ROI models, compliance checklists, and discovery packs. What would you like to build?</div>
             </div>
           </div>
         </div>
@@ -453,7 +453,7 @@ button.toggle{border:0;padding:0}
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
         <button class="filter-btn active" onclick="showReport('velocity',event)">Sprint Velocity</button>
         <button class="filter-btn" onclick="showReport('kpi',event)">KPI Trends</button>
-        <button class="filter-btn" onclick="showReport('time',event)">PM Time</button>
+        <button class="filter-btn" onclick="showReport('time',event)">PO Time</button>
         <button class="filter-btn" onclick="showReport('reuse',event)">Reuse Rate</button>
       </div>
       <div class="grid-2" id="report-container"></div>
@@ -519,7 +519,7 @@ button.toggle{border:0;padding:0}
       <div class="auto-hint" id="cucp-auto-hint">Auto Mode is ON &mdash; CuCP release gates are checking validation criteria automatically using live customer telemetry.</div>
       <div class="grid-4" style="margin-bottom: 24px">
         <div class="card stat-card"><div class="label">CuCP Coverage</div><div class="value" id="cucp-cov-val">58%</div><div class="delta up">&ge; 50% target</div></div>
-        <div class="card stat-card"><div class="label">PM Satisfaction</div><div class="value">4.2 / 5</div><div class="delta up">&ge; 4.0 target</div></div>
+        <div class="card stat-card"><div class="label">PO Satisfaction</div><div class="value">4.2 / 5</div><div class="delta up">&ge; 4.0 target</div></div>
         <div class="card stat-card"><div class="label">Definition Drift</div><div class="value" style="color:var(--green)">0 Cases</div><div class="delta">Healthy</div></div>
         <div class="card stat-card"><div class="label">AI Credits Used</div><div class="value">32.4K</div><div class="delta">Fair Use ON</div></div>
       </div>
@@ -686,7 +686,7 @@ function startAutoCuCP() {
 // NAVIGATION
 // ==============================================================
 var sections = {
-  dashboard: {title:'Dashboard', meta:'PM-OS — All phases demo with DnD + Auto Mode'},
+  dashboard: {title:'Dashboard', meta:'productowner-skill — All phases demo with DnD + Auto Mode'},
   kanban:    {title:'Kanban Board', meta:'Phase 2 — Drag & drop sprint management'},
   search:    {title:'Search Knowledge Base', meta:'Phase 2 — Unified search across all connected tools'},
   chat:      {title:'AI Chat', meta:'Phase 3 — Claude + Rovo + Gemini synthesis'},
@@ -979,7 +979,7 @@ var KB = [
   {id:12, title:'BFSI Risk Register v2',                   source:'confluence',  domain:'bfsi',       type:'Risk',       snippet:'18 risks. Top: RBI regulatory change, Aadhaar API SLA dependency, data residency compliance.',                                                    updated:'1w ago', author:'Risk Team'},
   {id:13, title:'Healthcare EHR Integration Spike',        source:'jira',        domain:'healthcare', type:'Story',      snippet:'FHIR R4: Epic SMART compatible, Cerner needs custom adapter. Estimate: 6 SP adapter, 2 SP tests.',                                                 updated:'2d ago', author:'Dev Team'},
   {id:14, title:'SaaS Pricing Model Analysis',             source:'gdrive',      domain:'saas',       type:'Analysis',   snippet:'Freemium vs PLG vs Enterprise. Rec: tiered PLG + enterprise upsell. Benchmarks: Notion, Linear, Figma.',                                          updated:'1w ago', author:'Karan S.'},
-  {id:15, title:'Post-Launch Retro: KYC v1',               source:'yammer',      domain:'bfsi',       type:'Retro',      snippet:'NPS: 42 (from 28). Top feedback: faster onboarding, manual fallback needed. Planned v1.1 with fallback flow.',                                    updated:'2w ago', author:'PM Team'},
+  {id:15, title:'Post-Launch Retro: KYC v1',               source:'yammer',      domain:'bfsi',       type:'Retro',      snippet:'NPS: 42 (from 28). Top feedback: faster onboarding, manual fallback needed. Planned v1.1 with fallback flow.',                                    updated:'2w ago', author:'PO Team'},
   {id:16, title:'Healthcare SWOT: Digital Intake 2026',    source:'sharepoint',  domain:'healthcare', type:'SWOT',       snippet:'Strengths: EHR relationships, HL7 adapters. Weakness: 9+ month sales. Opp: ABDM mandate. Threat: Epic Direct.',                                   updated:'1w ago', author:'Strategy'},
   {id:17, title:'Jira Epic SAAS-88: API Platform',         source:'jira',        domain:'saas',       type:'Epic',       snippet:'Build internal API platform: rate limiting, dev portal, versioning. Enables 3rd party integrations. 5 partners by Q4.',                           updated:'3d ago', author:'Platform'}
 ];
@@ -1076,12 +1076,12 @@ var chatResponses = {
   },
   competitor: {
     keywords: ['competitor','competition','finacle','temenos','epic','cerner'],
-    response: '**Competitor Landscape**\n\n| Platform | Strength | Weakness | AI Readiness |\n|----------|----------|-----------|--------------|\n| Finacle | Deep BFSI | Legacy UI | Medium |\n| Temenos | Global reach | High TCO | Medium |\n| FIS | Enterprise | Complex | Low |\n| Epic | EHR dominant | Closed | High |\n| Cerner | Data platform | Migration | High |\n\n**PM-OS edge:** Domain-agnostic, AI-native, faster scoping via reusable discovery packs.',
+    response: '**Competitor Landscape**\n\n| Platform | Strength | Weakness | AI Readiness |\n|----------|----------|-----------|--------------|\n| Finacle | Deep BFSI | Legacy UI | Medium |\n| Temenos | Global reach | High TCO | Medium |\n| FIS | Enterprise | Complex | Low |\n| Epic | EHR dominant | Closed | High |\n| Cerner | Data platform | Migration | High |\n\n**productowner-skill edge:** Domain-agnostic, AI-native, faster scoping via reusable discovery packs.',
     sources: ['Confluence: Competitor Analysis Q2','Google Drive: Pricing Model']
   },
   roi: {
     keywords: ['roi','return','cost','npv','savings','model'],
-    response: '**ROI Model: Digital KYC**\n\n40K verifications/month | $18 manual vs $3.20 automated = **$14.80 saved/verification**\n\nYear 1 net: **$6.72M** | 5-year NPV: **$24.4M** | Payback: **3.2 weeks**\n\nPM productivity: 35 hrs/PM/month saved = $2.1M recovered capacity (10-PM org).',
+    response: '**ROI Model: Digital KYC**\n\n40K verifications/month | $18 manual vs $3.20 automated = **$14.80 saved/verification**\n\nYear 1 net: **$6.72M** | 5-year NPV: **$24.4M** | Payback: **3.2 weeks**\n\nPM productivity: 35 hrs/PO/month saved = $2.1M recovered capacity (10-PO org).',
     sources: ['SharePoint: ROI Model','PowerBI: Velocity']
   },
   compliance: {
@@ -1192,7 +1192,7 @@ function initReports() {
     chartInstances.c3 = new Chart(document.getElementById('c3').getContext('2d'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Days',data:[18,16,14,12,10,9],borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',tension:.4,fill:true,pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:gridColor},ticks:{color:textColor}},x:{grid:{color:gridColor},ticks:{color:textColor}}}}});
     chartInstances.c4 = new Chart(document.getElementById('c4').getContext('2d'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Reuse',data:[42,58,71,89,112,134],borderColor:'#10A37F',backgroundColor:'rgba(16, 163, 127, .1)',tension:.4,fill:true,pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:gridColor},ticks:{color:textColor}},x:{grid:{color:gridColor},ticks:{color:textColor}}}}});
   } else if (activeReport === 'time') {
-    container.innerHTML = '<div class="chart-card"><div class="card-title">PM Time Allocation</div><canvas id="c5"></canvas></div><div class="chart-card"><div class="card-title">Hours Saved by AI / PM / Month</div><canvas id="c6"></canvas></div>';
+    container.innerHTML = '<div class="chart-card"><div class="card-title">PO Time Allocation</div><canvas id="c5"></canvas></div><div class="chart-card"><div class="card-title">Hours Saved by AI / PO / Month</div><canvas id="c6"></canvas></div>';
     chartInstances.c5 = new Chart(document.getElementById('c5').getContext('2d'),{type:'doughnut',data:{labels:['Discovery','Delivery','Stakeholder Mgmt','Reporting','Admin','AI/Research'],datasets:[{data:[22,30,20,12,8,8],backgroundColor:['#10A37F','#10B981','#F59E0B','#8B5CF6','#EF4444','#06B6D4']}]},options:{plugins:{legend:{position:'right',labels:{color:textColor}}}}});
     chartInstances.c6 = new Chart(document.getElementById('c6').getContext('2d'),{type:'bar',data:{labels:['Research','PRD Writing','Reporting','Decks','Status Updates'],datasets:[{label:'Hours',data:[12,8,6,5,4],backgroundColor:'rgba(16, 163, 127, .75)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor},ticks:{color:textColor}},x:{grid:{color:gridColor},ticks:{color:textColor}}}}});
   } else {
@@ -1207,9 +1207,9 @@ function initReports() {
 // ==============================================================
 var discPacks = {
   bfsi: {
-    market: '**Market Size:** $48B digital banking solutions (India + SEA, 2026). CAGR 19.4%.\n\n**Segments:** Tier 1 banks (8), Tier 2/3 (67), NBFCs (120+). PM-OS target: Tier 2/3 + NBFCs.\n\n**Tailwinds:** RBI digital lending guidelines, OCEN co-lending framework, Account Aggregator ecosystem.',
+    market: '**Market Size:** $48B digital banking solutions (India + SEA, 2026). CAGR 19.4%.\n\n**Segments:** Tier 1 banks (8), Tier 2/3 (67), NBFCs (120+). productowner-skill target: Tier 2/3 + NBFCs.\n\n**Tailwinds:** RBI digital lending guidelines, OCEN co-lending framework, Account Aggregator ecosystem.',
     swot: '**Strengths:** Proven eKYC adapters, 40+ BFSI implementations, regtech expertise, RBI-compliant audit trails.\n\n**Weaknesses:** Long sales cycles (9-14 months), integration complexity, limited global presence.\n\n**Opportunities:** OCEN framework, co-lending mandates, MSME credit gap $530B.\n\n**Threats:** Neobanks, Big Tech credit, RBI tightening on unsecured lending.',
-    competitor: '**Finacle:** Deep BFSI, legacy UI, medium AI readiness.\n**Temenos:** Global, high TCO, medium AI readiness.\n**FIS:** Enterprise, complex, low AI readiness.\n\n**PM-OS edge:** AI-native KB layer, domain packs, 60% faster scoping.',
+    competitor: '**Finacle:** Deep BFSI, legacy UI, medium AI readiness.\n**Temenos:** Global, high TCO, medium AI readiness.\n**FIS:** Enterprise, complex, low AI readiness.\n\n**productowner-skill edge:** AI-native KB layer, domain packs, 60% faster scoping.',
     roi: '**KYC automation:** $18 manual vs $3.20 auto = $14.80 savings/verification.\n\n**40K/month:** $7.1M annual savings. Implementation: $380K. Payback: 3.2 weeks. 5-year NPV: $24.4M.',
     compliance: '**RBI eKYC Circular:** Compliant.\n**Data Residency:** India DCs only. Compliant.\n**CERT-In 72hr SLA:** Action required.\n**PDPB alignment:** Needed by Q1 2027.',
     gtm: '**Segment:** Tier 2/3 banks + NBFCs ($50M-$500M AUM).\n**Pricing:** $3.20/verification + $15K/month platform.\n**Channel:** Direct + BankTech (Razorpay, Cashfree).\n**Launch:** Q3 2026 soft (5 anchor clients).'
@@ -1217,18 +1217,18 @@ var discPacks = {
   healthcare: {
     market: '**Market:** $29B healthcare IT (India + SEA, 2026). Digital health CAGR: 22%.\n\n**Segments:** Hospital chains, diagnostic networks, ABDM initiative, tele-health.\n\n**Tailwinds:** ABDM mandate creates $2B+ spend, PHR ecosystem, tele-consultation post-COVID.',
     swot: '**Strengths:** HL7 FHIR adapters, NABH compliance tooling, existing hospital relationships.\n\n**Weaknesses:** 9+ month sales cycle, fragmented EHR landscape.\n\n**Opportunities:** ABDM mandate, PHR, tele-consultation growth.\n\n**Threats:** Epic Direct entry, Google Health API, government-built ABDM tools.',
-    competitor: '**Epic:** US gold standard, $5M+ implementations, closed ecosystem.\n**Cerner (Oracle):** Data platform, migration risk.\n**Practo:** India SME, limited enterprise.\n\n**PM-OS edge:** ABDM-first, faster go-live, HL7 FHIR out-of-box.',
+    competitor: '**Epic:** US gold standard, $5M+ implementations, closed ecosystem.\n**Cerner (Oracle):** Data platform, migration risk.\n**Practo:** India SME, limited enterprise.\n\n**productowner-skill edge:** ABDM-first, faster go-live, HL7 FHIR out-of-box.',
     roi: '**Patient intake:** 45 min manual vs 8 min digital.\nStaff savings: 4 FTEs / 200-bed hospital = $180K/yr.\nBed utilisation +6% = $420K revenue uplift.\nPayback: 5.2 months.',
     compliance: '**NABH Digital Standards:** Compliant.\n**ABDM / FHIR R4:** In progress (Q3 2026).\n**HIPAA (US):** 87% compliant, 3 items pending.\n**Data residency:** India-only. Compliant.',
     gtm: '**Target:** 200+ bed private hospitals, diagnostic chains.\n**Pricing:** $8K/month + $0.80/patient activation.\n**Channel:** Direct + NABH consulting partners.\n**Launch:** Q4 2026 pilot (3 hospitals).'
   },
   saas: {
     market: '**Market:** $650B global SaaS (2026). B2B SaaS India: $25B at 28% CAGR.\n\n**Trends:** PLG dominance (58% new SaaS), AI-native mandatory, multi-tenant cloud-first.',
-    swot: '**Strengths:** PLG approach, AI-native from day 1, rapid discovery-to-scoping.\n\n**Weaknesses:** New entrant in PM tooling, Atlassian ecosystem competition.\n\n**Opportunities:** AI-PM tooling gap, enterprise consolidation, multi-PM org use case.\n\n**Threats:** Atlassian Rovo expanding, Notion AI, Linear AI, Microsoft Copilot.',
-    competitor: '**Atlassian Rovo:** Jira+Confluence native, closed to other sources.\n**Linear:** Dev-centric, no enterprise KB.\n**Notion AI:** Flexible, not PM-domain-specific.\n\n**PM-OS edge:** Multi-source KB, domain packs, client workspace.',
-    roi: '**Per PM per month:** Research 12hr + PRD 8hr + Reporting 6hr = 26hr = $1,820 saved.\n\n**10-PM org annual:** $218K recovered capacity. PM-OS cost: $60K. **Net ROI: 264%.**',
+    swot: '**Strengths:** PLG approach, AI-native from day 1, rapid discovery-to-scoping.\n\n**Weaknesses:** New entrant in PO tooling, Atlassian ecosystem competition.\n\n**Opportunities:** AI-PO tooling gap, enterprise consolidation, multi-PO org use case.\n\n**Threats:** Atlassian Rovo expanding, Notion AI, Linear AI, Microsoft Copilot.',
+    competitor: '**Atlassian Rovo:** Jira+Confluence native, closed to other sources.\n**Linear:** Dev-centric, no enterprise KB.\n**Notion AI:** Flexible, not PO-domain-specific.\n\n**productowner-skill edge:** Multi-source KB, domain packs, client workspace.',
+    roi: '**Per PO per month:** Research 12hr + PRD 8hr + Reporting 6hr = 26hr = $1,820 saved.\n\n**10-PO org annual:** $218K recovered capacity. productowner-skill cost: $60K. **Net ROI: 264%.**',
     compliance: '**SOC 2 Type II:** In progress. Target Q3 2026.\n**GDPR:** DPA, right to erasure. Compliant.\n**ISO 27001:** Planned Q4 2026.\n**SSO SAML 2.0 + SCIM:** Implemented.',
-    gtm: '**Target:** 10-100 PM teams at mid-market B2B SaaS.\n**Pricing:** $49/PM/month Standard | $99/PM/month AI Tier.\n**Channel:** PLG + ProductHunt + Lenny\'s Newsletter.\n**Launch:** ProductHunt Q3 2026, 50 beta teams.'
+    gtm: '**Target:** 10-100 PO teams at mid-market B2B SaaS.\n**Pricing:** $49/PO/month Standard | $99/PO/month AI Tier.\n**Channel:** PLG + ProductHunt + Lenny\'s Newsletter.\n**Launch:** ProductHunt Q3 2026, 50 beta teams.'
   }
 };
 

@@ -1,4 +1,4 @@
-# PRD 06 — Awesome Regulated AI PM
+# PRD 06 — Awesome Regulated AI PO
 
 **Domain:** Curation · SEO
 **Author:** Vignesh AIPM
@@ -11,7 +11,7 @@ There is no canonical list of resources for PMs shipping AI into regulated indus
 PMs, PO leads, architects ramping into BFSI / healthcare / govtech AI.
 
 ## Solution
-A curated awesome-list (`awesome-regulated-ai-pm`) covering: frameworks, papers, vendors, evals, compliance refs (HIPAA / GDPR / EU-AI-Act / PCI / FATF / BSA), open-source tools, courses, communities, and notable case studies.
+A curated awesome-list (`awesome-regulated-ai-PO`) covering: frameworks, papers, vendors, evals, compliance refs (HIPAA / GDPR / EU-AI-Act / PCI / FATF / BSA), open-source tools, courses, communities, and notable case studies.
 
 ## Success metrics
 - 500+ GitHub stars in 6 months

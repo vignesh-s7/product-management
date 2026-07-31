@@ -2,18 +2,18 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
   "manifestVersion": "1.16",
   "version": "1.0.0",
-  "id": "pm-os-onboarding-tab",
-  "packageName": "com.vvs-pm.pmos.onboarding",
+  "id": "productowner-skill-onboarding-tab",
+  "packageName": "com.vvs-PO.pmos.onboarding",
   "developer": {
     "name": "Vignesh AIPM",
-    "websiteUrl": "https://vvs-pm.github.io/pm-os",
-    "privacyUrl": "https://vvs-pm.github.io/pm-os/onboarding/",
-    "termsOfUseUrl": "https://vvs-pm.github.io/pm-os/onboarding/"
+    "websiteUrl": "https://vvs-PO.github.io/productowner-skill",
+    "privacyUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/",
+    "termsOfUseUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/"
   },
-  "name": { "short": "pm-os", "full": "pm-os: AI-Native PM Platform" },
+  "name": { "short": "productowner-skill", "full": "productowner-skill: AI-Native PO Platform" },
   "description": {
-    "short": "Your AI-native PM operating system",
-    "full": "pm-os helps product managers discover, reuse, and generate PM artifacts across the full lifecycle. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI."
+    "short": "Your AI-native PO operating system",
+    "full": "productowner-skill helps Product Owners discover, reuse, and generate PO artifacts across the full lifecycle. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI."
   },
   "icons": { "color": "icon-color.png", "outline": "icon-outline.png" },
   "accentColor": "#2563EB",
@@ -21,26 +21,26 @@
     {
       "entityId": "onboarding",
       "name": "Get Started",
-      "contentUrl": "https://vvs-pm.github.io/pm-os/onboarding/teams.html",
-      "websiteUrl": "https://vvs-pm.github.io/pm-os/onboarding/",
+      "contentUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/teams.html",
+      "websiteUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/",
       "scopes": ["personal", "team"]
     },
     {
       "entityId": "cucp-deck",
       "name": "CuCP Rollout",
-      "contentUrl": "https://vvs-pm.github.io/pm-os/cucp/presentation.html",
-      "websiteUrl": "https://vvs-pm.github.io/pm-os/cucp/presentation.html",
+      "contentUrl": "https://vvs-PO.github.io/productowner-skill/cucp/presentation.html",
+      "websiteUrl": "https://vvs-PO.github.io/productowner-skill/cucp/presentation.html",
       "scopes": ["personal", "team"]
     }
   ],
   "configurableTabs": [
     {
-      "configurationUrl": "https://vvs-pm.github.io/pm-os/onboarding/teams.html?config=1",
+      "configurationUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/teams.html?config=1",
       "canUpdateConfiguration": true,
       "scopes": ["team", "groupChat"],
       "supportedSharePointHosts": ["sharePointFullPage", "sharePointWebPart"]
     }
   ],
   "permissions": ["identity", "messageTeamMembers"],
-  "validDomains": ["vvs-pm.github.io"]
+  "validDomains": ["vvs-PO.github.io"]
 }

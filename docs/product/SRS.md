@@ -1,22 +1,22 @@
-# SRS — pm-os Platform (v0.4)
+# SRS — productowner-skill Platform (v0.4)
 
 **Author:** Vignesh AIPM
 **Status:** Draft v0.4
-**Linked PRD:** prds/00-pm-os-platform.md
+**Linked PRD:** prds/00-productowner-skill-platform.md
 
 ---
 
 ## 1. System Overview
 
-Multi-tenant, two-tier web platform for product managers to discover, reuse, and generate
-PM artifacts — within their org and across client engagements.
-Built on top of Atlassian Rovo, Microsoft 365 Copilot, and PowerBI. pm-os orchestrates;
+Multi-tenant, two-tier web platform for Product Owners to discover, reuse, and generate
+PO artifacts — within their org and across client engagements.
+Built on top of Atlassian Rovo, Microsoft 365 Copilot, and PowerBI. productowner-skill orchestrates;
 it does not replace these tools.
 
 | Deployment Mode | Who | Description |
 |----------------|-----|-------------|
-| Org Workspace | Internal PM team | Shared KB, role-based access, team dashboards |
-| Client Workspace | Consulting delivery | Separate tenant per client; PM creates, client views |
+| Org Workspace | Internal PO team | Shared KB, role-based access, team dashboards |
+| Client Workspace | Consulting delivery | Separate tenant per client; PO creates, client views |
 | Shared Library | Cross-org / cross-client | Anonymised, domain-tagged reusable templates |
 
 | User Tier | Access |
@@ -36,7 +36,7 @@ it does not replace these tools.
 | Yammer / Viva Engage | Microsoft Graph API | OAuth2 / Graph | Read-only | Posts, groups, announcements |
 | PowerBI | PowerBI Embed API + PowerBI Copilot API | OAuth2 | Read + Embed + AI query | Reports, datasets, dashboards |
 | AI Chat (Jira+Confluence) | Atlassian Rovo Chat | Rovo API | Query | Conversational answers from Atlassian content |
-| AI Chat (pm-os reasoning) | Claude Sonnet 4.6 (Anthropic API) | REST | Generate | Artifact drafts, research, synthesis |
+| AI Chat (productowner-skill reasoning) | Claude Sonnet 4.6 (Anthropic API) | REST | Generate | Artifact drafts, research, synthesis |
 
 ---
 
@@ -46,7 +46,7 @@ it does not replace these tools.
 - SR-T02 Client Workspaces are sub-tenants of the org; client data isolated from internal KB
 - SR-T03 Shared Library contains only anonymised, admin-approved templates — no client or internal PII
 - SR-T04 Admin connects source integrations per Workspace (Org or Client)
-- SR-T05 Role hierarchy per Workspace: Admin · PM Lead · PM · Client Viewer
+- SR-T05 Role hierarchy per Workspace: Admin · PO Lead · PO · Client Viewer
 
 ---
 
@@ -54,7 +54,7 @@ it does not replace these tools.
 
 - SR-S01 Federated search via Rovo Search (Jira + Confluence) + M365 Graph (SharePoint + Yammer) in one query
 - SR-S02 Results: title, source icon, URL, artifact type tag, domain tag, last updated, author
-- SR-S03 Filters: source, artifact type, domain (BFSI/Healthcare/SaaS/Telecom/Consumer), date range, PM owner
+- SR-S03 Filters: source, artifact type, domain (BFSI/Healthcare/SaaS/Telecom/Consumer), date range, PO owner
 - SR-S04 "Reuse" action: open source URL in new tab or copy shareable link
 - SR-S05 "Clone to KB" action: copies artifact into org KB with new metadata tag
 - SR-S06 Search latency < 3 seconds p95 (Rovo + M365 Graph parallel query)
@@ -65,10 +65,10 @@ it does not replace these tools.
 ## 5. Reporting Requirements (Standard Tier)
 
 - SR-R01 Embedded PowerBI reports via PowerBI Embed API (read-only)
-- SR-R02 Pre-built PM templates: Release Velocity · KPI Dashboard · CuCP Status · PM Time Allocation
-- SR-R03 PM Lead view: team-level aggregation across all active products
+- SR-R02 Pre-built PO templates: Release Velocity · KPI Dashboard · CuCP Status · PO Time Allocation
+- SR-R03 PO Lead view: team-level aggregation across all active products
 - SR-R04 Client dashboard: milestone tracking, shared KPIs, programme status (client-visible)
-- SR-R05 Filters: date range, PM, product area, domain, client workspace
+- SR-R05 Filters: date range, PO, product area, domain, client workspace
 - SR-R06 Export: PDF, PNG per report
 
 ---
@@ -76,7 +76,7 @@ it does not replace these tools.
 ## 6. AI Chat Requirements (AI Tier)
 
 - SR-A01 Rovo Chat handles Jira + Confluence questions natively (Atlassian-grounded)
-- SR-A02 Claude API handles pm-os-specific reasoning: artifact generation, cross-tool synthesis, deep research
+- SR-A02 Claude API handles productowner-skill-specific reasoning: artifact generation, cross-tool synthesis, deep research
 - SR-A03 Every AI response cites source: name, type, URL, confidence level
 - SR-A04 Multi-turn context within session; resets on new session
 - SR-A05 Suggested prompts on load (domain + role aware)
@@ -88,10 +88,10 @@ it does not replace these tools.
 
 ## 7. AI PowerBI Interpretation (AI Tier)
 
-- SR-P01 Screenshot paste/upload → PowerBI Copilot interprets, pm-os surfaces narrative + actions
+- SR-P01 Screenshot paste/upload → PowerBI Copilot interprets, productowner-skill surfaces narrative + actions
 - SR-P02 CSV upload → Claude parses and answers natural language questions
 - SR-P03 Direct dataset query: PowerBI Copilot API → natural language answer
-- SR-P04 PM Lead: "Summarise team release health across all products" → aggregated AI narrative
+- SR-P04 PO Lead: "Summarise team release health across all products" → aggregated AI narrative
 - SR-P05 Output exportable: markdown, PDF
 
 ---
@@ -108,8 +108,8 @@ it does not replace these tools.
 
 ## 9. Client Workspace Requirements
 
-- SR-C01 PM creates Client Workspace; client receives invite link (no Atlassian/M365 licence required)
-- SR-C02 PM selects which artifacts are visible to client (granular toggle per artifact)
+- SR-C01 PO creates Client Workspace; client receives invite link (no Atlassian/M365 licence required)
+- SR-C02 PO selects which artifacts are visible to client (granular toggle per artifact)
 - SR-C03 Client Viewer role: read-only; cannot search internal KB; sees only shared artifacts
 - SR-C04 Client dashboard: programme milestones, shared KPIs, AI-generated status summary
 - SR-C05 Client workspace audit log: who viewed what, when
@@ -120,13 +120,13 @@ it does not replace these tools.
 ## 10. Non-Functional Requirements
 
 - NFR-01 SSO: Microsoft Entra / Okta / Atlassian Access
-- NFR-02 RBAC: Admin · PM Lead · PM · Client Viewer
+- NFR-02 RBAC: Admin · PO Lead · PO · Client Viewer
 - NFR-03 Data residency: tenant data stays within selected region (EU / US / APAC)
 - NFR-04 GDPR / SOC2 Type II compliant
 - NFR-05 Uptime SLA: 99.5%
 - NFR-06 Mobile-responsive web UI
 - NFR-07 KB re-index: auto every 15 minutes via Rovo + M365 Graph webhooks
-- NFR-08 Rovo / M365 Copilot licences required at org level — pm-os does not bundle them
+- NFR-08 Rovo / M365 Copilot licences required at org level — productowner-skill does not bundle them
 
 ---
 
