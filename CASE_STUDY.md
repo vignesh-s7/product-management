@@ -54,8 +54,8 @@ An AI PO can codify their own workflow as public tooling. The tool is not the va
 
 ---
 
-- 🌐 [Live app](https://vvs-PO.github.io/productowner-skill/)
-- 📖 [Repo](https://github.com/vvs-PO/productowner-skill)
+- 🌐 [Live app](https://vignesh-s7.github.io/product-management/)
+- 📖 [Repo](https://github.com/vignesh-s7/product-management)
 - 🧠 [prd-to-sdlc skill](./.claude/skills/prd-to-sdlc/SKILL.md)
 - ⚡ [y-score-readiness skill](./.claude/skills/y-score-readiness/SKILL.md)
 - 📅 Feedback / collaboration: [book 15 min](https://cal.com/Vignesh/15min)

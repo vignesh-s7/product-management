@@ -11,7 +11,7 @@ LLM context windows demand clean Markdown, but most enterprise content lives as 
 AI PMs and engineers building RAG, agent context, or knowledge-base ingestion.
 
 ## Solution
-A pipeline (CLI + library) that converts files / mail / PDFs into structured Markdown with preserved headings, tables, footnotes, and source-line citations. Optional Claude Skill / MCP server wrapper.
+A pipeline (CLI + library) that converts files / mail / PDFs into structured Markdown with preserved headings, tables, footnotes, and source-line citations. Optional AIAssistant Skill / MCP server wrapper.
 
 ### Supported inputs
 - PDF (born-digital + scanned via OCR)
@@ -28,12 +28,12 @@ A pipeline (CLI + library) that converts files / mail / PDFs into structured Mar
 ## Success metrics
 - 95%+ structural fidelity on a 100-doc benchmark
 - < 5s per page (no OCR), < 30s per page (OCR)
-- MCP server adopted by 100+ Claude Code / Cursor users
+- MCP server adopted by 100+ AIAssistant Code / Cursor users
 
 ## Deliverables
 - `cli/` — Python CLI (`doc2md`)
 - `mcp-server/` — MCP server wrapper
-- `.claude/skills/doc-to-md/` — Claude Skill
+- `.AIAssistant/skills/doc-to-md/` — AIAssistant Skill
 - `benchmark/` — 100 sample docs + scoring harness
 - `README.md`
 

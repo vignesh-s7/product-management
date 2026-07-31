@@ -3,12 +3,12 @@
   "manifestVersion": "1.16",
   "version": "1.0.0",
   "id": "productowner-skill-onboarding-tab",
-  "packageName": "com.vvs-PO.pmos.onboarding",
+  "packageName": "com.vignesh-s7.pmos.onboarding",
   "developer": {
     "name": "Vignesh AIPM",
-    "websiteUrl": "https://vvs-PO.github.io/productowner-skill",
-    "privacyUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/",
-    "termsOfUseUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/"
+    "websiteUrl": "https://vignesh-s7.github.io/product-management",
+    "privacyUrl": "https://vignesh-s7.github.io/product-management/onboarding/",
+    "termsOfUseUrl": "https://vignesh-s7.github.io/product-management/onboarding/"
   },
   "name": { "short": "productowner-skill", "full": "productowner-skill: AI-Native PO Platform" },
   "description": {
@@ -21,26 +21,26 @@
     {
       "entityId": "onboarding",
       "name": "Get Started",
-      "contentUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/teams.html",
-      "websiteUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/",
+      "contentUrl": "https://vignesh-s7.github.io/product-management/onboarding/teams.html",
+      "websiteUrl": "https://vignesh-s7.github.io/product-management/onboarding/",
       "scopes": ["personal", "team"]
     },
     {
       "entityId": "ECP-deck",
       "name": "ECP Rollout",
-      "contentUrl": "https://vvs-PO.github.io/productowner-skill/ECP/presentation.html",
-      "websiteUrl": "https://vvs-PO.github.io/productowner-skill/ECP/presentation.html",
+      "contentUrl": "https://vignesh-s7.github.io/product-management/ECP/presentation.html",
+      "websiteUrl": "https://vignesh-s7.github.io/product-management/ECP/presentation.html",
       "scopes": ["personal", "team"]
     }
   ],
   "configurableTabs": [
     {
-      "configurationUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/teams.html?config=1",
+      "configurationUrl": "https://vignesh-s7.github.io/product-management/onboarding/teams.html?config=1",
       "canUpdateConfiguration": true,
       "scopes": ["team", "groupChat"],
       "supportedDocRepoHosts": ["DocRepoFullPage", "DocRepoWebPart"]
     }
   ],
   "permissions": ["identity", "messageTeamMembers"],
-  "validDomains": ["vvs-PO.github.io"]
+  "validDomains": ["vignesh-s7.github.io"]
 }

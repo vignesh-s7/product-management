@@ -8,7 +8,7 @@
 
 It is built on a **Zero-Trust, Local Execution** model that is guaranteed to pass InfoSec compliance (GDPR, HIPAA, No Telemetry).
 
-**Interactive portfolio demo:** https://vvs-PO.github.io/productowner-skill/
+**Interactive portfolio demo:** https://vignesh-s7.github.io/product-management/
 
 ---
 
@@ -87,4 +87,4 @@ productowner-skill/
 
 ---
 
-*Built by [Vignesh AIPM](https://github.com/vvs-PO) · Senior PO · AI / BFSI / Healthcare*
+*Built by [Vignesh AIPM](https://github.com/vignesh-s7) · Senior PO · AI / BFSI / Healthcare*

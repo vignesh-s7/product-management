@@ -363,4 +363,4 @@ That is the outcome. The 90-day plan is the path to it.
 
 *Document: prds/10-ECP-90day-rollout-deep-analysis.md*
 *Author: svignesh-aipm | vignesh.aipm@gmail.com*
-*Repository: vvs-PO/productowner-skill*
+*Repository: vignesh-s7/product-management*

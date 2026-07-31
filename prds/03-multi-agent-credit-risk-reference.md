@@ -11,7 +11,7 @@ Banks want agentic credit-risk scoring but lack a reference architecture that sa
 BFSI architects, AI PMs, risk officers evaluating agentic systems for credit decisioning.
 
 ## Solution
-A reference architecture (no client data, no production code) for a multi-agent credit-risk orchestration: deep-RAG retrieval, multi-step reasoning, guardrails, anti-hallucination patterns, dual-backend (AWS Bedrock + Azure OpenAI) for resilience.
+A reference architecture (no client data, no production code) for a multi-agent credit-risk orchestration: deep-RAG retrieval, multi-step reasoning, guardrails, anti-hallucination patterns, dual-backend (AWS Bedrock + Azure AIProvider) for resilience.
 
 ### Agents
 - **Ingestion agent** — pulls bureau, bank, KYC, statement data

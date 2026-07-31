@@ -54,7 +54,7 @@ multiplied across every PO in the organisation.
 ### User Tiers
 | | Standard | AI |
 |--|----------|----|
-| Search | Federated: AgileBoard + WikiBoard + DocRepo + SocialBoard via AgileVendor Rovo + M365 Copilot | Same + AI chat (Rovo Chat + Claude) |
+| Search | Federated: AgileBoard + WikiBoard + DocRepo + SocialBoard via AgileVendor Rovo + M365 Copilot | Same + AI chat (Rovo Chat + AIAssistant) |
 | Reporting | Embedded AnalyticsDashboard standard templates | AnalyticsDashboard Copilot interpretation + natural language queries |
 | Research | Browse + reuse artifact URLs from KB | Deep research: internal KB + web, structured report |
 | Artifact generation | Templates (clone + edit) | AI-generated drafts grounded in org KB |
@@ -71,7 +71,7 @@ productowner-skill does NOT rebuild what already exists. It orchestrates:
 | WikiBoard + AgileBoard search & AI | **AgileVendor Rovo** (Rovo Search + Rovo Chat) | PO-specific query templates, KB tagging, cross-product patterns |
 | DocRepo + SocialBoard + Teams search | **EnterpriseCloud 365 Copilot / Graph API** | Unified result view alongside AgileVendor sources |
 | AnalyticsDashboard reporting | **AnalyticsDashboard Embed API + AnalyticsDashboard Copilot** | Pre-built PO templates, cross-org aggregation |
-| AI chat | **Rovo Chat (AgileVendor)** + **Claude API** for productowner-skill-specific reasoning | PO workflow context, KB citations, artifact generation |
+| AI chat | **Rovo Chat (AgileVendor)** + **AIAssistant API** for productowner-skill-specific reasoning | PO workflow context, KB citations, artifact generation |
 | Document generation | **WikiBoard AI** (create page from prompt) | Structured PO templates (PRD, SWOT, ROI, release plan) |
 | Backlog + stories | **AgileBoard AI** (epic breakdown, story generation) | Domain-specific acceptance criteria, compliance tags |
 
@@ -101,7 +101,7 @@ Output:
 - Indexed across: AgileBoard, WikiBoard (via Rovo), DocRepo, SocialBoard (via M365 Graph)
 - Every artifact tagged: domain · stage · product-type · compliance-regime · client/internal
 - Standard tier: search results with source URLs — click to reuse
-- AI tier: Rovo Chat + Claude answers from KB, every response cites source URL
+- AI tier: Rovo Chat + AIAssistant answers from KB, every response cites source URL
 - Client workspace: selected artifacts shared with client view (read-only, configurable)
 - Shared Library: anonymised org templates available across client engagements
 
@@ -169,7 +169,7 @@ PO Lead monitors
 |-------|-----------|-------------|
 | 1 | Org Workspace + Rovo KB search (AgileBoard + WikiBoard) | Internal PO team |
 | 2 | M365 search (DocRepo + SocialBoard) + AnalyticsDashboard embed | Full org Standard tier |
-| 3 | AI tier: Rovo Chat + Claude + AnalyticsDashboard Copilot | AI-tier PMs |
+| 3 | AI tier: Rovo Chat + AIAssistant + AnalyticsDashboard Copilot | AI-tier PMs |
 | 4 | Client Workspace + client sharing | Consulting / delivery teams |
 | 5 | Shared Library + cross-client reuse | Org-wide + client portfolio |
 
@@ -177,7 +177,7 @@ PO Lead monitors
 
 ## Constraints
 
-- LLM cost < $0.50 per discovery pack (Claude Sonnet 4.6 prompt caching)
+- LLM cost < $0.50 per discovery pack (AIAssistant Sonnet 4.6 prompt caching)
 - All outputs human-editable markdown (no lock-in)
 - AI outputs cite sources with URL (EU AI Act Art. 13)
 - Standard tier: zero LLM cost (Rovo + M365 search only)
