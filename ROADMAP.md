@@ -24,11 +24,11 @@ the system that connects every knowledge source, generates every artifact, and l
 | SRS + FRD (v0.4) | ✅ Done |
 | PO Onboarding UI (6-step wizard) | ✅ Done |
 | GitHub Pages deployment | ✅ Done |
-| Microsoft Teams tab + manifest | ✅ Done |
-| CuCP 90-day rollout slide deck | ✅ Done |
-| Atlassian Rovo KB search integration | 🔲 Next |
-| Microsoft 365 Graph search integration | 🔲 Next |
-| Google Workspace API search integration | 🔲 Next |
+| EnterpriseCloud Teams tab + manifest | ✅ Done |
+| ECP 90-day rollout slide deck | ✅ Done |
+| AgileVendor Rovo KB search integration | 🔲 Next |
+| EnterpriseCloud 365 Graph search integration | 🔲 Next |
+| CloudVendor Workspace API search integration | 🔲 Next |
 
 ---
 
@@ -38,29 +38,29 @@ the system that connects every knowledge source, generates every artifact, and l
 
 | Deliverable | Target |
 |-------------|--------|
-| Unified search UI (Rovo + M365 + Google) | Q3 2026 |
+| Unified search UI (Rovo + M365 + CloudVendor) | Q3 2026 |
 | Artifact tagging: domain · stage · type · compliance | Q3 2026 |
 | "Clone to KB" action from any search result | Q3 2026 |
 | Shared Library (anonymised cross-org templates) | Q3 2026 |
-| PowerBI standard embed (4 pre-built PO templates) | Q3 2026 |
-| Looker embed integration | Q3 2026 |
+| AnalyticsDashboard standard embed (4 pre-built PO templates) | Q3 2026 |
+| BIPlatform embed integration | Q3 2026 |
 | PO Lead team dashboard (release health, reuse rate) | Q3 2026 |
 
 ---
 
 ## Phase 3 — AI Tier
 
-**Goal:** Chat, artifact generation, and PowerBI AI interpretation live for AI-tier PMs.
+**Goal:** Chat, artifact generation, and AnalyticsDashboard AI interpretation live for AI-tier PMs.
 
 | Deliverable | Target |
 |-------------|--------|
-| Rovo Chat integration (Jira + Confluence Q&A) | Q4 2026 |
+| Rovo Chat integration (AgileBoard + WikiBoard Q&A) | Q4 2026 |
 | Claude API chat (cross-tool synthesis, cited responses) | Q4 2026 |
-| Gemini integration (Google Workspace Q&A) | Q4 2026 |
+| Gemini integration (CloudVendor Workspace Q&A) | Q4 2026 |
 | AI artifact generation: SWOT · ROI · PRD · KPI plan | Q4 2026 |
-| Jira AI epic-to-story breakdown | Q4 2026 |
-| Confluence AI "save to page" from chat output | Q4 2026 |
-| PowerBI Copilot: screenshot interpret + dataset query | Q4 2026 |
+| AgileBoard AI epic-to-story breakdown | Q4 2026 |
+| WikiBoard AI "save to page" from chat output | Q4 2026 |
+| AnalyticsDashboard Copilot: screenshot interpret + dataset query | Q4 2026 |
 | Deep research engine (Quick / Standard / Deep) | Q4 2026 |
 
 ---
@@ -74,7 +74,7 @@ the system that connects every knowledge source, generates every artifact, and l
 | Client Workspace tenant isolation | Q1 2027 |
 | Per-artifact visibility toggle (PO controls what client sees) | Q1 2027 |
 | Client dashboard: milestones · KPIs · AI status summary | Q1 2027 |
-| Client invite link (no Atlassian/M365/Google licence required) | Q1 2027 |
+| Client invite link (no AgileVendor/M365/CloudVendor licence required) | Q1 2027 |
 | Workspace archive on engagement close (ZIP + audit log) | Q1 2027 |
 | Admin audit log: who viewed what, when | Q1 2027 |
 
@@ -104,7 +104,7 @@ the system that connects every knowledge source, generates every artifact, and l
 | Multi-tenant SaaS architecture | Q3 2027 |
 | Usage-based billing (Standard tier · AI tier · Client workspaces) | Q3 2027 |
 | White-label for enterprise clients (custom domain + branding) | Q3 2027 |
-| Jira / Confluence / SharePoint write-back (v2) | Q3 2027 |
+| AgileBoard / WikiBoard / DocRepo write-back (v2) | Q3 2027 |
 | Native mobile app (iOS + Android) | Q4 2027 |
 | API for third-party integrations | Q4 2027 |
 
@@ -112,7 +112,7 @@ the system that connects every knowledge source, generates every artifact, and l
 
 ## Principles of Proportional Delivery
 
-Borrowed from the Coupa CuCP framework — applied to productowner-skill itself:
+Borrowed from the EnterpriseVendor ECP framework — applied to productowner-skill itself:
 
 - Each phase ships something usable before the next begins
 - Standard tier always ships before AI tier (cost-safe, broader adoption)

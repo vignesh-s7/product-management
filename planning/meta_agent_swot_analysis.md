@@ -12,9 +12,9 @@ Here is an analysis of how to achieve this at the initiation stage, weighing Plu
 * **Why it's best for now:** It allows "write once, run anywhere" without copying files into every single repository.
 
 ### B. The MCP (Model Context Protocol) Approach
-* **How it works:** You build an MCP server that exposes specific product management tools (e.g., a tool to "Generate PRD" or a tool to connect to Jira).
+* **How it works:** You build an MCP server that exposes specific product management tools (e.g., a tool to "Generate PRD" or a tool to connect to AgileBoard).
 * **Memory Handling:** The server manages state and can pull data from external systems.
-* **Why it's not ideal for initiation:** It is overengineered for text-based workflows. MCP is best when you need to execute code or connect to external APIs (like pulling live data from Confluence), which violates our "Zero Network/Stateless" security rule.
+* **Why it's not ideal for initiation:** It is overengineered for text-based workflows. MCP is best when you need to execute code or connect to external APIs (like pulling live data from WikiBoard), which violates our "Zero Network/Stateless" security rule.
 
 ### C. The Git Submodule / `.agent/skills` Approach
 * **How it works:** Each repository includes your `productowner-skill` skills as a Git submodule inside its own `.agent/skills/` folder.

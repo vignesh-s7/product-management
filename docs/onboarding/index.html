@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>productowner-skill — PO Onboarding</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.CloudVendorapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
@@ -187,54 +187,54 @@ button.chip{background-color:transparent}
       <h2>Select sample knowledge sources</h2>
       <p class="sub">Select tools to preview a proposed integration plan. No OAuth or external connection occurs in this demo.</p>
 
-      <div class="tool-group-label">Atlassian (via Rovo)</div>
+      <div class="tool-group-label">AgileVendor (via Rovo)</div>
       <div class="tools">
-        <div class="tool-card" id="tc-jira">
-          <div class="tool-left"><div class="tool-icon">🔵</div><div><div class="tool-name">Jira</div><div class="tool-desc">Epics, issues, sprints — Rovo Search + Jira AI</div></div></div>
-          <button class="btn-connect" onclick="connect('jira')">Connect</button>
+        <div class="tool-card" id="tc-AgileBoard">
+          <div class="tool-left"><div class="tool-icon">🔵</div><div><div class="tool-name">AgileBoard</div><div class="tool-desc">Epics, issues, sprints — Rovo Search + AgileBoard AI</div></div></div>
+          <button class="btn-connect" onclick="connect('AgileBoard')">Connect</button>
         </div>
-        <div class="tool-card" id="tc-confluence">
-          <div class="tool-left"><div class="tool-icon">📘</div><div><div class="tool-name">Confluence</div><div class="tool-desc">Pages, spaces, AI summaries — Rovo + Confluence AI</div></div></div>
-          <button class="btn-connect" onclick="connect('confluence')">Connect</button>
+        <div class="tool-card" id="tc-WikiBoard">
+          <div class="tool-left"><div class="tool-icon">📘</div><div><div class="tool-name">WikiBoard</div><div class="tool-desc">Pages, spaces, AI summaries — Rovo + WikiBoard AI</div></div></div>
+          <button class="btn-connect" onclick="connect('WikiBoard')">Connect</button>
         </div>
       </div>
 
-      <div class="tool-group-label">Microsoft 365 (via Graph API)</div>
+      <div class="tool-group-label">EnterpriseCloud 365 (via Graph API)</div>
       <div class="tools">
-        <div class="tool-card" id="tc-sharepoint">
-          <div class="tool-left"><div class="tool-icon">📁</div><div><div class="tool-name">SharePoint</div><div class="tool-desc">Documents and sites — M365 Copilot</div></div></div>
-          <button class="btn-connect" onclick="connect('sharepoint')">Connect</button>
+        <div class="tool-card" id="tc-DocRepo">
+          <div class="tool-left"><div class="tool-icon">📁</div><div><div class="tool-name">DocRepo</div><div class="tool-desc">Documents and sites — M365 Copilot</div></div></div>
+          <button class="btn-connect" onclick="connect('DocRepo')">Connect</button>
         </div>
-        <div class="tool-card" id="tc-yammer">
-          <div class="tool-left"><div class="tool-icon">💬</div><div><div class="tool-name">Yammer / Viva Engage</div><div class="tool-desc">Posts and announcements — M365 Graph</div></div></div>
-          <button class="btn-connect" onclick="connect('yammer')">Connect</button>
+        <div class="tool-card" id="tc-SocialBoard">
+          <div class="tool-left"><div class="tool-icon">💬</div><div><div class="tool-name">SocialBoard / Viva Engage</div><div class="tool-desc">Posts and announcements — M365 Graph</div></div></div>
+          <button class="btn-connect" onclick="connect('SocialBoard')">Connect</button>
         </div>
         <div class="tool-card" id="tc-teams">
-          <div class="tool-left"><div class="tool-icon">🟣</div><div><div class="tool-name">Microsoft Teams</div><div class="tool-desc">Channels, files, meeting notes — M365 Copilot</div></div></div>
+          <div class="tool-left"><div class="tool-icon">🟣</div><div><div class="tool-name">EnterpriseCloud Teams</div><div class="tool-desc">Channels, files, meeting notes — M365 Copilot</div></div></div>
           <button class="btn-connect" onclick="connect('teams')">Connect</button>
         </div>
-        <div class="tool-card" id="tc-powerbi">
+        <div class="tool-card" id="tc-AnalyticsDashboard">
           <div class="tool-left"><div class="tool-icon">📊</div><div><div class="tool-name">Power BI</div><div class="tool-desc">Reports and dashboards — Embed + Copilot API</div></div></div>
-          <button class="btn-connect" onclick="connect('powerbi')">Connect</button>
+          <button class="btn-connect" onclick="connect('AnalyticsDashboard')">Connect</button>
         </div>
       </div>
 
-      <div class="tool-group-label">Google Workspace (via Google APIs)</div>
+      <div class="tool-group-label">CloudVendor Workspace (via CloudVendor APIs)</div>
       <div class="tools">
         <div class="tool-card" id="tc-gdrive">
-          <div class="tool-left"><div class="tool-icon">🟡</div><div><div class="tool-name">Google Drive</div><div class="tool-desc">Docs, Sheets, Slides — Drive API + Gemini</div></div></div>
+          <div class="tool-left"><div class="tool-icon">🟡</div><div><div class="tool-name">CloudVendor Drive</div><div class="tool-desc">Docs, Sheets, Slides — Drive API + Gemini</div></div></div>
           <button class="btn-connect" onclick="connect('gdrive')">Connect</button>
         </div>
         <div class="tool-card" id="tc-gdocs">
-          <div class="tool-left"><div class="tool-icon">📝</div><div><div class="tool-name">Google Docs / Slides</div><div class="tool-desc">PRDs, decks, specs — Docs API + Gemini AI</div></div></div>
+          <div class="tool-left"><div class="tool-icon">📝</div><div><div class="tool-name">CloudVendor Docs / Slides</div><div class="tool-desc">PRDs, decks, specs — Docs API + Gemini AI</div></div></div>
           <button class="btn-connect" onclick="connect('gdocs')">Connect</button>
         </div>
-        <div class="tool-card" id="tc-looker">
-          <div class="tool-left"><div class="tool-icon">🔍</div><div><div class="tool-name">Looker / Google Data Studio</div><div class="tool-desc">BI reports and dashboards — Looker API</div></div></div>
-          <button class="btn-connect" onclick="connect('looker')">Connect</button>
+        <div class="tool-card" id="tc-BIPlatform">
+          <div class="tool-left"><div class="tool-icon">🔍</div><div><div class="tool-name">BIPlatform / CloudVendor Data Studio</div><div class="tool-desc">BI reports and dashboards — BIPlatform API</div></div></div>
+          <button class="btn-connect" onclick="connect('BIPlatform')">Connect</button>
         </div>
         <div class="tool-card" id="tc-gchat">
-          <div class="tool-left"><div class="tool-icon">🟢</div><div><div class="tool-name">Google Chat / Gmail</div><div class="tool-desc">Threads, decisions — Google Workspace API</div></div></div>
+          <div class="tool-left"><div class="tool-icon">🟢</div><div><div class="tool-name">CloudVendor Chat / Gmail</div><div class="tool-desc">Threads, decisions — CloudVendor Workspace API</div></div></div>
           <button class="btn-connect" onclick="connect('gchat')">Connect</button>
         </div>
       </div>
@@ -249,7 +249,7 @@ button.chip{background-color:transparent}
     <!-- STEP 3: Tier -->
     <div class="step" id="step-3">
       <h2>Choose your tier</h2>
-      <p class="sub">Start with Standard — upgrade to AI anytime. AI tier uses Atlassian Rovo, M365 Copilot, Gemini, and Claude.</p>
+      <p class="sub">Start with Standard — upgrade to AI anytime. AI tier uses AgileVendor Rovo, M365 Copilot, Gemini, and Claude.</p>
       <div class="tiers">
         <div class="tier-card selected-std" id="tier-std" onclick="selectTier('std')">
           <div class="tier-badge std">Standard</div>
@@ -257,7 +257,7 @@ button.chip{background-color:transparent}
           <ul class="tier-features">
             <li>Federated KB search</li>
             <li>Reuse artifact URLs</li>
-            <li>PowerBI + Looker embed</li>
+            <li>AnalyticsDashboard + BIPlatform embed</li>
             <li>PO templates library</li>
             <li>Client workspace view</li>
             <li>Multi-PO org KB</li>
@@ -269,11 +269,11 @@ button.chip{background-color:transparent}
           <ul class="tier-features"><li>Everything in Standard</li></ul>
           <ul class="tier-features tier-ai-extra">
             <li>Rovo Chat + Claude AI</li>
-            <li>Gemini for Google WS</li>
+            <li>Gemini for CloudVendor WS</li>
             <li>AI artifact generation</li>
-            <li>PowerBI / Looker AI</li>
+            <li>AnalyticsDashboard / BIPlatform AI</li>
             <li>Deep research engine</li>
-            <li>Jira AI story gen</li>
+            <li>AgileBoard AI story gen</li>
           </ul>
         </div>
       </div>

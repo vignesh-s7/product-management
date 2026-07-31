@@ -13,9 +13,9 @@ When using this skill to generate slide decks, follow these guidelines:
 - **Aspect Ratio**: Always set width to `13.333` inches and height to `7.5` inches (16:9 widescreen format).
 - **Color Palette**:
   - Background: Off-white/Light gray (`#F8FAFC`)
-  - Primary text: Dark slate (`#172B4D` - Jira Text)
-  - Secondary/Muted text: Gray (`#5E6C84` - Jira Muted)
-  - Primary Accent: Blue (`#0052CC` - Jira Blue)
+  - Primary text: Dark slate (`#172B4D` - AgileBoard Text)
+  - Secondary/Muted text: Gray (`#5E6C84` - AgileBoard Muted)
+  - Primary Accent: Blue (`#0052CC` - AgileBoard Blue)
   - Secondary Accent/AI Features: Green (`#10A37F` - ChatGPT Green)
   - Highlights/Alerts: Red (`#FF5630`), Green (`#36B37E`), Gold (`#FFAB00`)
 - **Typography**: Use standard fonts like `Segoe UI` or `Arial` for professional corporate layout rendering.

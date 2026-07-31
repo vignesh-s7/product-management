@@ -12,14 +12,14 @@
   --sidebar: #171717;
   --card: #FFFFFF;
   
-  /* Jira Brand Accent & Status Colors */
-  --jira-blue: #0052CC;
-  --jira-blue-hover: #0747A6;
-  --jira-blue-light: #DEEBFF;
-  --jira-border: #DFE1E6;
-  --jira-text: #172B4D;
-  --jira-muted: #5E6C84;
-  --jira-col-bg: #F4F5F7;
+  /* AgileBoard Brand Accent & Status Colors */
+  --AgileBoard-blue: #0052CC;
+  --AgileBoard-blue-hover: #0747A6;
+  --AgileBoard-blue-light: #DEEBFF;
+  --AgileBoard-border: #DFE1E6;
+  --AgileBoard-text: #172B4D;
+  --AgileBoard-muted: #5E6C84;
+  --AgileBoard-col-bg: #F4F5F7;
   
   /* ChatGPT-style Highlight Accents */
   --chatgpt-green: #10A37F;
@@ -27,15 +27,15 @@
   --chatgpt-green-glow: rgba(16, 163, 127, 0.12);
   
   /* Core Variables */
-  --accent: var(--jira-blue);
-  --accent-hover: var(--jira-blue-hover);
-  --accent-glow: var(--jira-blue-light);
+  --accent: var(--AgileBoard-blue);
+  --accent-hover: var(--AgileBoard-blue-hover);
+  --accent-glow: var(--AgileBoard-blue-light);
   --accent2: var(--chatgpt-green);
   --accent2-hover: var(--chatgpt-green-hover);
   --accent2-glow: var(--chatgpt-green-glow);
-  --border: var(--jira-border);
-  --text: var(--jira-text);
-  --muted: var(--jira-muted);
+  --border: var(--AgileBoard-border);
+  --text: var(--AgileBoard-text);
+  --muted: var(--AgileBoard-muted);
   
   /* Priority / Status */
   --green: #36B37E;
@@ -102,10 +102,10 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 
 /* PILLS */
 .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500}
-.pill.jira{background:#e0f2fe;color:#0369a1}
-.pill.confluence{background:#e0f2fe;color:#0369a1}
-.pill.sharepoint{background:#d1fae5;color:#065f46}
-.pill.yammer{background:#ffedd5;color:#9a3412}
+.pill.AgileBoard{background:#e0f2fe;color:#0369a1}
+.pill.WikiBoard{background:#e0f2fe;color:#0369a1}
+.pill.DocRepo{background:#d1fae5;color:#065f46}
+.pill.SocialBoard{background:#ffedd5;color:#9a3412}
 .pill.gdrive{background:#fef3c7;color:#92400e}
 .pill.ai{background:#f3e8ff;color:#6b21a8}
 
@@ -127,7 +127,7 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 
 .result-actions{display:flex;gap:6px;margin-top:8px}
 .btn-sm{padding:5px 12px;border-radius:3px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);font-weight:500;transition:.15s}
-.btn-sm:hover{border-color:var(--accent);color:var(--accent);background:var(--jira-blue-light)}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent);background:var(--AgileBoard-blue-light)}
 .btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn-sm.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff}
 .no-results{text-align:center;padding:48px;color:var(--muted)}
@@ -142,7 +142,7 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 .msg.assistant .msg-avatar{background:var(--accent2);color:#fff}
 .msg.user .msg-avatar{background:#e5e7eb;color:var(--text)}
 .msg-body{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.6;color:var(--text);white-space:pre-wrap}
-.msg.user .msg-body{background:var(--jira-blue-light);border-color:#b3d4ff;color:#0747a6}
+.msg.user .msg-body{background:var(--AgileBoard-blue-light);border-color:#b3d4ff;color:#0747a6}
 .msg-sources{margin-top:8px;font-size:11px;color:var(--muted)}
 .msg-sources span{background:#fff;border:1px solid var(--border);border-radius:4px;padding:2px 6px;margin-right:4px}
 .chat-input-row{display:flex;gap:8px;padding:16px 0}
@@ -222,7 +222,7 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 /* QUICK ACTIONS */
 .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .qa-card{background:#fff;border:1px solid var(--border);border-radius:4px;padding:16px;cursor:pointer;transition:.15s;text-align:left;box-shadow:0 1px 1px rgba(9, 30, 66, 0.2)}
-.qa-card:hover{border-color:var(--accent);background:var(--jira-blue-light)}
+.qa-card:hover{border-color:var(--accent);background:var(--AgileBoard-blue-light)}
 .qa-card .qa-icon{font-size:20px;margin-bottom:8px}
 .qa-card .qa-title{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text)}
 .qa-card .qa-desc{font-size:11px;color:var(--muted)}
@@ -231,7 +231,7 @@ nav{flex:1;padding:12px 0;overflow-y:auto}
 .kanban-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .kanban-controls{display:flex;gap:8px}
 .kanban-board{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px}
-.kanban-col{flex:0 0 250px;background:var(--jira-col-bg);border:1px solid var(--border);border-radius:4px;display:flex;flex-direction:column;min-height:480px}
+.kanban-col{flex:0 0 250px;background:var(--AgileBoard-col-bg);border:1px solid var(--border);border-radius:4px;display:flex;flex-direction:column;min-height:480px}
 .kanban-col-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:none}
 .col-title{font-size:12px;font-weight:600;color:var(--muted)}
 .col-count{background:#DFE1E6;border-radius:99px;padding:2px 8px;font-size:11px;color:var(--text);font-weight:600}
@@ -293,7 +293,7 @@ button.toggle{border:0;padding:0}
 <aside id="sidebar">
   <div class="logo">
     <h2>PO<span>-os</span><span class="badge-ai">AI Tier</span></h2>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">PO Operating System</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">PO Persona Swarm</div>
   </div>
   <nav>
     <div class="nav-section">Workspace</div>
@@ -307,11 +307,11 @@ button.toggle{border:0;padding:0}
     <div class="nav-section">Collaboration</div>
     <a href="#" data-section="client"><span class="icon">&#128101;</span> Client Workspace</a>
     <div class="nav-section">Governance</div>
-    <a href="#" data-section="cucp"><span class="icon">&#128196;</span> CuCP Release Gate</a>
+    <a href="#" data-section="ECP"><span class="icon">&#128196;</span> ECP Release Gate</a>
   </nav>
   <div class="sidebar-footer">
     <a href="../onboarding/">Onboarding Wizard</a>
-    <a href="../cucp/presentation.html">CuCP Case Study</a>
+    <a href="../ECP/presentation.html">ECP Case Study</a>
     <a href="https://github.com/vvs-PO/productowner-skill" target="_blank">GitHub Repo</a>
     <a href="../index.html" style="margin-top:8px;display:block;font-weight:600">Back to Portfolio</a>
     <div style="margin-top:8px;font-size:10px">v0.5 &mdash; DnD + Auto Mode</div>
@@ -350,12 +350,12 @@ button.toggle{border:0;padding:0}
       <div class="grid-2" style="margin-bottom:24px">
         <div class="card">
           <div class="card-title">Connected Tools</div>
-          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Atlassian Rovo</div><span class="status-badge pending">Simulated</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128200;</span> Microsoft 365 Copilot</div><span class="status-badge pending">Simulated</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> Google Workspace + Gemini</div><span class="status-badge pending">Simulated</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128202;</span> PowerBI + Copilot</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> AgileVendor Rovo</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128200;</span> EnterpriseCloud 365 Copilot</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128196;</span> CloudVendor Workspace + Gemini</div><span class="status-badge pending">Simulated</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128202;</span> AnalyticsDashboard + Copilot</div><span class="status-badge pending">Simulated</span></div>
           <div class="tool-status"><div class="tool-name"><span>&#9733;</span> AI assistant</div><span class="status-badge pending">Simulated</span></div>
-          <div class="tool-status"><div class="tool-name"><span>&#128101;</span> Microsoft Teams</div><span class="status-badge pending">Not connected</span></div>
+          <div class="tool-status"><div class="tool-name"><span>&#128101;</span> EnterpriseCloud Teams</div><span class="status-badge pending">Not connected</span></div>
         </div>
         <div class="card">
           <div class="card-title">Recent Activity</div>
@@ -378,7 +378,7 @@ button.toggle{border:0;padding:0}
 
     <!-- KANBAN (DnD) -->
     <div class="section" id="section-kanban">
-      <div class="auto-hint" id="kanban-auto-hint">Auto Mode is ON &mdash; Stories are being auto-prioritised based on dependency signals from Jira and blocker patterns.</div>
+      <div class="auto-hint" id="kanban-auto-hint">Auto Mode is ON &mdash; Stories are being auto-prioritised based on dependency signals from AgileBoard and blocker patterns.</div>
       <div class="kanban-header">
         <div style="font-size:13px;color:var(--muted)">Sprint PI-4 &middot; 5 stories &middot; Drag cards between columns</div>
         <div class="kanban-controls">
@@ -397,15 +397,15 @@ button.toggle{border:0;padding:0}
     <!-- SEARCH KB -->
     <div class="section" id="section-search">
       <div class="auto-hint" id="search-auto-hint">Auto Mode is ON &mdash; Search results are ranked by your active project context (BFSI / KYC). Drag any result to Client Workspace.</div>
-      <div class="search-bar"><input type="text" id="search-input" placeholder="Search Jira, Confluence, SharePoint, Google Drive, Yammer..." oninput="filterSearch()"></div>
+      <div class="search-bar"><input type="text" id="search-input" placeholder="Search AgileBoard, WikiBoard, DocRepo, CloudVendor Drive, SocialBoard..." oninput="filterSearch()"></div>
       <div class="filter-row" id="filter-source">
         <span style="font-size:12px;color:var(--muted);padding:5px 0;margin-right:4px">Source:</span>
         <button class="filter-btn active" data-filter="all" onclick="setFilter('source','all')">All</button>
-        <button class="filter-btn" data-filter="jira" onclick="setFilter('source','jira')">Jira</button>
-        <button class="filter-btn" data-filter="confluence" onclick="setFilter('source','confluence')">Confluence</button>
-        <button class="filter-btn" data-filter="sharepoint" onclick="setFilter('source','sharepoint')">SharePoint</button>
-        <button class="filter-btn" data-filter="yammer" onclick="setFilter('source','yammer')">Yammer</button>
-        <button class="filter-btn" data-filter="gdrive" onclick="setFilter('source','gdrive')">Google Drive</button>
+        <button class="filter-btn" data-filter="AgileBoard" onclick="setFilter('source','AgileBoard')">AgileBoard</button>
+        <button class="filter-btn" data-filter="WikiBoard" onclick="setFilter('source','WikiBoard')">WikiBoard</button>
+        <button class="filter-btn" data-filter="DocRepo" onclick="setFilter('source','DocRepo')">DocRepo</button>
+        <button class="filter-btn" data-filter="SocialBoard" onclick="setFilter('source','SocialBoard')">SocialBoard</button>
+        <button class="filter-btn" data-filter="gdrive" onclick="setFilter('source','gdrive')">CloudVendor Drive</button>
       </div>
       <div class="filter-row" id="filter-domain">
         <span style="font-size:12px;color:var(--muted);padding:5px 0;margin-right:4px">Domain:</span>
@@ -422,7 +422,7 @@ button.toggle{border:0;padding:0}
 
     <!-- AI CHAT -->
     <div class="section" id="section-chat">
-      <div class="auto-hint" id="chat-auto-hint">Auto Mode is ON &mdash; AI is proactively generating insights based on your recent Jira activity. New suggestion ready.</div>
+      <div class="auto-hint" id="chat-auto-hint">Auto Mode is ON &mdash; AI is proactively generating insights based on your recent AgileBoard activity. New suggestion ready.</div>
       <div class="chat-suggestions" id="chat-suggestions">
         <button onclick="sendSuggestion('Generate KYC PRD for BFSI')">Generate KYC PRD</button>
         <button onclick="sendSuggestion('Run SWOT analysis for digital lending')">SWOT: digital lending</button>
@@ -436,7 +436,7 @@ button.toggle{border:0;padding:0}
           <div class="msg assistant">
             <div class="msg-avatar">AI</div>
             <div>
-              <div class="msg-body">Hi! I'm your productowner-skill AI assistant, powered by <strong>Claude Sonnet 4.6 + Atlassian Rovo + Gemini</strong>. I can generate PRDs, SWOT analyses, competitor research, ROI models, compliance checklists, and discovery packs. What would you like to build?</div>
+              <div class="msg-body">Hi! I'm your productowner-skill AI assistant, powered by <strong>Claude Sonnet 4.6 + AgileVendor Rovo + Gemini</strong>. I can generate PRDs, SWOT analyses, competitor research, ROI models, compliance checklists, and discovery packs. What would you like to build?</div>
             </div>
           </div>
         </div>
@@ -449,7 +449,7 @@ button.toggle{border:0;padding:0}
 
     <!-- REPORTS -->
     <div class="section" id="section-reports">
-      <div class="auto-hint" id="reports-auto-hint">Auto Mode is ON &mdash; Reports are cycling automatically. PowerBI Copilot is generating narrative summaries.</div>
+      <div class="auto-hint" id="reports-auto-hint">Auto Mode is ON &mdash; Reports are cycling automatically. AnalyticsDashboard Copilot is generating narrative summaries.</div>
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
         <button class="filter-btn active" onclick="showReport('velocity',event)">Sprint Velocity</button>
         <button class="filter-btn" onclick="showReport('kpi',event)">KPI Trends</button>
@@ -484,7 +484,7 @@ button.toggle{border:0;padding:0}
         </div>
         <button class="btn-run" id="disc-run-btn" onclick="runDiscovery()">Run Discovery Engine</button>
       </div>
-      <div class="loader" id="disc-loader"><div class="spinner"></div><div id="disc-loader-text">Querying Jira, Confluence, Google Drive, SharePoint&hellip;</div></div>
+      <div class="loader" id="disc-loader"><div class="spinner"></div><div id="disc-loader-text">Querying AgileBoard, WikiBoard, CloudVendor Drive, DocRepo&hellip;</div></div>
       <div class="accordion" id="disc-results"></div>
     </div>
 
@@ -514,32 +514,32 @@ button.toggle{border:0;padding:0}
       </div>
     </div>
 
-    <!-- CUCP RELEASE GATE -->
-    <div class="section" id="section-cucp">
-      <div class="auto-hint" id="cucp-auto-hint">Auto Mode is ON &mdash; CuCP release gates are checking validation criteria automatically using live customer telemetry.</div>
+    <!-- ECP RELEASE GATE -->
+    <div class="section" id="section-ECP">
+      <div class="auto-hint" id="ECP-auto-hint">Auto Mode is ON &mdash; ECP release gates are checking validation criteria automatically using live customer telemetry.</div>
       <div class="grid-4" style="margin-bottom: 24px">
-        <div class="card stat-card"><div class="label">CuCP Coverage</div><div class="value" id="cucp-cov-val">58%</div><div class="delta up">&ge; 50% target</div></div>
+        <div class="card stat-card"><div class="label">ECP Coverage</div><div class="value" id="ECP-cov-val">58%</div><div class="delta up">&ge; 50% target</div></div>
         <div class="card stat-card"><div class="label">PO Satisfaction</div><div class="value">4.2 / 5</div><div class="delta up">&ge; 4.0 target</div></div>
         <div class="card stat-card"><div class="label">Definition Drift</div><div class="value" style="color:var(--green)">0 Cases</div><div class="delta">Healthy</div></div>
         <div class="card stat-card"><div class="label">AI Credits Used</div><div class="value">32.4K</div><div class="delta">Fair Use ON</div></div>
       </div>
       
       <div class="card" style="margin-bottom: 24px">
-        <div class="card-title">CuCP Operational Release Gate Tracker</div>
+        <div class="card-title">ECP Operational Release Gate Tracker</div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Track pre-release governance paths for Standard vs. AI capabilities based on the Proportional Governance Principle.</div>
         <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;font-size:13px" id="cucp-table">
+          <table style="width:100%;border-collapse:collapse;font-size:13px" id="ECP-table">
             <thead>
               <tr style="border-bottom:2px solid var(--border);text-align:left">
                 <th style="padding:10px 8px;color:var(--muted)">Initiative</th>
                 <th style="padding:10px 8px;color:var(--muted)">Path</th>
                 <th style="padding:10px 8px;color:var(--muted)">Current Phase</th>
-                <th style="padding:10px 8px;color:var(--muted)">CuCP Validation Gates</th>
+                <th style="padding:10px 8px;color:var(--muted)">ECP Validation Gates</th>
                 <th style="padding:10px 8px;color:var(--muted)">Governance Status</th>
                 <th style="padding:10px 8px;color:var(--muted);width:50px">Action</th>
               </tr>
             </thead>
-            <tbody id="cucp-tbody">
+            <tbody id="ECP-tbody">
               <!-- populated by JS -->
             </tbody>
           </table>
@@ -548,22 +548,22 @@ button.toggle{border:0;padding:0}
 
       <div class="card">
         <div class="card-title">Register New Pre-Release Initiative</div>
-        <form id="cucp-form" onsubmit="addCuCPInitiative(event)" style="display:flex;flex-direction:column;gap:12px">
+        <form id="ECP-form" onsubmit="addECPInitiative(event)" style="display:flex;flex-direction:column;gap:12px">
           <div class="form-row">
             <div class="form-group" style="flex:2">
               <label>Initiative Name</label>
-              <input type="text" id="cucp-name" placeholder="e.g. AI Sourcing Assistant v2" required>
+              <input type="text" id="ECP-name" placeholder="e.g. AI Sourcing Assistant v2" required>
             </div>
             <div class="form-group" style="flex:1">
               <label>Capability Path</label>
-              <select id="cucp-type" onchange="updateFormGates()">
+              <select id="ECP-type" onchange="updateFormGates()">
                 <option value="standard">Standard Capability</option>
                 <option value="ai">AI Capability</option>
               </select>
             </div>
             <div class="form-group" style="flex:1">
               <label>Phase</label>
-              <select id="cucp-phase" onchange="updateFormGates()">
+              <select id="ECP-phase" onchange="updateFormGates()">
                 <option value="EAP">Phase 1: EAP</option>
                 <option value="LA">Phase 2: LA (Std)</option>
                 <option value="Open Beta">Phase 2: Open Beta (AI)</option>
@@ -591,7 +591,7 @@ var activeReport = 'velocity';
 var chartInstances = {};
 var selectedDomain = 'bfsi';
 var currentFilters = {source:'all', domain:'all'};
-var autoCuCPTimer = null;
+var autoECPTimer = null;
 
 // ==============================================================
 // AUTO MODE
@@ -610,10 +610,10 @@ function toggleAutoMode() {
   if (autoMode) {
     startAutoReport();
     scheduleAutoChat();
-    startAutoCuCP();
+    startAutoECP();
   } else {
     clearInterval(autoReportTimer);
-    clearInterval(autoCuCPTimer);
+    clearInterval(autoECPTimer);
   }
 }
 
@@ -637,26 +637,26 @@ function scheduleAutoChat() {
   setTimeout(function() {
     if (autoMode && document.getElementById('section-chat').classList.contains('active')) {
       var messages = document.getElementById('chat-messages');
-      appendChatMessage(messages, 'assistant', 'AI', 'Auto Mode insight: Sample Jira activity suggests a KYC acceptance-criteria gap. Want a demo gap analysis?');
+      appendChatMessage(messages, 'assistant', 'AI', 'Auto Mode insight: Sample AgileBoard activity suggests a KYC acceptance-criteria gap. Want a demo gap analysis?');
       messages.scrollTop = messages.scrollHeight;
     }
   }, 3500);
 }
 
-function startAutoCuCP() {
-  clearInterval(autoCuCPTimer);
+function startAutoECP() {
+  clearInterval(autoECPTimer);
   if (!autoMode) return;
-  autoCuCPTimer = setInterval(function() {
-    if (document.getElementById('section-cucp').classList.contains('active')) {
-      for (var i = 0; i < cucpData.length; i++) {
-        var item = cucpData[i];
+  autoECPTimer = setInterval(function() {
+    if (document.getElementById('section-ECP').classList.contains('active')) {
+      for (var i = 0; i < ECPData.length; i++) {
+        var item = ECPData[i];
         if (item.phase === 'GA') continue;
         for (var gName in item.gates) {
           if (!item.gates[gName]) {
             item.gates[gName] = true;
-            saveCuCPToLocal();
-            initCuCP();
-            var hint = document.getElementById('cucp-auto-hint');
+            saveECPToLocal();
+            initECP();
+            var hint = document.getElementById('ECP-auto-hint');
             if (hint) {
               hint.textContent = 'Auto Mode demo: marked "' + gName + '" complete for ' + item.name + '.';
               setTimeout(function() {
@@ -669,15 +669,15 @@ function startAutoCuCP() {
           }
         }
       }
-      cucpData.forEach(function(item) {
+      ECPData.forEach(function(item) {
         if (item.phase !== 'GA') {
           for (var k in item.gates) {
             item.gates[k] = false;
           }
         }
       });
-      saveCuCPToLocal();
-      initCuCP();
+      saveECPToLocal();
+      initECP();
     }
   }, 4000);
 }
@@ -690,10 +690,10 @@ var sections = {
   kanban:    {title:'Kanban Board', meta:'Phase 2 — Drag & drop sprint management'},
   search:    {title:'Search Knowledge Base', meta:'Phase 2 — Unified search across all connected tools'},
   chat:      {title:'AI Chat', meta:'Phase 3 — Claude + Rovo + Gemini synthesis'},
-  reports:   {title:'Reports', meta:'Phase 3 — PowerBI + Copilot interpretation'},
+  reports:   {title:'Reports', meta:'Phase 3 — AnalyticsDashboard + Copilot interpretation'},
   discovery: {title:'Discovery Engine', meta:'Phase 5 — Auto-generate discovery packs'},
   client:    {title:'Client Workspace', meta:'Phase 4 — Curated client-facing portal with DnD reorder'},
-  cucp:      {title:'CuCP Release Gate', meta:'Governance — Customer Collaboration Program (CuCP) operational release gates'}
+  ECP:      {title:'ECP Release Gate', meta:'Governance — Customer Collaboration Program (ECP) operational release gates'}
 };
 
 document.querySelectorAll('nav a').forEach(function(a) {
@@ -726,7 +726,7 @@ function navigate(id) {
   if (id === 'chat' && autoMode) scheduleAutoChat();
   if (id === 'search') filterSearch();
   if (id === 'client') renderArtifacts();
-  if (id === 'cucp') initCuCP();
+  if (id === 'ECP') initECP();
 }
 
 // ==============================================================
@@ -965,23 +965,23 @@ function assigneeColor(a) {
 // SEARCH KB
 // ==============================================================
 var KB = [
-  {id:1,  title:'KYC Platform PRD v2.1',                  source:'confluence',  domain:'bfsi',       type:'PRD',        snippet:'End-to-end KYC automation with Aadhaar eKYC, video KYC, and risk-based onboarding. Covers user stories, acceptance criteria, and API contracts.',      updated:'2d ago', author:'Priya R.'},
-  {id:2,  title:'Digital Lending Jira Epic BFSI-204',      source:'jira',        domain:'bfsi',       type:'Epic',       snippet:'Loan origination upgrade. 24 stories, 3 sprints. Blockers: Core banking API rate limits. Velocity: 38 SP avg.',                                     updated:'1d ago', author:'Rohit K.'},
-  {id:3,  title:'Healthcare Intake Flow PRD',              source:'sharepoint',  domain:'healthcare', type:'PRD',        snippet:'Patient intake digitisation: e-forms, EHR integration (HL7 FHIR), bed management API. Regulatory: HIPAA, NABH. Timeline: 14 weeks.',               updated:'5d ago', author:'Anita M.'},
-  {id:4,  title:'Competitor Analysis BFSI 2026 Q2',        source:'confluence',  domain:'bfsi',       type:'Research',   snippet:'Side-by-side: Finacle, Temenos, FIS for digital lending. TCO, integration complexity, AI readiness, migration risk.',                              updated:'1w ago', author:'Priya R.'},
+  {id:1,  title:'KYC Platform PRD v2.1',                  source:'WikiBoard',  domain:'bfsi',       type:'PRD',        snippet:'End-to-end KYC automation with Aadhaar eKYC, video KYC, and risk-based onboarding. Covers user stories, acceptance criteria, and API contracts.',      updated:'2d ago', author:'Priya R.'},
+  {id:2,  title:'Digital Lending AgileBoard Epic BFSI-204',      source:'AgileBoard',        domain:'bfsi',       type:'Epic',       snippet:'Loan origination upgrade. 24 stories, 3 sprints. Blockers: Core banking API rate limits. Velocity: 38 SP avg.',                                     updated:'1d ago', author:'Rohit K.'},
+  {id:3,  title:'Healthcare Intake Flow PRD',              source:'DocRepo',  domain:'healthcare', type:'PRD',        snippet:'Patient intake digitisation: e-forms, EHR integration (HL7 FHIR), bed management API. Regulatory: HIPAA, NABH. Timeline: 14 weeks.',               updated:'5d ago', author:'Anita M.'},
+  {id:4,  title:'Competitor Analysis BFSI 2026 Q2',        source:'WikiBoard',  domain:'bfsi',       type:'Research',   snippet:'Side-by-side: Finacle, Temenos, FIS for digital lending. TCO, integration complexity, AI readiness, migration risk.',                              updated:'1w ago', author:'Priya R.'},
   {id:5,  title:'SaaS Onboarding Redesign User Research',  source:'gdrive',      domain:'saas',       type:'Research',   snippet:'12 user interviews, 3 personas. Key friction: step 3 dropout 62%, TTV >14 days. Rec: progressive disclosure.',                                    updated:'3d ago', author:'Karan S.'},
-  {id:6,  title:'HIPAA Compliance Checklist v3',           source:'sharepoint',  domain:'healthcare', type:'Compliance', snippet:'164 controls mapped to HIPAA Security Rule. PHI handling, audit trail, BA agreement templates. Status: 87% compliant.',                            updated:'2w ago', author:'Legal'},
-  {id:7,  title:'Sprint Velocity Report Q2 2026',          source:'jira',        domain:'saas',       type:'Report',     snippet:'10-sprint rolling avg: 36 SP. PI-3 commitment vs delivery: 94%. Top blockers: dependency delays 32%, unclear AC 28%.',                            updated:'today',  author:'Scrum Master'},
+  {id:6,  title:'HIPAA Compliance Checklist v3',           source:'DocRepo',  domain:'healthcare', type:'Compliance', snippet:'164 controls mapped to HIPAA Security Rule. PHI handling, audit trail, BA agreement templates. Status: 87% compliant.',                            updated:'2w ago', author:'Legal'},
+  {id:7,  title:'Sprint Velocity Report Q2 2026',          source:'AgileBoard',        domain:'saas',       type:'Report',     snippet:'10-sprint rolling avg: 36 SP. PI-3 commitment vs delivery: 94%. Top blockers: dependency delays 32%, unclear AC 28%.',                            updated:'today',  author:'Scrum Master'},
   {id:8,  title:'GTM Strategy Deck Q3 2026',               source:'gdrive',      domain:'bfsi',       type:'Strategy',   snippet:'Digital KYC GTM: Tier 2/3 banks target, per-verification pricing, direct + BankTech channel, Q3 launch.',                                         updated:'4d ago', author:'Vignesh S.'},
-  {id:9,  title:'SaaS Platform Architecture RFC',          source:'confluence',  domain:'saas',       type:'RFC',        snippet:'Microservices migration from monolith. Event-driven with Kafka, multi-tenant via schema isolation, Datadog + PagerDuty.',                           updated:'6d ago', author:'Arjun T.'},
-  {id:10, title:'Yammer: OKR Alignment Q3',                source:'yammer',      domain:'saas',       type:'Discussion', snippet:'Cross-functional OKR cascade. Engineering vs Product priority conflict on infra vs features. Resolution: 70/30 split.',                            updated:'3d ago', author:'Leadership'},
-  {id:11, title:'ROI Model: Digital KYC',                  source:'sharepoint',  domain:'bfsi',       type:'Model',      snippet:'5-year NPV: $24.4M. 40K verifications/month, 65% manual reduction, $3.20 cost vs $18 manual. Payback: 3.2 weeks.',                                 updated:'5d ago', author:'Finance'},
-  {id:12, title:'BFSI Risk Register v2',                   source:'confluence',  domain:'bfsi',       type:'Risk',       snippet:'18 risks. Top: RBI regulatory change, Aadhaar API SLA dependency, data residency compliance.',                                                    updated:'1w ago', author:'Risk Team'},
-  {id:13, title:'Healthcare EHR Integration Spike',        source:'jira',        domain:'healthcare', type:'Story',      snippet:'FHIR R4: Epic SMART compatible, Cerner needs custom adapter. Estimate: 6 SP adapter, 2 SP tests.',                                                 updated:'2d ago', author:'Dev Team'},
+  {id:9,  title:'SaaS Platform Architecture RFC',          source:'WikiBoard',  domain:'saas',       type:'RFC',        snippet:'Microservices migration from monolith. Event-driven with Kafka, multi-tenant via schema isolation, Datadog + PagerDuty.',                           updated:'6d ago', author:'Arjun T.'},
+  {id:10, title:'SocialBoard: OKR Alignment Q3',                source:'SocialBoard',      domain:'saas',       type:'Discussion', snippet:'Cross-functional OKR cascade. Engineering vs Product priority conflict on infra vs features. Resolution: 70/30 split.',                            updated:'3d ago', author:'Leadership'},
+  {id:11, title:'ROI Model: Digital KYC',                  source:'DocRepo',  domain:'bfsi',       type:'Model',      snippet:'5-year NPV: $24.4M. 40K verifications/month, 65% manual reduction, $3.20 cost vs $18 manual. Payback: 3.2 weeks.',                                 updated:'5d ago', author:'Finance'},
+  {id:12, title:'BFSI Risk Register v2',                   source:'WikiBoard',  domain:'bfsi',       type:'Risk',       snippet:'18 risks. Top: RBI regulatory change, Aadhaar API SLA dependency, data residency compliance.',                                                    updated:'1w ago', author:'Risk Team'},
+  {id:13, title:'Healthcare EHR Integration Spike',        source:'AgileBoard',        domain:'healthcare', type:'Story',      snippet:'FHIR R4: Epic SMART compatible, Cerner needs custom adapter. Estimate: 6 SP adapter, 2 SP tests.',                                                 updated:'2d ago', author:'Dev Team'},
   {id:14, title:'SaaS Pricing Model Analysis',             source:'gdrive',      domain:'saas',       type:'Analysis',   snippet:'Freemium vs PLG vs Enterprise. Rec: tiered PLG + enterprise upsell. Benchmarks: Notion, Linear, Figma.',                                          updated:'1w ago', author:'Karan S.'},
-  {id:15, title:'Post-Launch Retro: KYC v1',               source:'yammer',      domain:'bfsi',       type:'Retro',      snippet:'NPS: 42 (from 28). Top feedback: faster onboarding, manual fallback needed. Planned v1.1 with fallback flow.',                                    updated:'2w ago', author:'PO Team'},
-  {id:16, title:'Healthcare SWOT: Digital Intake 2026',    source:'sharepoint',  domain:'healthcare', type:'SWOT',       snippet:'Strengths: EHR relationships, HL7 adapters. Weakness: 9+ month sales. Opp: ABDM mandate. Threat: Epic Direct.',                                   updated:'1w ago', author:'Strategy'},
-  {id:17, title:'Jira Epic SAAS-88: API Platform',         source:'jira',        domain:'saas',       type:'Epic',       snippet:'Build internal API platform: rate limiting, dev portal, versioning. Enables 3rd party integrations. 5 partners by Q4.',                           updated:'3d ago', author:'Platform'}
+  {id:15, title:'Post-Launch Retro: KYC v1',               source:'SocialBoard',      domain:'bfsi',       type:'Retro',      snippet:'NPS: 42 (from 28). Top feedback: faster onboarding, manual fallback needed. Planned v1.1 with fallback flow.',                                    updated:'2w ago', author:'PO Team'},
+  {id:16, title:'Healthcare SWOT: Digital Intake 2026',    source:'DocRepo',  domain:'healthcare', type:'SWOT',       snippet:'Strengths: EHR relationships, HL7 adapters. Weakness: 9+ month sales. Opp: ABDM mandate. Threat: Epic Direct.',                                   updated:'1w ago', author:'Strategy'},
+  {id:17, title:'AgileBoard Epic SAAS-88: API Platform',         source:'AgileBoard',        domain:'saas',       type:'Epic',       snippet:'Build internal API platform: rate limiting, dev portal, versioning. Enables 3rd party integrations. 5 partners by Q4.',                           updated:'3d ago', author:'Platform'}
 ];
 
 function filterSearch() { renderSearch(); }
@@ -1006,8 +1006,8 @@ function renderSearch() {
   var noResults = document.getElementById('no-results');
   if (!filtered.length) { container.innerHTML = ''; noResults.style.display = 'block'; return; }
   noResults.style.display = 'none';
-  var srcIcons = {jira:'&#128196;',confluence:'&#128209;',sharepoint:'&#128200;',yammer:'&#128172;',gdrive:'&#128196;'};
-  var srcColors = {jira:'#1D4ED8',confluence:'#0369A1',sharepoint:'#047857',yammer:'#7C2D12',gdrive:'#B45309'};
+  var srcIcons = {AgileBoard:'&#128196;',WikiBoard:'&#128209;',DocRepo:'&#128200;',SocialBoard:'&#128172;',gdrive:'&#128196;'};
+  var srcColors = {AgileBoard:'#1D4ED8',WikiBoard:'#0369A1',DocRepo:'#047857',SocialBoard:'#7C2D12',gdrive:'#B45309'};
   container.innerHTML = filtered.map(function(item) {
     return '<div class="result-item" draggable="true" ondragstart="dragSearchItem(event,' + item.id + ')">' +
       '<div class="result-icon" style="background:' + srcColors[item.source] + '22;color:' + srcColors[item.source] + '">' + srcIcons[item.source] + '</div>' +
@@ -1038,7 +1038,7 @@ function dragSearchItem(e, id) {
 
 function cloneToKB(id) {
   var item = KB.find(function(k) { return k.id === id; });
-  if (item) alert('Cloned "' + item.title + '" to your workspace KB.\n\nIn production: writes to Confluence via Rovo API.');
+  if (item) alert('Cloned "' + item.title + '" to your workspace KB.\n\nIn production: writes to WikiBoard via Rovo API.');
 }
 
 function addToClientWS(id) {
@@ -1067,32 +1067,32 @@ var chatResponses = {
   kyc: {
     keywords: ['kyc','know your customer','aadhaar','ekyc','video kyc'],
     response: '**KYC Platform PRD (BFSI)**\n\n**Problem:** Manual KYC takes 3-5 days, costs $18/verification, 22% drop-off.\n\n**Solution:** Automated KYC with Aadhaar eKYC + Video KYC fallback.\n\n**Key Features:**\n- Aadhaar OTP-based eKYC (RBI compliant)\n- Video KYC for NRI / high-risk segments\n- Risk-based onboarding (low/medium/high)\n- Real-time liveness detection\n- Audit trail for regulatory compliance\n\n**Metrics:** Cost < $3.50 | TAT < 4hr | Drop-off < 8%',
-    sources: ['Jira: BFSI-204','Confluence: KYC PRD v2.1','SharePoint: ROI Model']
+    sources: ['AgileBoard: BFSI-204','WikiBoard: KYC PRD v2.1','DocRepo: ROI Model']
   },
   swot: {
     keywords: ['swot','strength','weakness','opportunity','threat'],
     response: '**SWOT: Digital Lending (BFSI)**\n\n**Strengths** Proven eKYC adapters, 40+ implementations, regtech expertise.\n\n**Weaknesses** Sales cycles 9-14 months, core banking integration variance, India-centric.\n\n**Opportunities** OCEN framework, co-lending mandates, MSME credit gap $530B.\n\n**Threats** Neobanks (Jupiter, Fi), Big Tech credit expansion, RBI tightening.',
-    sources: ['Confluence: Competitor Analysis','Yammer: OKR Q3','Confluence: Risk Register']
+    sources: ['WikiBoard: Competitor Analysis','SocialBoard: OKR Q3','WikiBoard: Risk Register']
   },
   competitor: {
     keywords: ['competitor','competition','finacle','temenos','epic','cerner'],
     response: '**Competitor Landscape**\n\n| Platform | Strength | Weakness | AI Readiness |\n|----------|----------|-----------|--------------|\n| Finacle | Deep BFSI | Legacy UI | Medium |\n| Temenos | Global reach | High TCO | Medium |\n| FIS | Enterprise | Complex | Low |\n| Epic | EHR dominant | Closed | High |\n| Cerner | Data platform | Migration | High |\n\n**productowner-skill edge:** Domain-agnostic, AI-native, faster scoping via reusable discovery packs.',
-    sources: ['Confluence: Competitor Analysis Q2','Google Drive: Pricing Model']
+    sources: ['WikiBoard: Competitor Analysis Q2','CloudVendor Drive: Pricing Model']
   },
   roi: {
     keywords: ['roi','return','cost','npv','savings','model'],
     response: '**ROI Model: Digital KYC**\n\n40K verifications/month | $18 manual vs $3.20 automated = **$14.80 saved/verification**\n\nYear 1 net: **$6.72M** | 5-year NPV: **$24.4M** | Payback: **3.2 weeks**\n\nPM productivity: 35 hrs/PO/month saved = $2.1M recovered capacity (10-PO org).',
-    sources: ['SharePoint: ROI Model','PowerBI: Velocity']
+    sources: ['DocRepo: ROI Model','AnalyticsDashboard: Velocity']
   },
   compliance: {
     keywords: ['compliance','hipaa','gdpr','rbi','nabh','checklist'],
     response: '**Compliance Checklist**\n\n**HIPAA:** PHI audit trail, BA agreements, AES-256 + TLS 1.3, incident response. Status: 87% (3 pending)\n\n**RBI / BFSI:** eKYC circular, India data residency, CERT-In 72hr reporting (action needed), consent framework.\n\n**ABDM:** FHIR R4 + ABHA integration in progress (Q3 2026).',
-    sources: ['SharePoint: HIPAA Checklist v3','Confluence: Risk Register']
+    sources: ['DocRepo: HIPAA Checklist v3','WikiBoard: Risk Register']
   },
   saas: {
     keywords: ['saas','onboarding','discovery','b2b','plg','product led'],
     response: '**Discovery Pack: SaaS Onboarding**\n\n**Market:** B2B SaaS step-3 dropout 62%. TTV benchmark: 7 days (top quartile). PLG: 58% of new launches.\n\n**Insights from KB:**\n1. Progressive disclosure reduces cognitive load 40%\n2. In-app guidance cuts support tickets 28%\n3. Freemium-to-paid peaks day 8-12\n\n**Rec:** 3-step setup, T+2min aha moment, smart defaults by company size.',
-    sources: ['Google Drive: SaaS Research','Jira: SAAS-88','Google Drive: Pricing Model']
+    sources: ['CloudVendor Drive: SaaS Research','AgileBoard: SAAS-88','CloudVendor Drive: Pricing Model']
   }
 };
 
@@ -1216,7 +1216,7 @@ var discPacks = {
   },
   healthcare: {
     market: '**Market:** $29B healthcare IT (India + SEA, 2026). Digital health CAGR: 22%.\n\n**Segments:** Hospital chains, diagnostic networks, ABDM initiative, tele-health.\n\n**Tailwinds:** ABDM mandate creates $2B+ spend, PHR ecosystem, tele-consultation post-COVID.',
-    swot: '**Strengths:** HL7 FHIR adapters, NABH compliance tooling, existing hospital relationships.\n\n**Weaknesses:** 9+ month sales cycle, fragmented EHR landscape.\n\n**Opportunities:** ABDM mandate, PHR, tele-consultation growth.\n\n**Threats:** Epic Direct entry, Google Health API, government-built ABDM tools.',
+    swot: '**Strengths:** HL7 FHIR adapters, NABH compliance tooling, existing hospital relationships.\n\n**Weaknesses:** 9+ month sales cycle, fragmented EHR landscape.\n\n**Opportunities:** ABDM mandate, PHR, tele-consultation growth.\n\n**Threats:** Epic Direct entry, CloudVendor Health API, government-built ABDM tools.',
     competitor: '**Epic:** US gold standard, $5M+ implementations, closed ecosystem.\n**Cerner (Oracle):** Data platform, migration risk.\n**Practo:** India SME, limited enterprise.\n\n**productowner-skill edge:** ABDM-first, faster go-live, HL7 FHIR out-of-box.',
     roi: '**Patient intake:** 45 min manual vs 8 min digital.\nStaff savings: 4 FTEs / 200-bed hospital = $180K/yr.\nBed utilisation +6% = $420K revenue uplift.\nPayback: 5.2 months.',
     compliance: '**NABH Digital Standards:** Compliant.\n**ABDM / FHIR R4:** In progress (Q3 2026).\n**HIPAA (US):** 87% compliant, 3 items pending.\n**Data residency:** India-only. Compliant.',
@@ -1224,8 +1224,8 @@ var discPacks = {
   },
   saas: {
     market: '**Market:** $650B global SaaS (2026). B2B SaaS India: $25B at 28% CAGR.\n\n**Trends:** PLG dominance (58% new SaaS), AI-native mandatory, multi-tenant cloud-first.',
-    swot: '**Strengths:** PLG approach, AI-native from day 1, rapid discovery-to-scoping.\n\n**Weaknesses:** New entrant in PO tooling, Atlassian ecosystem competition.\n\n**Opportunities:** AI-PO tooling gap, enterprise consolidation, multi-PO org use case.\n\n**Threats:** Atlassian Rovo expanding, Notion AI, Linear AI, Microsoft Copilot.',
-    competitor: '**Atlassian Rovo:** Jira+Confluence native, closed to other sources.\n**Linear:** Dev-centric, no enterprise KB.\n**Notion AI:** Flexible, not PO-domain-specific.\n\n**productowner-skill edge:** Multi-source KB, domain packs, client workspace.',
+    swot: '**Strengths:** PLG approach, AI-native from day 1, rapid discovery-to-scoping.\n\n**Weaknesses:** New entrant in PO tooling, AgileVendor ecosystem competition.\n\n**Opportunities:** AI-PO tooling gap, enterprise consolidation, multi-PO org use case.\n\n**Threats:** AgileVendor Rovo expanding, Notion AI, Linear AI, EnterpriseCloud Copilot.',
+    competitor: '**AgileVendor Rovo:** AgileBoard+WikiBoard native, closed to other sources.\n**Linear:** Dev-centric, no enterprise KB.\n**Notion AI:** Flexible, not PO-domain-specific.\n\n**productowner-skill edge:** Multi-source KB, domain packs, client workspace.',
     roi: '**Per PO per month:** Research 12hr + PRD 8hr + Reporting 6hr = 26hr = $1,820 saved.\n\n**10-PO org annual:** $218K recovered capacity. productowner-skill cost: $60K. **Net ROI: 264%.**',
     compliance: '**SOC 2 Type II:** In progress. Target Q3 2026.\n**GDPR:** DPA, right to erasure. Compliant.\n**ISO 27001:** Planned Q4 2026.\n**SSO SAML 2.0 + SCIM:** Implemented.',
     gtm: '**Target:** 10-100 PO teams at mid-market B2B SaaS.\n**Pricing:** $49/PO/month Standard | $99/PO/month AI Tier.\n**Channel:** PLG + ProductHunt + Lenny\'s Newsletter.\n**Launch:** ProductHunt Q3 2026, 50 beta teams.'
@@ -1250,8 +1250,8 @@ function runDiscovery() {
   results.classList.remove('show');
   results.innerHTML = '';
   var steps = [
-    'Querying Jira + Confluence via Rovo…',
-    'Fetching Google Drive + SharePoint…',
+    'Querying AgileBoard + WikiBoard via Rovo…',
+    'Fetching CloudVendor Drive + DocRepo…',
     'Running Claude synthesis…',
     'Assembling discovery pack…'
   ];
@@ -1296,7 +1296,7 @@ function runDiscovery() {
       content.textContent = String(pack[section.key] || 'No data for this domain.').replace(/\*\*/g, '');
       var actions = document.createElement('div');
       actions.style.cssText = 'margin-top:12px;display:flex;gap:8px;flex-wrap:wrap';
-      ['Clone to KB', 'Export to Confluence', 'Add to Client WS'].forEach(function(action, actionIndex) {
+      ['Clone to KB', 'Export to WikiBoard', 'Add to Client WS'].forEach(function(action, actionIndex) {
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'btn-sm' + (actionIndex === 0 ? ' primary' : '');
@@ -1329,12 +1329,12 @@ function toggleAcc(header) {
 // CLIENT WORKSPACE (DnD)
 // ==============================================================
 var defaultArtifacts = [
-    {id:1, name:'KYC Platform PRD v2.1',            meta:'Confluence · BFSI · Updated 2 days ago',     on:true},
-    {id:2, name:'Digital Lending SWOT Analysis',     meta:'Google Drive · BFSI · Updated 3 days ago',   on:true},
-    {id:3, name:'Sprint Velocity Report Q2 2026',    meta:'PowerBI · Delivery · Updated today',         on:true},
-    {id:4, name:'Competitor Analysis: BFSI Platforms',meta:'Confluence · BFSI · Updated 1 week ago',   on:false},
-    {id:5, name:'ROI Model: Digital KYC',            meta:'SharePoint · BFSI · Updated 5 days ago',     on:false},
-    {id:6, name:'GTM Strategy Deck Q3 2026',         meta:'Google Drive · Delivery · Updated 4 days ago',on:true}
+    {id:1, name:'KYC Platform PRD v2.1',            meta:'WikiBoard · BFSI · Updated 2 days ago',     on:true},
+    {id:2, name:'Digital Lending SWOT Analysis',     meta:'CloudVendor Drive · BFSI · Updated 3 days ago',   on:true},
+    {id:3, name:'Sprint Velocity Report Q2 2026',    meta:'AnalyticsDashboard · Delivery · Updated today',         on:true},
+    {id:4, name:'Competitor Analysis: BFSI Platforms',meta:'WikiBoard · BFSI · Updated 1 week ago',   on:false},
+    {id:5, name:'ROI Model: Digital KYC',            meta:'DocRepo · BFSI · Updated 5 days ago',     on:false},
+    {id:6, name:'GTM Strategy Deck Q3 2026',         meta:'CloudVendor Drive · Delivery · Updated 4 days ago',on:true}
   ];
 
 function isArtifact(value) {
@@ -1502,13 +1502,13 @@ window.addEventListener('load', function() {
   filterSearch();
   renderArtifacts();
   initKanban();
-  initCuCP();
+  initECP();
 });
 
 // ==============================================================
-// CUCP GOVERNANCE
+// ECP GOVERNANCE
 // ==============================================================
-var defaultCuCP = [
+var defaultECP = [
   {
     name: "Acme Sourcing Optimisation",
     type: "standard",
@@ -1553,7 +1553,7 @@ var defaultCuCP = [
   }
 ];
 
-function isCuCPItem(item) {
+function isECPItem(item) {
   if (!isPlainObject(item) || !isBoundedString(item.name, 160) ||
       !['standard', 'ai'].includes(item.type) ||
       !['EAP', 'LA', 'Open Beta', 'GA'].includes(item.phase) || !isPlainObject(item.gates)) return false;
@@ -1563,23 +1563,23 @@ function isCuCPItem(item) {
   });
 }
 
-var savedCuCP = readLocalJSON('pm_os_cucp', 50000);
-var cucpData = Array.isArray(savedCuCP) && savedCuCP.length <= 50 && savedCuCP.every(isCuCPItem)
-  ? savedCuCP
-  : defaultCuCP;
+var savedECP = readLocalJSON('pm_os_ECP', 50000);
+var ECPData = Array.isArray(savedECP) && savedECP.length <= 50 && savedECP.every(isECPItem)
+  ? savedECP
+  : defaultECP;
 
-function saveCuCPToLocal() {
+function saveECPToLocal() {
   try {
-    localStorage.setItem('pm_os_cucp', JSON.stringify(cucpData));
+    localStorage.setItem('pm_os_ECP', JSON.stringify(ECPData));
   } catch (e) { console.error(e); }
 }
 
-function initCuCP() {
-  var tbody = document.getElementById('cucp-tbody');
+function initECP() {
+  var tbody = document.getElementById('ECP-tbody');
   if (!tbody) return;
   tbody.replaceChildren();
   
-  cucpData.forEach(function(item, idx) {
+  ECPData.forEach(function(item, idx) {
     var tr = document.createElement('tr');
     tr.style.borderBottom = '1px solid var(--border)';
     
@@ -1630,7 +1630,7 @@ function initCuCP() {
       checkbox.type = 'checkbox';
       checkbox.checked = isChecked;
       (function(gateName, input) {
-        input.addEventListener('change', function() { toggleCuCPGate(idx, gateName, input.checked); });
+        input.addEventListener('change', function() { toggleECPGate(idx, gateName, input.checked); });
       })(gName, checkbox);
       var gateLabel = document.createElement('span');
       gateLabel.style.cssText = isChecked ? 'color:var(--text)' : 'color:var(--muted);text-decoration:line-through';
@@ -1658,7 +1658,7 @@ function initCuCP() {
     deleteButton.className = 'btn-sm';
     deleteButton.style.cssText = 'color:var(--red);border-color:var(--red);background:transparent';
     deleteButton.textContent = 'Delete';
-    deleteButton.addEventListener('click', function() { deleteCuCP(idx); });
+    deleteButton.addEventListener('click', function() { deleteECP(idx); });
     tdDelete.appendChild(deleteButton);
     tr.appendChild(tdDelete);
     
@@ -1666,34 +1666,34 @@ function initCuCP() {
   });
   
   // Calculate coverage stats
-  var eligible = cucpData.length;
-  var runningCuCP = cucpData.filter(function(i) { return i.phase !== 'GA'; }).length;
-  var activeCuCP = cucpData.filter(function(i) {
+  var eligible = ECPData.length;
+  var runningECP = ECPData.filter(function(i) { return i.phase !== 'GA'; }).length;
+  var activeECP = ECPData.filter(function(i) {
     var keys = Object.keys(i.gates);
     return keys.length > 0 && keys.every(function(k) { return i.gates[k]; });
   }).length;
-  var covPercent = eligible > 0 ? Math.round((activeCuCP / eligible) * 100) : 0;
-  var covEl = document.getElementById('cucp-cov-val');
+  var covPercent = eligible > 0 ? Math.round((activeECP / eligible) * 100) : 0;
+  var covEl = document.getElementById('ECP-cov-val');
   if (covEl) covEl.textContent = covPercent + '%';
 }
 
-function toggleCuCPGate(idx, gName, checked) {
-  cucpData[idx].gates[gName] = checked;
-  saveCuCPToLocal();
-  initCuCP();
+function toggleECPGate(idx, gName, checked) {
+  ECPData[idx].gates[gName] = checked;
+  saveECPToLocal();
+  initECP();
 }
 
-function deleteCuCP(idx) {
-  cucpData.splice(idx, 1);
-  saveCuCPToLocal();
-  initCuCP();
+function deleteECP(idx) {
+  ECPData.splice(idx, 1);
+  saveECPToLocal();
+  initECP();
 }
 
-function addCuCPInitiative(e) {
+function addECPInitiative(e) {
   e.preventDefault();
-  var name = document.getElementById('cucp-name').value;
-  var type = document.getElementById('cucp-type').value;
-  var phase = document.getElementById('cucp-phase').value;
+  var name = document.getElementById('ECP-name').value;
+  var type = document.getElementById('ECP-type').value;
+  var phase = document.getElementById('ECP-phase').value;
   
   // Assign default gates based on path and phase
   var gates = {};
@@ -1727,22 +1727,22 @@ function addCuCPInitiative(e) {
     }
   }
   
-  cucpData.push({
+  ECPData.push({
     name: name,
     type: type,
     phase: phase,
     gates: gates
   });
   
-  saveCuCPToLocal();
-  initCuCP();
+  saveECPToLocal();
+  initECP();
   
-  document.getElementById('cucp-name').value = '';
+  document.getElementById('ECP-name').value = '';
 }
 
 function updateFormGates() {
-  var type = document.getElementById('cucp-type').value;
-  var selectPhase = document.getElementById('cucp-phase');
+  var type = document.getElementById('ECP-type').value;
+  var selectPhase = document.getElementById('ECP-phase');
   var currentVal = selectPhase.value;
   
   // Rebuild select options depending on path (Standard vs AI)

@@ -5,7 +5,7 @@
 **Status:** MVP
 
 ## Problem
-LLM context windows demand clean Markdown, but most enterprise content lives as PDFs, emails (EML / PST / MSG), Office files, scanned docs, and SharePoint. Existing converters lose structure (tables, sections, footnotes) or hallucinate content.
+LLM context windows demand clean Markdown, but most enterprise content lives as PDFs, emails (EML / PST / MSG), Office files, scanned docs, and DocRepo. Existing converters lose structure (tables, sections, footnotes) or hallucinate content.
 
 ## Target user
 AI PMs and engineers building RAG, agent context, or knowledge-base ingestion.

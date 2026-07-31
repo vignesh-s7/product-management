@@ -1,4 +1,4 @@
-# PRD 00 — productowner-skill Platform: AI-Native PO Operating System
+# PRD 00 — productowner-skill Platform: AI-Native PO Persona Swarm
 
 **Domain:** PO tooling · platform · B2B SaaS
 **Author:** Vignesh AIPM
@@ -13,10 +13,10 @@ Product Owners carry the full cognitive load of a product from first idea to pos
 Every artifact — market research, SWOT, competitor matrix, PRD, prioritisation backlog, KPI plan,
 release strategy — is produced manually, from scratch, for every product.
 
-Tools like Confluence, SharePoint, Jira, and Yammer hold institutional knowledge — but:
+Tools like WikiBoard, DocRepo, AgileBoard, and SocialBoard hold institutional knowledge — but:
 - PMs search each tool separately with no unified view
 - Nothing is reused across products, teams, or clients
-- AI exists in each tool in isolation (Atlassian Rovo, M365 Copilot) but is not orchestrated into a PO workflow
+- AI exists in each tool in isolation (AgileVendor Rovo, M365 Copilot) but is not orchestrated into a PO workflow
 - When a consulting team delivers a product for a client, all that knowledge disappears — not packaged, not reusable
 
 The compounding cost: 60–80% of a PO's working week on documentation and re-work,
@@ -54,8 +54,8 @@ multiplied across every PO in the organisation.
 ### User Tiers
 | | Standard | AI |
 |--|----------|----|
-| Search | Federated: Jira + Confluence + SharePoint + Yammer via Atlassian Rovo + M365 Copilot | Same + AI chat (Rovo Chat + Claude) |
-| Reporting | Embedded PowerBI standard templates | PowerBI Copilot interpretation + natural language queries |
+| Search | Federated: AgileBoard + WikiBoard + DocRepo + SocialBoard via AgileVendor Rovo + M365 Copilot | Same + AI chat (Rovo Chat + Claude) |
+| Reporting | Embedded AnalyticsDashboard standard templates | AnalyticsDashboard Copilot interpretation + natural language queries |
 | Research | Browse + reuse artifact URLs from KB | Deep research: internal KB + web, structured report |
 | Artifact generation | Templates (clone + edit) | AI-generated drafts grounded in org KB |
 | Client sharing | Read-only client view of selected artifacts | Client workspace with AI-summarised status |
@@ -68,12 +68,12 @@ productowner-skill does NOT rebuild what already exists. It orchestrates:
 
 | Layer | Existing Tool Used | productowner-skill Adds |
 |-------|-------------------|-----------|
-| Confluence + Jira search & AI | **Atlassian Rovo** (Rovo Search + Rovo Chat) | PO-specific query templates, KB tagging, cross-product patterns |
-| SharePoint + Yammer + Teams search | **Microsoft 365 Copilot / Graph API** | Unified result view alongside Atlassian sources |
-| PowerBI reporting | **PowerBI Embed API + PowerBI Copilot** | Pre-built PO templates, cross-org aggregation |
-| AI chat | **Rovo Chat (Atlassian)** + **Claude API** for productowner-skill-specific reasoning | PO workflow context, KB citations, artifact generation |
-| Document generation | **Confluence AI** (create page from prompt) | Structured PO templates (PRD, SWOT, ROI, release plan) |
-| Backlog + stories | **Jira AI** (epic breakdown, story generation) | Domain-specific acceptance criteria, compliance tags |
+| WikiBoard + AgileBoard search & AI | **AgileVendor Rovo** (Rovo Search + Rovo Chat) | PO-specific query templates, KB tagging, cross-product patterns |
+| DocRepo + SocialBoard + Teams search | **EnterpriseCloud 365 Copilot / Graph API** | Unified result view alongside AgileVendor sources |
+| AnalyticsDashboard reporting | **AnalyticsDashboard Embed API + AnalyticsDashboard Copilot** | Pre-built PO templates, cross-org aggregation |
+| AI chat | **Rovo Chat (AgileVendor)** + **Claude API** for productowner-skill-specific reasoning | PO workflow context, KB citations, artifact generation |
+| Document generation | **WikiBoard AI** (create page from prompt) | Structured PO templates (PRD, SWOT, ROI, release plan) |
+| Backlog + stories | **AgileBoard AI** (epic breakdown, story generation) | Domain-specific acceptance criteria, compliance tags |
 
 ---
 
@@ -92,13 +92,13 @@ Output (AI-generated, grounded in org KB + Rovo + web):
 ### 2. Delivery Engine
 Input: PRD
 Output:
-- Prioritised backlog via Jira AI (RICE / WSJF / MoSCoW)
+- Prioritised backlog via AgileBoard AI (RICE / WSJF / MoSCoW)
 - KPI instrumentation plan
 - Y-Score launch readiness gate (7 dimensions)
 - Beta strategy + phased rollout plan
 
 ### 3. KB Layer — Org + Client Reuse Core
-- Indexed across: Jira, Confluence (via Rovo), SharePoint, Yammer (via M365 Graph)
+- Indexed across: AgileBoard, WikiBoard (via Rovo), DocRepo, SocialBoard (via M365 Graph)
 - Every artifact tagged: domain · stage · product-type · compliance-regime · client/internal
 - Standard tier: search results with source URLs — click to reuse
 - AI tier: Rovo Chat + Claude answers from KB, every response cites source URL
@@ -106,8 +106,8 @@ Output:
 - Shared Library: anonymised org templates available across client engagements
 
 ### 4. Reporting & Interpret Layer
-- Standard: PowerBI embed, 4 pre-built PO templates
-- AI: PowerBI Copilot for natural language queries + screenshot interpretation
+- Standard: AnalyticsDashboard embed, 4 pre-built PO templates
+- AI: AnalyticsDashboard Copilot for natural language queries + screenshot interpretation
 - Multi-PO view: PO Lead sees team-level release health, KB coverage, adoption metrics
 - Client dashboard: programme status, milestone tracking, shared KPIs
 
@@ -117,7 +117,7 @@ Output:
 
 ```
 PO Lead sets up Org Workspace
-    → connects Jira + Confluence (Rovo) + SharePoint + Yammer (M365)
+    → connects AgileBoard + WikiBoard (Rovo) + DocRepo + SocialBoard (M365)
     → assigns Standard / AI tier per PO
 
 PO starts new product
@@ -167,9 +167,9 @@ PO Lead monitors
 
 | Phase | What Ships | Who Benefits |
 |-------|-----------|-------------|
-| 1 | Org Workspace + Rovo KB search (Jira + Confluence) | Internal PO team |
-| 2 | M365 search (SharePoint + Yammer) + PowerBI embed | Full org Standard tier |
-| 3 | AI tier: Rovo Chat + Claude + PowerBI Copilot | AI-tier PMs |
+| 1 | Org Workspace + Rovo KB search (AgileBoard + WikiBoard) | Internal PO team |
+| 2 | M365 search (DocRepo + SocialBoard) + AnalyticsDashboard embed | Full org Standard tier |
+| 3 | AI tier: Rovo Chat + Claude + AnalyticsDashboard Copilot | AI-tier PMs |
 | 4 | Client Workspace + client sharing | Consulting / delivery teams |
 | 5 | Shared Library + cross-client reuse | Org-wide + client portfolio |
 
@@ -188,7 +188,7 @@ PO Lead monitors
 
 ## Out of Scope (v1)
 
-- Write-back to Jira / Confluence / SharePoint
+- Write-back to AgileBoard / WikiBoard / DocRepo
 - Native mobile app
 - Real-time sync (15-min polling)
 - White-label for clients (v2)

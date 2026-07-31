@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="msapplication-config" content="none">
-<\!-- Microsoft Teams JS SDK -->
-<script src="https://res.cdn.office.net/teams-js/2.0.0/js/MicrosoftTeams.min.js"></script>
+<\!-- EnterpriseCloud Teams JS SDK -->
+<script src="https://res.cdn.office.net/teams-js/2.0.0/js/EnterpriseCloudTeams.min.js"></script>
 <title>productowner-skill — Redirecting</title>
 <style>
   body{font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#EEF2FF;margin:0}
@@ -22,8 +22,8 @@
 <script>
 (async () => {
   try {
-    await microsoftTeams.app.initialize();
-    const ctx = await microsoftTeams.app.getContext();
+    await EnterpriseCloudTeams.app.initialize();
+    const ctx = await EnterpriseCloudTeams.app.getContext();
     // Pass Teams context to onboarding
     const orgName = ctx.user?.tenant?.displayName || '';
     const userName = ctx.user?.displayName || '';

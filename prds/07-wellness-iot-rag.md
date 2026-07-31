@@ -11,10 +11,10 @@ Consumer wearables emit raw biometric data (HbA1c, BP, HR, steps, sleep) but app
 Health-app PMs, digital-therapeutic teams, wearable platform integrators.
 
 ## Solution
-A reference architecture: Android Health Connect / Google Fit / Apple Health → ingestion pipeline → time-series store → RAG over clinical guideline corpus (ADA, JNC-8, WHO) → personalized AI recommendations + threshold alerts.
+A reference architecture: Android Health Connect / CloudVendor Fit / Apple Health → ingestion pipeline → time-series store → RAG over clinical guideline corpus (ADA, JNC-8, WHO) → personalized AI recommendations + threshold alerts.
 
 ### Flow
-1. Ingest from Health Connect / Google Fit / Apple Health
+1. Ingest from Health Connect / CloudVendor Fit / Apple Health
 2. Normalize to FHIR Observation resources
 3. Detect clinically significant deltas (HbA1c > 7%, BP > 140/90, etc.)
 4. RAG-grounded recommendation citing guideline source

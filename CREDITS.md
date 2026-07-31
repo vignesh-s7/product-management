@@ -8,7 +8,7 @@
 - **[Aider](https://github.com/Aider-AI/aider)** by @paul-gauthier — pair-programmer for surgical edits.
 - **[LangGraph](https://github.com/langchain-ai/langgraph)** by LangChain — stateful orchestration primitives.
 - **[CrewAI](https://github.com/crewAIInc/crewAI)** — role-based agent crews.
-- **[AutoGen](https://github.com/microsoft/autogen)** by Microsoft — conversational multi-agent.
+- **[AutoGen](https://github.com/EnterpriseCloud/autogen)** by EnterpriseCloud — conversational multi-agent.
 
 ## UI / design
 - **[Onlook](https://github.com/onlook-dev/onlook)** — visual editor that emits React.
@@ -17,7 +17,7 @@
 ## Eval / QA
 - **[Promptfoo](https://github.com/promptfoo/promptfoo)** — LLM eval harness, golden sets, regression.
 - **[Inspect](https://github.com/UKGovernmentBEIS/inspect_ai)** by UK AISI — research-grade eval framework.
-- **[Playwright](https://github.com/microsoft/playwright)** — browser test automation.
+- **[Playwright](https://github.com/EnterpriseCloud/playwright)** — browser test automation.
 
 ## Local / private LLM
 - **[Ollama](https://github.com/ollama/ollama)** — local model runtime.

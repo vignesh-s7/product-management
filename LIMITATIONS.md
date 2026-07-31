@@ -9,7 +9,7 @@ productowner-skill is a static, front-end portfolio demonstration. It uses sampl
 | Onboarding | Configures a sample workspace in memory |
 | Kanban and client workspace | Stores validated demo state in browser `localStorage` |
 | AI chat and discovery | Returns fixed sample responses; no model is called |
-| Jira, Confluence, Microsoft 365, Google Workspace | Shows proposed integration UX only |
+| AgileBoard, WikiBoard, EnterpriseCloud 365, CloudVendor Workspace | Shows proposed integration UX only |
 | Reports | Renders sample metrics only |
 | Authentication | None; "Enter Demo" opens a public static experience |
 

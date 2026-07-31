@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "$schema": "https://developer.EnterpriseCloud.com/en-us/json-schemas/teams/v1.16/EnterpriseCloudTeams.schema.json",
   "manifestVersion": "1.16",
   "version": "1.0.0",
   "id": "productowner-skill-onboarding-tab",
@@ -12,8 +12,8 @@
   },
   "name": { "short": "productowner-skill", "full": "productowner-skill: AI-Native PO Platform" },
   "description": {
-    "short": "Your AI-native PO operating system",
-    "full": "productowner-skill helps Product Owners discover, reuse, and generate PO artifacts across the full lifecycle. Connects Jira, Confluence, SharePoint, Yammer, Google Workspace, and PowerBI."
+    "short": "Your AI-native PO Persona Swarm",
+    "full": "productowner-skill helps Product Owners discover, reuse, and generate PO artifacts across the full lifecycle. Connects AgileBoard, WikiBoard, DocRepo, SocialBoard, CloudVendor Workspace, and AnalyticsDashboard."
   },
   "icons": { "color": "icon-color.png", "outline": "icon-outline.png" },
   "accentColor": "#2563EB",
@@ -26,10 +26,10 @@
       "scopes": ["personal", "team"]
     },
     {
-      "entityId": "cucp-deck",
-      "name": "CuCP Rollout",
-      "contentUrl": "https://vvs-PO.github.io/productowner-skill/cucp/presentation.html",
-      "websiteUrl": "https://vvs-PO.github.io/productowner-skill/cucp/presentation.html",
+      "entityId": "ECP-deck",
+      "name": "ECP Rollout",
+      "contentUrl": "https://vvs-PO.github.io/productowner-skill/ECP/presentation.html",
+      "websiteUrl": "https://vvs-PO.github.io/productowner-skill/ECP/presentation.html",
       "scopes": ["personal", "team"]
     }
   ],
@@ -38,7 +38,7 @@
       "configurationUrl": "https://vvs-PO.github.io/productowner-skill/onboarding/teams.html?config=1",
       "canUpdateConfiguration": true,
       "scopes": ["team", "groupChat"],
-      "supportedSharePointHosts": ["sharePointFullPage", "sharePointWebPart"]
+      "supportedDocRepoHosts": ["DocRepoFullPage", "DocRepoWebPart"]
     }
   ],
   "permissions": ["identity", "messageTeamMembers"],

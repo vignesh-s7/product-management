@@ -16,7 +16,7 @@ A curated awesome-list (`awesome-regulated-ai-PO`) covering: frameworks, papers,
 ## Success metrics
 - 500+ GitHub stars in 6 months
 - Listed on `sindresorhus/awesome` within 12 months
-- Top-3 Google result for "regulated AI product management"
+- Top-3 CloudVendor result for "regulated AI product management"
 
 ## Deliverables
 - `README.md` — the list (categorized, alphabetized, link-checked)

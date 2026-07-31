@@ -1,12 +1,12 @@
 # Case study — productowner-skill
 
-*A Senior PO's operating system: turn a PRD into a full SDLC by orchestrating Claude Skills + MetaGPT + Promptfoo. Public MVP shipped 2026-06 as v1.0.*
+*A Senior PO's Persona Swarm: turn a PRD into a full SDLC by orchestrating Claude Skills + MetaGPT + Promptfoo. Public MVP shipped 2026-06 as v1.0.*
 
 ## Problem
 
-Every regulated-AI product I've PO'd in the last 3 years started the same way: PRD written in Confluence, architecture on a whiteboard, evals discovered 6 weeks in when the model fails an edge case. The SDLC steps exist, but they don't ladder to each other. Every handoff loses fidelity.
+Every regulated-AI product I've PO'd in the last 3 years started the same way: PRD written in WikiBoard, architecture on a whiteboard, evals discovered 6 weeks in when the model fails an edge case. The SDLC steps exist, but they don't ladder to each other. Every handoff loses fidelity.
 
-Question: can a single-PO operating system reduce the PRD-to-eval-ready distance from weeks to hours, without hallucinating requirements?
+Question: can a single-PO Persona Swarm reduce the PRD-to-eval-ready distance from weeks to hours, without hallucinating requirements?
 
 ## Approach
 

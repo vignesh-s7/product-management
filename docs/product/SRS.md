@@ -10,7 +10,7 @@
 
 Multi-tenant, two-tier web platform for Product Owners to discover, reuse, and generate
 PO artifacts — within their org and across client engagements.
-Built on top of Atlassian Rovo, Microsoft 365 Copilot, and PowerBI. productowner-skill orchestrates;
+Built on top of AgileVendor Rovo, EnterpriseCloud 365 Copilot, and AnalyticsDashboard. productowner-skill orchestrates;
 it does not replace these tools.
 
 | Deployment Mode | Who | Description |
@@ -21,8 +21,8 @@ it does not replace these tools.
 
 | User Tier | Access |
 |-----------|--------|
-| Standard | Federated search + KB reuse + PowerBI standard reports |
-| AI | Chat over KB + PowerBI AI interpretation + deep research + artifact generation |
+| Standard | Federated search + KB reuse + AnalyticsDashboard standard reports |
+| AI | Chat over KB + AnalyticsDashboard AI interpretation + deep research + artifact generation |
 
 ---
 
@@ -30,12 +30,12 @@ it does not replace these tools.
 
 | Source | Tool Used | Protocol | Access | Data Retrieved |
 |--------|-----------|----------|--------|---------------|
-| Jira | Atlassian Rovo Search | Rovo API / OAuth2 | Read-only | Epics, issues, comments, attachments |
-| Confluence | Atlassian Rovo Search + Confluence AI | Rovo API / OAuth2 | Read-only + AI generate | Pages, spaces, labels, AI summaries |
-| SharePoint | Microsoft Graph API / M365 Copilot | OAuth2 / Graph | Read-only | Documents, sites, lists |
-| Yammer / Viva Engage | Microsoft Graph API | OAuth2 / Graph | Read-only | Posts, groups, announcements |
-| PowerBI | PowerBI Embed API + PowerBI Copilot API | OAuth2 | Read + Embed + AI query | Reports, datasets, dashboards |
-| AI Chat (Jira+Confluence) | Atlassian Rovo Chat | Rovo API | Query | Conversational answers from Atlassian content |
+| AgileBoard | AgileVendor Rovo Search | Rovo API / OAuth2 | Read-only | Epics, issues, comments, attachments |
+| WikiBoard | AgileVendor Rovo Search + WikiBoard AI | Rovo API / OAuth2 | Read-only + AI generate | Pages, spaces, labels, AI summaries |
+| DocRepo | EnterpriseCloud Graph API / M365 Copilot | OAuth2 / Graph | Read-only | Documents, sites, lists |
+| SocialBoard / Viva Engage | EnterpriseCloud Graph API | OAuth2 / Graph | Read-only | Posts, groups, announcements |
+| AnalyticsDashboard | AnalyticsDashboard Embed API + AnalyticsDashboard Copilot API | OAuth2 | Read + Embed + AI query | Reports, datasets, dashboards |
+| AI Chat (AgileBoard+WikiBoard) | AgileVendor Rovo Chat | Rovo API | Query | Conversational answers from AgileVendor content |
 | AI Chat (productowner-skill reasoning) | Claude Sonnet 4.6 (Anthropic API) | REST | Generate | Artifact drafts, research, synthesis |
 
 ---
@@ -52,7 +52,7 @@ it does not replace these tools.
 
 ## 4. Search Requirements (Standard Tier)
 
-- SR-S01 Federated search via Rovo Search (Jira + Confluence) + M365 Graph (SharePoint + Yammer) in one query
+- SR-S01 Federated search via Rovo Search (AgileBoard + WikiBoard) + M365 Graph (DocRepo + SocialBoard) in one query
 - SR-S02 Results: title, source icon, URL, artifact type tag, domain tag, last updated, author
 - SR-S03 Filters: source, artifact type, domain (BFSI/Healthcare/SaaS/Telecom/Consumer), date range, PO owner
 - SR-S04 "Reuse" action: open source URL in new tab or copy shareable link
@@ -64,8 +64,8 @@ it does not replace these tools.
 
 ## 5. Reporting Requirements (Standard Tier)
 
-- SR-R01 Embedded PowerBI reports via PowerBI Embed API (read-only)
-- SR-R02 Pre-built PO templates: Release Velocity · KPI Dashboard · CuCP Status · PO Time Allocation
+- SR-R01 Embedded AnalyticsDashboard reports via AnalyticsDashboard Embed API (read-only)
+- SR-R02 Pre-built PO templates: Release Velocity · KPI Dashboard · ECP Status · PO Time Allocation
 - SR-R03 PO Lead view: team-level aggregation across all active products
 - SR-R04 Client dashboard: milestone tracking, shared KPIs, programme status (client-visible)
 - SR-R05 Filters: date range, PO, product area, domain, client workspace
@@ -75,7 +75,7 @@ it does not replace these tools.
 
 ## 6. AI Chat Requirements (AI Tier)
 
-- SR-A01 Rovo Chat handles Jira + Confluence questions natively (Atlassian-grounded)
+- SR-A01 Rovo Chat handles AgileBoard + WikiBoard questions natively (AgileVendor-grounded)
 - SR-A02 Claude API handles productowner-skill-specific reasoning: artifact generation, cross-tool synthesis, deep research
 - SR-A03 Every AI response cites source: name, type, URL, confidence level
 - SR-A04 Multi-turn context within session; resets on new session
@@ -86,11 +86,11 @@ it does not replace these tools.
 
 ---
 
-## 7. AI PowerBI Interpretation (AI Tier)
+## 7. AI AnalyticsDashboard Interpretation (AI Tier)
 
-- SR-P01 Screenshot paste/upload → PowerBI Copilot interprets, productowner-skill surfaces narrative + actions
+- SR-P01 Screenshot paste/upload → AnalyticsDashboard Copilot interprets, productowner-skill surfaces narrative + actions
 - SR-P02 CSV upload → Claude parses and answers natural language questions
-- SR-P03 Direct dataset query: PowerBI Copilot API → natural language answer
+- SR-P03 Direct dataset query: AnalyticsDashboard Copilot API → natural language answer
 - SR-P04 PO Lead: "Summarise team release health across all products" → aggregated AI narrative
 - SR-P05 Output exportable: markdown, PDF
 
@@ -102,13 +102,13 @@ it does not replace these tools.
 - SR-DR02 Output structure: Summary · Key Findings · Gaps · Recommended Next Steps
 - SR-DR03 All sources cited: internal (URL) + web (URL)
 - SR-DR04 Depth selector: Quick (30s) · Standard (2min) · Deep (5min)
-- SR-DR05 Export: markdown, PDF, Confluence page draft (via Confluence AI create)
+- SR-DR05 Export: markdown, PDF, WikiBoard page draft (via WikiBoard AI create)
 
 ---
 
 ## 9. Client Workspace Requirements
 
-- SR-C01 PO creates Client Workspace; client receives invite link (no Atlassian/M365 licence required)
+- SR-C01 PO creates Client Workspace; client receives invite link (no AgileVendor/M365 licence required)
 - SR-C02 PO selects which artifacts are visible to client (granular toggle per artifact)
 - SR-C03 Client Viewer role: read-only; cannot search internal KB; sees only shared artifacts
 - SR-C04 Client dashboard: programme milestones, shared KPIs, AI-generated status summary
@@ -119,7 +119,7 @@ it does not replace these tools.
 
 ## 10. Non-Functional Requirements
 
-- NFR-01 SSO: Microsoft Entra / Okta / Atlassian Access
+- NFR-01 SSO: EnterpriseCloud Entra / Okta / AgileVendor Access
 - NFR-02 RBAC: Admin · PO Lead · PO · Client Viewer
 - NFR-03 Data residency: tenant data stays within selected region (EU / US / APAC)
 - NFR-04 GDPR / SOC2 Type II compliant
@@ -132,7 +132,7 @@ it does not replace these tools.
 
 ## 11. Out of Scope (v1)
 
-- Write-back to Jira / Confluence / SharePoint
+- Write-back to AgileBoard / WikiBoard / DocRepo
 - Native mobile app
 - White-label for clients
 - Revenue/billing module for client workspaces
