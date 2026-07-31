@@ -6,6 +6,8 @@ triggers:
   - "Write a PRD"
   - "Generate FSD"
   - "Draft NFRs"
+  - "Install and enable Product Owner skill"
+  - "Enable PO mode"
 ---
 
 # Product Owner Orchestration (Phase 1)

@@ -6,6 +6,8 @@ triggers:
   - "Design the UI"
   - "Create a logo"
   - "Generate wireframe"
+  - "Install and enable UX Pro skill"
+  - "Enable UX mode"
 ---
 
 # UX/UI Pro Orchestration (Phase 1)

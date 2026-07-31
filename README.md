@@ -41,11 +41,11 @@ Copy-Item -Path "skills\ux-pro-skill" -Destination "C:\Users\YourUser\.gemini\an
 ### Step 2: Usage in Any Repository
 Open your terminal in **any** of your existing projects. Launch your AI agent, and use the trigger phrases defined in the skills:
 
-* **To start the PO Workflow:**
-  > *"Act as Product Owner and generate a PRD for a new secure login portal."*
+* **To install and enable the PO Workflow:**
+  > *"Install and enable Product Owner skill and generate a PRD for a new secure login portal."*
 
-* **To generate UI from the PRD:**
-  > *"Act as UX Pro and design the UI wireframes for this feature."*
+* **To install and enable the UX mode:**
+  > *"Install and enable UX Pro skill and design the UI wireframes for this feature."*
 
 ### Step 3: Handling Drift & Feedback (`/learn`)
 * **Definition Drift:** If requirements change mid-flight, do not let the AI rewrite the code. Tell the `productowner-skill` to update the PRD/FSD markdown first. The markdown is the ultimate source of truth.
