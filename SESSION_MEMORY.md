@@ -9,9 +9,10 @@
   * `llms.txt`: The "AI Firewall" that strictly prohibits autonomous execution by foreign scrapers (Copilot, Codex).
   * Community Governance: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `.github/PULL_REQUEST_TEMPLATE.md` deployed.
 
-## Next Session Directive (Phase 2)
-1. **Mode Testing:** We will actively test the `productowner-skill` and `ux-pro-skill` live.
-2. **Cross-Repo Validation:** We will drop into other test repositories on the local machine and trigger the swarm to validate that the skills enforce the strict UX UI and PRD constraints we built today.
-3. **Refinement:** Adjust the prompt thresholds based on how the Agent (Flash vs. Opus vs. Sonnet) reacts in live testing.
+## Next Session Directive (Phase 2 & Phase 3)
+1. **Mode Testing (Phase 2):** We will actively test the `productowner-skill` and `ux-pro-skill` live in other test repositories, refining prompt thresholds for different models (Flash vs. Opus vs. Sonnet).
+2. **Active Subagent Transition (Phase 3):** The next 2 sessions will be dedicated to upgrading from "Passive Markdown" to **"Active Autonomous Plugins"** (similar to Caveman mode). 
+3. **4-Persona Orchestration:** We will continue to rigorously stress-test the new Active Mode using the 4 Personas (Cybersecurity, Architect, Solution Expert, PO SME) to ensure zero security regressions.
+4. **Artifact Utilization:** We will heavily leverage local memory generation (`C:/Users/vigne/.gemini/antigravity-cli/brain/`) to construct and persist the logic for these active subagents, ensuring they operate autonomously without repetitive AI "yapping."
 
-*Status: Ready for Phase 2 Live Testing.*
+*Status: Ready for Phase 2 Live Testing & Phase 3 Active Plugin Construction.*
