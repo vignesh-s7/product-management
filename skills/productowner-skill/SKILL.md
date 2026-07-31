@@ -9,6 +9,7 @@ triggers:
 ---
 
 # Product Owner Orchestration (Phase 1)
+<!-- Product Owner Enhancement: simple -->
 
 ## 1. The Core Flow (PRD → FSD → TSD)
 This skill strictly adheres to the standard enterprise documentation pipeline:
