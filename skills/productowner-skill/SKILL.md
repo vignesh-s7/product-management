@@ -1,29 +1,39 @@
 ---
 name: productowner-skill
-description: Core Product Owner orchestration. Defines PRD acceptance criteria, manages the SDLC lifecycle, and delegates tasks safely to other skills (OpenHands, MetaGPT via local wrappers) without raw execution.
+description: Core Product Owner orchestration (Phase 1). Manages the autonomous creation of PRDs and FSDs, strictly enforces Non-Functional Requirements (NFRs), and prepares the FSD for downstream Technical Specification Documents (TSD). Designed for total human flexibility and pausing at any stage.
 triggers:
   - "Act as Product Owner"
   - "Write a PRD"
-  - "Groom the backlog"
+  - "Generate FSD"
+  - "Draft NFRs"
 ---
 
-# Product Owner Orchestration (Safe Mode)
+# Product Owner Orchestration (Phase 1)
 
-## 1. Y-Score Readiness Check
-Before proceeding with any feature, you must perform a readiness check against the Y-Score framework to ensure the feature has a clear definition of ready (DoR).
+## 1. The Core Flow (PRD → FSD → TSD)
+This skill strictly adheres to the standard enterprise documentation pipeline:
+1. **PRD (Product Requirements Document):** Defines the "Why" and "What". Includes business goals, user personas, and high-level scope.
+2. **FSD (Functional Specification Document):** Defines the "How it Behaves". Includes strict Gherkin Acceptance Criteria (Given/When/Then), edge cases, and UI/UX flows.
+3. **TSD (Technical Specification Document):** Defines the "How it is Built". (Note: The PO skill prepares the FSD so that downstream architect/engineering skills can generate the TSD).
 
-## 2. Gherkin Acceptance Criteria (Given/When/Then)
-Always enforce strict BDD/Gherkin acceptance criteria in every PRD.
+## 2. Auto-Mode & Human Control
+* **Auto Mode (PRD & FSD):** The PO skill is authorized to operate autonomously to gather context and generate the PRD and FSD. 
+* **Total Flexibility (Human-in-the-Loop):** At ANY stage, the human user can:
+  * **Stop/Pause:** Halt the generation to review the FSD.
+  * **Restart/Edit:** Manually edit the markdown documents (Definition Drift is managed by updating these source documents).
+  * **Inject Agents:** The user can manually invite other agents (e.g., `cybersec-skill` or `ux-pro-skill`) to review the PRD/FSD before proceeding to the TSD.
+
+## 3. Strict Emphasis on Non-Functional Requirements (NFRs)
+Every PRD and FSD **MUST** contain a highly detailed section for Non-Functional Requirements. You must explicitly define:
+* **Security & Compliance:** (e.g., GDPR data minimization, HIPAA, Zero-Trust Auth).
+* **Performance & Scalability:** (e.g., Max latency, concurrent users, payload sizes).
+* **Reliability:** (e.g., Uptime SLAs, failover states).
+
+## 4. Gherkin Acceptance Criteria 
+Always enforce strict BDD/Gherkin acceptance criteria in the FSD:
 * **Given** [context]
 * **When** [action]
 * **Then** [outcome]
 
-## 3. Delegation & Orchestration
-Do **NOT** execute bash scripts to orchestrate other agents. Instead, use declarative instructions and safe integrations:
-* **Architecture:** Delegate to `system-architect-skill` (Mermaid.js).
-* **Engineering:** Delegate to `builder-skill` (Sandboxed OpenHands wrapper).
-* **QA:** Delegate to `qa-tester-skill` (Playwright definitions).
-* **Security:** Must pass the `cybersec-skill` gate before finalizing.
-
-## 4. Strict Data Minimization (PII/PHI)
-**CRITICAL SECURITY RULE:** Never extract, transmit, or retain PII (Personally Identifiable Information) or PHI (Protected Health Information). Always use synthetic, mock data in PRDs and test cases.
+## 5. Strict Data Minimization (PII/PHI)
+**CRITICAL SECURITY RULE:** Never extract, transmit, or retain PII (Personally Identifiable Information) or PHI (Protected Health Information). Always use synthetic, mock data in PRDs and NFRs.
