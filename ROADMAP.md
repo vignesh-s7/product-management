@@ -2,8 +2,9 @@
 
 **Author:** Vignesh AIPM
 **Status:** Active
-**Last updated:** 2026-06-30
-**Linked PRD:** prds/00-productowner-skill-platform.md
+**Last updated:** 2026-08-01
+**Linked PRD:** prds/00-pm-os-platform.md
+**Phase 1 brainstorm:** planning/phase1_brainstorm_5_personas.md
 
 ---
 
@@ -14,21 +15,36 @@ the system that connects every knowledge source, generates every artifact, and l
 
 ---
 
-## Phase 1 — Foundation (Current)
+## Phase 1 — Trustworthy Plugin Foundation (Current)
 
-**Goal:** Org Workspace live. PMs can onboard, connect tools, search KB, reuse artifacts.
+**Goal:** Any PO can install the skill plugin, point it at any repository, and generate compliant discovery + delivery artifacts with security gates — without backend infrastructure, OAuth, or live enterprise integrations.
 
-| Deliverable | Status |
-|-------------|--------|
-| Master PRD (v0.4) | ✅ Done |
-| SRS + FRD (v0.4) | ✅ Done |
-| PO Onboarding UI (6-step wizard) | ✅ Done |
-| GitHub Pages deployment | ✅ Done |
-| Microsoft Teams tab + manifest | ✅ Done |
-| CuCP 90-day rollout slide deck | ✅ Done |
-| Atlassian Rovo KB search integration | 🔲 Next |
-| Microsoft 365 Graph search integration | 🔲 Next |
-| Google Workspace API search integration | 🔲 Next |
+**Tagline:** *Write once. Run anywhere. Zero scripts. Zero telemetry.*
+
+| Deliverable | Status | Priority |
+|-------------|--------|----------|
+| Master PRD (v0.4) | ✅ Done | — |
+| SRS + FRD (v0.4) | ✅ Done | — |
+| PO Onboarding UI (6-step wizard) | ✅ Done | — |
+| GitHub Pages deployment | ✅ Done | — |
+| Microsoft Teams tab + manifest | ✅ Done | — |
+| CuCP 90-day rollout slide deck | ✅ Done | — |
+| Playwright security + a11y test suite | ✅ Done | — |
+| Local Memory Standard (`.agent/memory.md`) | 🔲 Next | P0 |
+| `cybersec-skill` (PII blocker + OWASP auditor) | 🔲 Next | P0 |
+| `PO-discovery` skill (SWOT, TAM/SAM/SOM, compliance map) | 🔲 Next | P0 |
+| `PO-delivery` skill (RICE backlog, KPI plan, rollout) | 🔲 Next | P0 |
+| `PO-kb-research` skill (local artifact search) | 🔲 Next | P1 |
+| `PO-code-pipeline` skill (declarative PRD → SDLC) | 🔲 Next | P1 |
+| `qa-tester-skill` (edge-case / boundary matrix) | 🔲 Next | P1 |
+| Template library (`skills/*/templates/`) | 🔲 Next | P1 |
+| Plugin install guide (`docs/INSTALL.md`) | 🔲 Next | P1 |
+| CI skill validation (extend `check-source.mjs`) | 🔲 Next | P2 |
+| Trust badge on landing page | 🔲 Next | P2 |
+
+**Exit criteria:** Fresh repo + `.agent/memory.md` → discovery pack + delivery pack + Y-Score gate + cybersec pass in one session. Install guide verified in < 5 min.
+
+> Enterprise KB integrations (Rovo / M365 / Google) moved to **Phase 2** per 5-persona brainstorm (`planning/phase1_brainstorm_5_personas.md`).
 
 ---
 
@@ -38,6 +54,9 @@ the system that connects every knowledge source, generates every artifact, and l
 
 | Deliverable | Target |
 |-------------|--------|
+| Atlassian Rovo KB search integration (Jira + Confluence) | Q3 2026 |
+| Microsoft 365 Graph search integration (SharePoint + Yammer) | Q3 2026 |
+| Google Workspace API search integration | Q3 2026 |
 | Unified search UI (Rovo + M365 + Google) | Q3 2026 |
 | Artifact tagging: domain · stage · type · compliance | Q3 2026 |
 | "Clone to KB" action from any search result | Q3 2026 |
