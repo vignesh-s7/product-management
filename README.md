@@ -1,90 +1,185 @@
-# Product Owner Persona Swarm & Skill Plugins
+# productowner-skill — Skills Library for Client-Side AI Agents
 
 **Author:** Vignesh AIPM · Senior PO · AI / BFSI / Healthcare
 
-## About
-
-**productowner-skill** is a highly secure, declarative **Persona Skill Plugin Suite** designed for local AI agents (like Antigravity). Instead of opaque, high-risk Python execution environments, this repository provides a swarm of specialized, Markdown-based persona plugins (`productowner`, `ux-pro`, `cybersec`, `qa-tester`) that orchestrate the Software Development Lifecycle (SDLC).
-
-It is built on a **Zero-Trust, Local Execution** model that is guaranteed to pass InfoSec compliance (GDPR, HIPAA, No Telemetry).
-
-**Interactive portfolio demo:** https://vignesh-s7.github.io/product-management/
+| Status | Links |
+|--------|-------|
+| **zero-execution verified** — `npm run check` (`node scripts/check-source.mjs`) | [TRUST.md](TRUST.md) · [SECURITY.md](SECURITY.md) |
 
 ---
 
-## What is the Persona Skill Suite?
+## What we are
 
-It is a collection of "Caveman-style" global skills. You install them into your AI agent's brain, and they fundamentally change how your agent behaves, thinks, and enforces rules during the software development lifecycle.
+**productowner-skill** is a **skills library** — markdown `SKILL.md` plugins that teach your local AI agent how to run Product Owner workflows in regulated domains (BFSI, healthcare, generic).
 
-The Swarm includes:
-1. **`productowner-skill`:** The Core Orchestrator. Writes PRDs and FSDs, enforces strict Gherkin (Given/When/Then) Acceptance Criteria, and ensures Non-Functional Requirements (NFRs) are defined.
-2. **`ux-pro-skill`:** Reads the FSD and generates production-ready, glassmorphism UI/UX (HTML/CSS/SVG) conforming to strict WCAG 2.1 AA accessibility standards.
-3. **`cybersec-skill`:** (Coming Phase 2) The Gatekeeper. Audits PRs against OWASP Top 10 and prevents PII leaks.
-4. **`qa-tester-skill`:** (Coming Phase 2) Generates edge cases and headless Playwright tests.
+We provide **skills only**. Your client-side AI agent (Cursor, Claude Code, Antigravity, Codex CLI, etc.) reads those skills, runs the persona swarm gates locally, and builds a complete POC/MVP in **your** repository.
 
 ---
 
-## ⚡ Quick Start: How to Install & Use the Plugin Mode
+## Two end users
 
-Because this is a **Global Plugin** (like the `caveman` skill), you do not need to copy complex scripts into every repository you work on. 
+| End user | Role | How they interact |
+|----------|------|-------------------|
+| **Humans** | POs, PO leads, designers, engineers, InfoSec | Set intent, review gate outputs, approve POC/MVP deliverables |
+| **Client-side AI agents** | Cursor Agent, Claude Code, Antigravity, etc. | Read `skills/` + `.agent/memory.md`, run discovery → delivery → gates, write artifacts |
 
-### Step 1: Installation
-Copy the skill folders from this repository directly into your local agent's global skills directory.
-For Antigravity, the path is typically `~/.gemini/antigravity-cli/skills/`:
+Humans speak to **their own IDE agent**. There is no account with us, no API to call, and no runtime link between your environment and this repository.
 
-```bash
-# Example for Windows / Antigravity users
-Copy-Item -Path "skills\productowner-skill" -Destination "C:\Users\YourUser\.gemini\antigravity-cli\skills\" -Recurse
-Copy-Item -Path "skills\ux-pro-skill" -Destination "C:\Users\YourUser\.gemini\antigravity-cli\skills\" -Recurse
+```
+Human (PO) ──intent──► Client AI Agent (local)
+                              │
+                              ├── reads skills/ (copied into your repo)
+                              ├── reads .agent/memory.md (your repo)
+                              ├── runs persona swarm gates (local)
+                              └── writes artifacts/ + POC/MVP (your repo)
+
+productowner-skill repo ──provides skills only──► copied once, no runtime connection
 ```
 
-### Step 2: Usage in Any Repository
-Open your terminal in **any** of your existing projects. Launch your AI agent, and use the trigger phrases defined in the skills:
+---
 
-* **To install and enable the PO Workflow:**
-  > *"Install and enable Product Owner skill and generate a PRD for a new secure login portal."*
+## What your client agent does
 
-* **To install and enable the UX mode:**
-  > *"Install and enable UX Pro skill and design the UI wireframes for this feature."*
+With our persona skills installed, your local agent can execute an end-to-end POC/MVP workflow:
 
-### Step 3: Handling Drift & Feedback (`/learn`)
-* **Definition Drift:** If requirements change mid-flight, do not let the AI rewrite the code. Tell the `productowner-skill` to update the PRD/FSD markdown first. The markdown is the ultimate source of truth.
-* **Continuous Improvement:** Use the `/learn` slash command to permanently update a skill. For example: *"Always include database indexing requirements in the NFRs."* -> `/learn`. The skill will update its local rules forever.
+1. **Discovery** — SWOT, TAM/SAM/SOM, competitor matrix, compliance risk map, GTM brief
+2. **Delivery** — PRD with Gherkin AC, RICE backlog, KPI plan, rollout phases
+3. **Persona swarm gates** — cybersec → UX → QA → Y-Score (local verdict JSON)
+4. **Artifact release** — markdown outputs under `artifacts/` in your repo
+
+See [examples/golden-run/](examples/golden-run/) for a synthetic walkthrough of human intent → agent outputs → gate JSONs.
 
 ---
 
-## Security & Trust (Why this beats MetaGPT/OpenHands)
+## What we do not do
 
-Existing multi-agent frameworks (MetaGPT, OpenHands, AutoGPT) are built as heavyweight Python applications that require unconstrained terminal execution and external API calls. Cybersecurity teams heavily restrict them.
-
-**Our Competitive Advantage:**
-* **Declarative Markdown:** The skills are just `.md` text files. They cannot execute malicious background code.
-* **Stateless:** The agent retains no persistent telemetry or profiling data across sessions.
-* **Trust Wrapping:** We integrate powerful open-source tools (Superset, Ollama, Playwright) by wrapping them in strict Markdown instructions that force them to run locally and safely.
-
-See `planning/` directory for our complete Cybersecurity Trust Plan and Competitor Analysis.
+| We never | Why |
+|----------|-----|
+| Run a backend or SaaS | Skills are markdown; your agent is the runtime |
+| OAuth, login, or accounts | No vendor relationship at execution time |
+| Execute on our infrastructure | All codegen and doc generation runs on your machine |
+| Receive prompts, data, or telemetry | No data flows through us — ever |
+| Require API keys to productowner-skill | Use your agent's existing model and credentials |
 
 ---
 
-## Repository Structure
+## Quick install
+
+| Doc | Purpose |
+|-----|---------|
+| [QUICKSTART.md](QUICKSTART.md) | Three steps: open repo → create memory → trigger PO |
+| [docs/INSTALL.md](docs/INSTALL.md) | Full install guide (Cursor, Claude Code, Antigravity) |
+| [docs/CLIENT-AGENT.md](docs/CLIENT-AGENT.md) | Vendor boundary — what the client agent does vs what we provide |
+
+```bash
+git clone https://github.com/vvs-PO/productowner-skill.git
+mkdir -p .cursor/skills .agent artifacts
+cp -r productowner-skill/skills/* .cursor/skills/
+cp productowner-skill/.agent/memory.md .agent/memory.md   # then edit for your product
+```
+
+---
+
+## Skills list
+
+| Skill | Triggers | Gate role |
+|-------|----------|-----------|
+| `productowner-skill` | "Act as Product Owner", "Write a PRD", "Groom the backlog", "Run PO workflow", "Discovery to delivery" | Orchestrator |
+| `PO-discovery` | "run discovery", "SWOT", "market sizing", "competitor analysis", "discovery pack", "GTM brief" | Discovery pack |
+| `PO-delivery` | "prioritize backlog", "RICE score", "KPI plan", "delivery pack", "rollout plan", "write delivery artifacts" | Delivery pack |
+| `PO-kb-research` | "search KB", "find prior artifact", "reuse template", "what have we done before", "search artifacts" | Local KB search |
+| `PO-code-pipeline` | "run the pipeline", "PRD to SDLC", "full SDLC from PRD", "execute code pipeline", "discovery to release" | Pipeline router |
+| `cybersec-skill` | "Threat model this", "Act as AppSec", "security review", "check for PII" | **BLOCK** on PII/PHI / critical OWASP |
+| `ux-pro-skill` | "Review this UI", "Act as UX Pro", "accessibility review", "a11y check" | **BLOCK** on critical a11y; WARN on style drift |
+| `qa-tester-skill` | "write tests", "Act as QA", "edge cases", "test matrix" | **WARN** only — never blocks pipeline |
+| `y-score-readiness` | "is this ready to launch?", "readiness check", "score this PRD", `/y-score <prd.md>` | **BLOCK** if score &lt; 70 |
+| `prd-to-sdlc` | PRD → architecture + code skeleton + eval harness | SDLC bundle (Phase 5) |
+
+Skills live in `skills/` and `.claude/skills/`. Copy into `.cursor/skills/` or `.claude/skills/` in your target repo.
+
+---
+
+## Persona swarm gate model
+
+Every artifact passes through the gate chain **on the client agent** before release:
+
+```
+write artifact
+  → cybersec-skill      (BLOCK on PII/PHI or critical OWASP)
+  → ux-pro-skill        (BLOCK on critical a11y; WARN on token/style drift)
+  → qa-tester-skill     (WARN on missing edge cases or untestable AC)
+  → y-score-readiness   (BLOCK if score < 70 for launch-bound artifacts)
+  → release to artifacts/
+```
+
+- **BLOCK** — do not write or commit until resolved
+- **WARN** — write with `> ⚠️ finding:` callout; flag for human review
+- **pass** — proceed to next gate
+
+Example gate outputs: [examples/golden-run/gates/](examples/golden-run/gates/)
+
+---
+
+## Portfolio demo (illustration only)
+
+The static site at [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill/) and everything under [`docs/`](docs/) is an **illustrative portfolio demo** — sample data, simulated UI, no authentication, no live integrations.
+
+It shows what PO workflows *look like*; it is **not** the product runtime. The product is the skills library you copy into your repo.
+
+> Do not enter confidential information in the demo. See [LIMITATIONS.md](LIMITATIONS.md).
+
+| Page | URL |
+|------|-----|
+| Landing | [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill) |
+| PO Onboarding | [vvs-PO.github.io/productowner-skill/onboarding](https://vvs-PO.github.io/productowner-skill/onboarding/) |
+| CuCP Slide Deck | [vvs-PO.github.io/productowner-skill/cucp/presentation.html](https://vvs-PO.github.io/productowner-skill/cucp/presentation.html) |
+
+---
+
+## Enterprise integrations (Phase 2)
+
+Phase 2 adds optional enterprise KB orchestration — Atlassian Rovo, Microsoft 365 Copilot, Google Workspace AI — as **client-configured integrations**, not vendor-hosted services. Skills remain markdown-only; your agent and credentials connect to your org tools locally.
+
+See [ROADMAP.md](ROADMAP.md) and `planning/phase1_brainstorm_5_personas.md` for phased delivery.
+
+---
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [QUICKSTART.md](QUICKSTART.md) | 3-step first session |
+| [docs/INSTALL.md](docs/INSTALL.md) | Full install + IDE matrix |
+| [docs/CLIENT-AGENT.md](docs/CLIENT-AGENT.md) | What your agent does vs what we never do |
+| [docs/INFOSEC-ONEPAGER.md](docs/INFOSEC-ONEPAGER.md) | InfoSec review in one pass |
+| [TRUST.md](TRUST.md) | Zero-execution file inventory |
+| [schemas/gates/](schemas/gates/) | Gate output JSON schemas |
+| [examples/walkthroughs/](examples/walkthroughs/) | BFSI + healthcare POC sessions |
+| [RELEASE.md](RELEASE.md) | Signed release + checksum verification |
+| [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | Skills directory submission guide |
+
+---
+
+## Repository structure
 
 ```
 productowner-skill/
-├── skills/                        # The Core Plugins
-│   ├── productowner-skill/        # PO Orchestration Skill
-│   └── ux-pro-skill/              # UI/UX Generation Skill
-├── planning/                      # Phase 1 Execution & Strategy Docs
-│   ├── PHASE_1_EXECUTION_PLAN.md
-│   ├── cybersecurity_trust_plan.md
-│   ├── opensource_reusable_skills.md
-│   ├── vibe_coding_gap_analysis.md
-│   └── top_5_competitors.md
-├── docs/                          # Interactive GitHub Pages Demo
-│   ├── index.html                 # UI landing page
-│   └── ECP/                      # Declarative Presentation Blueprints
-└── prds/                          # Reference PRDs (Archived)
+├── .cursor/skills/            # Skills ready on clone (mirror of skills/)
+├── skills/                    # Source persona skills
+├── .agent/memory.md           # Memory schema — copy per repo
+├── schemas/gates/             # Gate output JSON schemas
+├── examples/golden-run/       # Synthetic gate JSON reference
+├── examples/walkthroughs/     # BFSI + healthcare POC sessions
+├── docs/                      # Portfolio demo + INSTALL, CLIENT-AGENT, INFOSEC
+├── prds/                      # Reference PRDs
+└── ROADMAP.md
 ```
 
 ---
 
-*Built by [Vignesh AIPM](https://github.com/vignesh-s7) · Senior PO · AI / BFSI / Healthcare*
+*Built by [Vignesh AIPM](https://github.com/vvs-PO) · Senior PO · AI / BFSI / Healthcare*
+
+## Ownership
+
+- Organization: `vvs-PO`
+- Owner: Vignesh AIPM

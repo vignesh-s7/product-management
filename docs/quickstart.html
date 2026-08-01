@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>productowner-skill — Quickstart</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{max-width:720px;margin:0 auto;padding:2rem 1.25rem 3rem}
+.trust-badge{display:block;text-align:center;margin:0 auto 1.5rem;max-width:640px;padding:.5rem .85rem;border-radius:8px;font-size:.8rem;font-weight:500;line-height:1.5;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border)}
+.trust-badge strong{color:var(--text);font-weight:600}
+.hero{margin-bottom:1.75rem}
+.hero h1{font-size:1.5rem;margin-bottom:.35rem}
+.hero p{color:var(--text-2);font-size:.9rem;line-height:1.6}
+.steps{display:grid;gap:1rem;margin:1.5rem 0}
+.step-card{padding:1rem 1.1rem}
+.step-card h2{font-size:.95rem;margin-bottom:.35rem}
+.step-card p{font-size:.85rem;color:var(--text-2);line-height:1.55;margin-bottom:.5rem}
+.step-num{display:inline-block;font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:.25rem;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);margin-bottom:.5rem}
+.links-grid{display:grid;gap:.75rem;margin:1.5rem 0}
+.link-card{display:block;padding:1rem;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:border-color .15s}
+.link-card:hover{border-color:var(--border-strong)}
+.link-card h3{font-size:.9rem;margin-bottom:.25rem}
+.link-card p{font-size:.8rem;color:var(--text-2);margin:0;line-height:1.5}
+.walkthrough-list{list-style:none;padding:0;margin:.5rem 0 0}
+.walkthrough-list li{padding:.35rem 0;font-size:.85rem}
+.walkthrough-list a{color:var(--info)}
+.footer-note{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted)}
+.back-link{display:inline-block;margin-bottom:1rem;font-size:.85rem}
+</style>
+</head>
+<body>
+<a class="back-link" href="index.html">&larr; Back to portfolio</a>
+
+<p class="trust-badge" role="note" aria-label="Trust and security posture">
+  <strong>Markdown-only skills</strong> &middot; No executables &middot; No telemetry &middot; Client agent runs locally
+</p>
+
+<header class="hero">
+  <h1>Quickstart — 3 Steps to Your First PO Session</h1>
+  <p>We provide skills only. Your local AI agent does discovery, PRD writing, gate checks, and POC/MVP artifacts. No vendor runtime, no API keys, no account with us.</p>
+</header>
+
+<section class="steps" aria-label="Quickstart steps">
+  <article class="card step-card">
+    <span class="step-num">Step 1</span>
+    <h2>Clone the repo</h2>
+    <p>Skills are already mirrored in <code>.cursor/skills/</code> on clone. For Claude Code, see <code>.claude/skills/</code>.</p>
+    <pre>git clone https://github.com/vignesh-s7/product-management.git
+cd product-management</pre>
+    <p class="muted">Core personas: <code>productowner-skill</code>, <code>PO-discovery</code>, <code>PO-delivery</code>, <code>cybersec-skill</code>, <code>y-score-readiness</code>, and more.</p>
+  </article>
+
+  <article class="card step-card">
+    <span class="step-num">Step 2</span>
+    <h2>Edit <code>.agent/memory.md</code></h2>
+    <p>Every skill reads memory first. Customize <code>product_name</code>, <code>domain</code>, <code>compliance_regimes</code>, and <code>constraints</code> for your product.</p>
+    <pre>mkdir -p .agent artifacts
+touch artifacts/.gitkeep</pre>
+  </article>
+
+  <article class="card step-card">
+    <span class="step-num">Step 3</span>
+    <h2>Tell your agent to run discovery</h2>
+    <p>Open Cursor, Claude Code, or Antigravity and say:</p>
+    <pre>Act as Product Owner — run discovery for [your problem statement]</pre>
+    <p class="muted">Your agent reads memory, loads skills, runs the persona swarm, and writes outputs to <code>artifacts/</code> in your repo.</p>
+  </article>
+</section>
+
+<h2>Documentation</h2>
+<div class="links-grid">
+  <a class="link-card" href="../QUICKSTART.md">
+    <h3>QUICKSTART.md</h3>
+    <p>Full quickstart with skill table, verify-trust commands, and walkthrough index.</p>
+  </a>
+  <a class="link-card" href="INSTALL.md">
+    <h3>INSTALL.md</h3>
+    <p>5-minute install guide — IDE compatibility matrix, copy paths, and agent triggers.</p>
+  </a>
+  <a class="link-card" href="CLIENT-AGENT.md">
+    <h3>CLIENT-AGENT.md</h3>
+    <p>Client-side AI agent model — what runs locally, gate flow, and POC/MVP path.</p>
+  </a>
+</div>
+
+<h2>Walkthroughs</h2>
+<div class="card">
+  <p class="dim" style="margin-bottom:.5rem">Domain-specific POC sessions with synthetic data and compliance context.</p>
+  <ul class="walkthrough-list">
+    <li><a href="../examples/walkthroughs/bfsi-poc-session.md">BFSI credit-risk POC</a> — PCI-DSS, fair lending</li>
+    <li><a href="../examples/walkthroughs/healthcare-poc-session.md">Healthcare FHIR wellness POC</a> — HIPAA, synthetic PHI</li>
+    <li><a href="../examples/golden-run/">Golden-run reference</a> — gate JSON examples + sample artifacts</li>
+  </ul>
+</div>
+
+<p class="footer-note"><strong>Remember:</strong> YOUR agent does everything. We provide skills only. Optional: run <code>npm run check</code> to verify trust posture — see <a href="../TRUST.md">TRUST.md</a>.</p>
+</body>
+</html>

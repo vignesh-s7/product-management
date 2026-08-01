@@ -4,7 +4,10 @@
   "private": true,
   "description": "Security and accessibility checks for the productowner-skill portfolio demo",
   "scripts": {
-    "check": "node scripts/check-source.mjs",
+    "checksums": "node scripts/generate-checksums.mjs",
+    "check": "node scripts/check-source.mjs && npm run test:skills",
+    "sync-skills": "node scripts/sync-skills.mjs",
+    "test:skills": "node --experimental-strip-types --test tests/skills/memory-contract.test.ts",
     "test": "playwright test"
   },
   "devDependencies": {

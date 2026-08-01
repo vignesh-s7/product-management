@@ -1,0 +1,33 @@
+{
+  "verdict": "warn",
+  "intensity": "full",
+  "scope": ["docs/poc/overdue-dashboard.html"],
+  "wcag_failures": [],
+  "style_violations": [
+    {
+      "file": "docs/poc/overdue-dashboard.html",
+      "line": 48,
+      "severity": "warn",
+      "issue": "Reminder button uses hard-coded #2563EB instead of design token --accent",
+      "fix": "Use var(--accent) from .agent/memory.md design_tokens section"
+    },
+    {
+      "file": "docs/poc/overdue-dashboard.html",
+      "line": 92,
+      "severity": "warn",
+      "issue": "Modal close control missing visible focus ring on keyboard navigation",
+      "fix": "Add :focus-visible outline per WCAG 2.4.7"
+    }
+  ],
+  "flow_score": 78,
+  "flow_notes": "Two-step flow (list → preview → confirm) is clear; consider inline preview on row expand",
+  "fixes": [
+    {
+      "type": "style",
+      "file": "docs/poc/overdue-dashboard.html",
+      "priority": "medium",
+      "description": "Align button colour with design token",
+      "applied": false
+    }
+  ]
+}

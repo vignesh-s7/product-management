@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://productowner-skill.dev/schemas/gates/ux-gate.schema.json",
+  "title": "UX Gate Output",
+  "description": "Structured verdict from ux-pro-skill after accessibility, style, and flow review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verdict",
+    "wcag_failures",
+    "style_violations",
+    "flow_score",
+    "fixes"
+  ],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "warn", "block"],
+      "description": "Overall gate decision."
+    },
+    "intensity": {
+      "type": "string",
+      "enum": ["lite", "full", "ultra"]
+    },
+    "scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Files or surfaces reviewed."
+    },
+    "wcag_failures": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/wcagFailure" }
+    },
+    "style_violations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/styleViolation" }
+    },
+    "flow_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Heuristic UX flow clarity score."
+    },
+    "flow_notes": {
+      "type": "string"
+    },
+    "fixes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fix" }
+    }
+  },
+  "$defs": {
+    "wcagFailure": {
+      "type": "object",
+      "required": ["file", "severity", "issue", "fix"],
+      "additionalProperties": true,
+      "properties": {
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "criterion": { "type": "string" },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "serious", "moderate", "minor"]
+        },
+        "issue": { "type": "string" },
+        "fix": { "type": "string" }
+      }
+    },
+    "styleViolation": {
+      "type": "object",
+      "required": ["file", "severity", "issue", "fix"],
+      "additionalProperties": true,
+      "properties": {
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "severity": {
+          "type": "string",
+          "enum": ["warn", "info"]
+        },
+        "issue": { "type": "string" },
+        "fix": { "type": "string" }
+      }
+    },
+    "fix": {
+      "type": "object",
+      "required": ["type", "priority", "description"],
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["a11y", "style", "flow", "micro-interaction"]
+        },
+        "file": { "type": "string" },
+        "priority": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"]
+        },
+        "description": { "type": "string" },
+        "applied": { "type": "boolean" }
+      }
+    }
+  }
+}

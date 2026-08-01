@@ -1,0 +1,13 @@
+{
+  "verdict": "pass",
+  "intensity": "full",
+  "artifact": "artifacts/delivery/sample-prd-excerpt.md",
+  "findings": [],
+  "blockers": [],
+  "checks": {
+    "pii_phi_scan": "pass",
+    "owasp_review": "pass",
+    "synthetic_data_only": "pass"
+  },
+  "notes": "POC scope excludes PAN and live credentials. CSV fixture uses synthetic customer names only."
+}

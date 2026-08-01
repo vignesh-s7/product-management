@@ -1,0 +1,48 @@
+{
+  "score": 74,
+  "verdict": "go",
+  "artifact": "artifacts/delivery/sample-prd-excerpt.md",
+  "dimensions": {
+    "problem_clarity": {
+      "score": 100,
+      "weight": 15,
+      "note": "One-sentence problem with measurable time-saving target"
+    },
+    "target_user": {
+      "score": 100,
+      "weight": 10,
+      "note": "Sarah persona with JTBD and weekly frequency"
+    },
+    "success_metric": {
+      "score": 50,
+      "weight": 20,
+      "note": "Leading metric defined; lagging payment-rate metric deferred post-POC"
+    },
+    "constraints": {
+      "score": 100,
+      "weight": 10,
+      "note": "No bank OAuth, POC timeline, LLM cost cap documented"
+    },
+    "compliance_posture": {
+      "score": 50,
+      "weight": 15,
+      "note": "GDPR + PCI scope stated; DPIA checklist not attached"
+    },
+    "eval_plan": {
+      "score": 50,
+      "weight": 20,
+      "note": "Gherkin AC present; golden eval set for reminder copy not yet defined"
+    },
+    "rollback_plan": {
+      "score": 50,
+      "weight": 10,
+      "note": "POC non-goals clear; kill switch for future hosted tier not drafted"
+    }
+  },
+  "blockers": [],
+  "recommendations": [
+    "Add lagging metric stub for payment collection rate in Phase 2",
+    "Attach GDPR DPIA one-pager before external pilot",
+    "Define 5 golden reminder templates for regression eval"
+  ]
+}
