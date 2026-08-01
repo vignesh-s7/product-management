@@ -17,9 +17,9 @@ the system that connects every knowledge source, generates every artifact, and l
 
 ## Phase 1 — Trustworthy Plugin Foundation (Current)
 
-**Goal:** Any PO can install the skill plugin, point it at any repository, and generate compliant discovery + delivery artifacts with security gates — without backend infrastructure, OAuth, or live enterprise integrations.
+**Goal:** Any PO can install the skill plugin and get **launch-ready outcomes** — discovery pack, delivery pack, accessible UI, security-cleared artifacts — without backend infrastructure, OAuth, or live enterprise integrations.
 
-**Tagline:** *Write once. Run anywhere. Zero scripts. Zero telemetry.*
+**Tagline:** *Outcomes users want. Skills that deliver. Zero scripts. Zero telemetry.*
 
 | Deliverable | Status | Priority |
 |-------------|--------|----------|
@@ -37,14 +37,16 @@ the system that connects every knowledge source, generates every artifact, and l
 | `PO-kb-research` skill (local artifact search) | 🔲 Next | P1 |
 | `PO-code-pipeline` skill (declarative PRD → SDLC) | 🔲 Next | P1 |
 | `qa-tester-skill` (edge-case / boundary matrix) | 🔲 Next | P1 |
+| `ux-pro-skill` (a11y + design tokens + flow review) | 🔲 Next | P1 |
+| Portfolio demo UX pass (`docs/` onboarding + landing) | 🔲 Next | P1 |
 | Template library (`skills/*/templates/`) | 🔲 Next | P1 |
 | Plugin install guide (`docs/INSTALL.md`) | 🔲 Next | P1 |
 | CI skill validation (extend `check-source.mjs`) | 🔲 Next | P2 |
 | Trust badge on landing page | 🔲 Next | P2 |
 
-**Exit criteria:** Fresh repo + `.agent/memory.md` → discovery pack + delivery pack + Y-Score gate + cybersec pass in one session. Install guide verified in < 5 min.
+**Exit criteria (outcomes):** Discovery pack in one session · PRD with Y-Score + Gherkin AC · PII blocked · edge-case matrix · WCAG pass on demo UI · install < 5 min.
 
-> Enterprise KB integrations (Rovo / M365 / Google) moved to **Phase 2** per 5-persona brainstorm (`planning/phase1_brainstorm_5_personas.md`).
+> Enterprise KB integrations (Rovo / M365 / Google) moved to **Phase 2** per 6-persona brainstorm (`planning/phase1_brainstorm_5_personas.md`).
 
 ---
 
