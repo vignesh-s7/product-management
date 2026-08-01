@@ -91,22 +91,22 @@ Fix trust contradictions and deliver **first-access experience** so a human + th
 
 | # | Task | Owner persona | Status |
 |---|------|---------------|--------|
-| 1 | Fix `prd-pipeline.yml` — remove `orchestrate.sh` | Engineering | 🔲 |
-| 2 | Remove `orchestrate.sh` refs from `AI_USE_CASES.md` | Security | 🔲 |
-| 3 | Create `TRUST.md` — file inventory, zero-exec proof | Architect | 🔲 |
-| 4 | Expand `SECURITY.md` — full trust handshake | Security | 🔲 |
-| 5 | Mirror `skills/*` → `.cursor/skills/` | Architect | 🔲 |
-| 6 | Rewrite README — plugin-first, outcomes-first | PO + Business | 🔲 |
-| 7 | Fix `INSTALL.md` repo URLs | Business | 🔲 |
-| 8 | CI: fail on `.sh` in `skills/` or `.cursor/skills/` | Engineering | 🔲 |
+| 1 | Fix `prd-pipeline.yml` — remove `orchestrate.sh` | Engineering | ✅ |
+| 2 | Remove `orchestrate.sh` refs from `AI_USE_CASES.md` | Security | ✅ |
+| 3 | Create `TRUST.md` — file inventory, zero-exec proof | Architect | ✅ |
+| 4 | Expand `SECURITY.md` — full trust handshake | Security | ✅ |
+| 5 | Mirror `skills/*` → `.cursor/skills/` | Architect | ✅ |
+| 6 | Rewrite README — skills-for-agents model | PO + Business | ✅ |
+| 7 | Fix `INSTALL.md` repo URLs | Business | ✅ |
+| 8 | CI: fail on `.sh` in `skills/` or `.cursor/skills/` | Engineering | ✅ |
 
 **Sprint exit criteria:**
-- [ ] No `orchestrate.sh` references in active code/docs/workflows
-- [ ] `TRUST.md` + expanded `SECURITY.md` exist
-- [ ] Skills usable immediately from `.cursor/skills/` on clone
-- [ ] README leads with plugin, not enterprise APIs
-- [ ] `npm run check` passes
-- [ ] Playwright 7/7 pass
+- [x] No `orchestrate.sh` references in active code/docs/workflows
+- [x] `TRUST.md` + expanded `SECURITY.md` exist
+- [x] Skills usable immediately from `.cursor/skills/` on clone
+- [x] README leads with skills-for-client-agents model
+- [x] `npm run check` passes
+- [x] Playwright 7/7 pass
 
 ---
 
