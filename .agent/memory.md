@@ -2,6 +2,10 @@
 
 > **All skills MUST read this file first** before generating artifacts, searching the KB, or delegating to sub-skills. Adapt all templates and outputs to the values below. Do not hardcode repository-specific context in skill files — read it here.
 
+**Agent continuity files (read before any sprint work):**
+- `.agent/sprint-memory.md` — current sprint goal, P0 tasks, agent execution plan
+- `.agent/backlog-memory.md` — full prioritized backlog (P0–P3), task IDs, status
+
 ---
 
 ## product_name
