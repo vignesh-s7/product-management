@@ -90,4 +90,14 @@ See [TRUST.md](TRUST.md) for the full security posture.
 
 ---
 
+## Walkthroughs
+
+| Walkthrough | Domain |
+|-------------|--------|
+| [BFSI credit-risk POC](examples/walkthroughs/bfsi-poc-session.md) | PCI-DSS, fair lending (synthetic) |
+| [Healthcare FHIR wellness POC](examples/walkthroughs/healthcare-poc-session.md) | HIPAA, synthetic PHI rules |
+| [Golden-run reference](examples/golden-run/) | Gate JSON examples + sample artifacts |
+
+---
+
 **Remember:** YOUR agent does everything. We provide skills only.

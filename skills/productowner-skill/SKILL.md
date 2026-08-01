@@ -16,9 +16,16 @@ triggers:
 Adapt all artifacts — domain, users, constraints, compliance regime, glossary, design tokens — to repo context.
 Never hardcode product names, client data, or compliance assumptions from this skill repo.
 
-## 1. Y-Score Readiness Check
-Before proceeding with any feature or release, perform a readiness check against the Y-Score framework to ensure the feature has a clear Definition of Ready (DoR).
-Delegate to `y-score-readiness` — block release if score < 70.
+## 1. Y-Score Readiness Check (MANDATORY)
+
+**MANDATORY:** Whenever writing or finalizing a PRD or any launch-bound artifact, you **MUST** invoke the `y-score-readiness` skill before release. No exceptions.
+
+1. Read and score the artifact via `y-score-readiness` (7-dimension rubric).
+2. Validate the gate output against `schemas/gates/y-score-gate.schema.json`.
+3. **If Y-Score < 70:** **BLOCK** release — output the full score, per-dimension findings, `blockers`, and `recommendations`; do **not** write to `artifacts/` or commit.
+4. **If Y-Score ≥ 70:** proceed to the release step in the gate flow (§4).
+
+This check enforces Definition of Ready (DoR) for every launch-bound deliverable.
 
 ## 2. Gherkin Acceptance Criteria (Given/When/Then)
 Always enforce strict BDD/Gherkin acceptance criteria in every PRD and user story.
@@ -46,14 +53,18 @@ Every artifact passes through the persona swarm before release:
 
 ```
 write artifact
-  → cybersec-skill   (BLOCK on PII/PHI or critical OWASP findings)
-  → ux-pro-skill     (BLOCK on critical a11y; WARN on style/token drift)
-  → qa-tester-skill  (WARN on missing edge cases or untestable AC)
-  → y-score-readiness (BLOCK if score < 70 for launch-bound artifacts)
+  → cybersec-skill      (BLOCK on PII/PHI or critical OWASP findings)
+  → ux-pro-skill        (BLOCK on critical a11y; WARN on style/token drift)
+  → qa-tester-skill     (WARN on missing edge cases or untestable AC)
+  → y-score-readiness   (MANDATORY for PRDs and launch-bound artifacts)
+      · invoke y-score-readiness skill
+      · validate against schemas/gates/y-score-gate.schema.json
+      · BLOCK if score < 70 — output findings; do not release
+      · proceed only if score ≥ 70
   → release to artifacts/
 ```
 
-**BLOCK** = do not write or commit until resolved.
+**BLOCK** = do not write or commit until resolved. For Y-Score failures, always surface score, dimension notes, `blockers`, and `recommendations`.
 **WARN** = write with `> ⚠️ QA/UX finding:` callout; flag for human review.
 
 ## 5. Artifact Conventions

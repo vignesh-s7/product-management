@@ -2,6 +2,10 @@
 
 **Author:** Vignesh AIPM · Senior PO · AI / BFSI / Healthcare
 
+| Status | Links |
+|--------|-------|
+| **zero-execution verified** — `npm run check` (`node scripts/check-source.mjs`) | [TRUST.md](TRUST.md) · [SECURITY.md](SECURITY.md) |
+
 ---
 
 ## What we are

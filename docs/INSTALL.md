@@ -17,6 +17,20 @@ Install the productowner-skill persona swarm in any repository. No Docker, no AP
 
 ---
 
+## IDE Compatibility Matrix
+
+Skills ship pre-mirrored in `.cursor/skills/` on clone. Copy or symlink for other agents as needed.
+
+| IDE/Agent | Skills path | Memory path | Trigger example | Notes |
+|-----------|-------------|-------------|-----------------|-------|
+| Cursor | `.cursor/skills/` | `.agent/memory.md` | "Act as Product Owner" | Auto-discovered |
+| Claude Code | `.claude/skills/` | `.agent/memory.md` | Same | |
+| Antigravity | `.cursor/skills/` or agent config | `.agent/memory.md` | Same | |
+| Codex CLI | `.codex/skills/` | `.agent/memory.md` | `/skill-name` | |
+| Gemini CLI | `.gemini/skills/` | `.agent/memory.md` | Varies | |
+
+---
+
 ## Step 1 — Copy skills to agent config paths
 
 Clone the repository (or copy the `skills/` directory from a release):

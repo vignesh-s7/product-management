@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://productowner-skill.dev/schemas/gates/cybersec-gate.schema.json",
+  "title": "Cybersec Gate Output",
+  "description": "Structured verdict from cybersec-skill after PII/PHI and OWASP review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "findings", "blockers", "intensity", "checks"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "block", "warn"],
+      "description": "Overall gate decision."
+    },
+    "intensity": {
+      "type": "string",
+      "enum": ["lite", "full", "ultra"],
+      "description": "Review depth applied."
+    },
+    "artifact": {
+      "type": "string",
+      "description": "Path to the reviewed artifact, when scoped to a single file."
+    },
+    "findings": {
+      "type": "array",
+      "description": "Non-fatal issues and recommendations.",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "blockers": {
+      "type": "array",
+      "description": "Items that must be fixed before downstream skills run.",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "checks": {
+      "type": "object",
+      "description": "Named sub-check results (e.g. pii_phi_scan, owasp_review).",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["pass", "warn", "fail", "skip"]
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional human-readable summary."
+    }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "required": ["id", "severity", "message"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"]
+        },
+        "category": { "type": "string" },
+        "location": { "type": "string" },
+        "message": { "type": "string" },
+        "remediation": { "type": "string" }
+      }
+    }
+  }
+}

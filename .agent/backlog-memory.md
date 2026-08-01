@@ -30,7 +30,7 @@
 
 ---
 
-## P0 — Trust contradictions + first access (CURRENT SPRINT)
+## P0 — Trust contradictions + first access (COMPLETE)
 
 | ID | Task | Persona | Status | Notes |
 |----|------|---------|--------|-------|
@@ -48,23 +48,23 @@
 
 ---
 
-## P1 — Top 1% outcomes + proof
+## P1 — Top 1% outcomes + proof (COMPLETE)
 
 | ID | Task | Persona | Status | Notes |
 |----|------|---------|--------|-------|
 | B-009 | `examples/golden-run/` — human intent → client agent → POC/MVP + gate JSONs | PO | ✅ | Proves dual-user flow |
-| B-010 | JSON schemas for gate outputs (cybersec, ux, qa, y-score) | Engineering | 🔲 | |
+| B-010 | JSON schemas for gate outputs (cybersec, ux, qa, y-score) | Engineering | ✅ | `schemas/gates/` |
 | B-011 | `QUICKSTART.md` — 3 steps: open repo → memory → trigger PO | Architect | ✅ | |
 | B-012 | Trust badge on `docs/index.html` | UX | ✅ | |
 | B-013 | Landing "Skills for your agent" + "Portfolio demo" — two paths, no confusion | UX | ✅ | Was "Plugin vs Demo" |
-| B-014 | Update `CASE_STUDY.md` — zero-exec plugin narrative | Business | 🔲 | |
-| B-015 | InfoSec one-pager — "approved in 1 review" | Business | 🔲 | |
-| B-016 | Auto-invoke Y-Score on every PRD write in productowner-skill | PO | 🔲 | |
-| B-017 | `disable-model-invocation: true` on cybersec-skill | Security | 🔲 | |
-| B-018 | CI badge "zero-execution verified" in README | Security | 🔲 | |
-| B-019 | BFSI walkthrough example session | PO | 🔲 | |
-| B-020 | Healthcare walkthrough example session | PO | 🔲 | |
-| B-021 | IDE compatibility matrix in INSTALL | Architect | 🔲 | Cursor / Claude / Antigravity |
+| B-014 | Update `CASE_STUDY.md` — zero-exec plugin narrative | Business | ✅ | |
+| B-015 | InfoSec one-pager — "approved in 1 review" | Business | ✅ | `docs/INFOSEC-ONEPAGER.md` |
+| B-016 | Auto-invoke Y-Score on every PRD write in productowner-skill | PO | ✅ | |
+| B-017 | `disable-model-invocation: true` on cybersec-skill | Security | ✅ | |
+| B-018 | CI badge "zero-execution verified" in README | Security | ✅ | |
+| B-019 | BFSI walkthrough example session | PO | ✅ | `examples/walkthroughs/` |
+| B-020 | Healthcare walkthrough example session | PO | ✅ | `examples/walkthroughs/` |
+| B-021 | IDE compatibility matrix in INSTALL | Architect | ✅ | |
 
 ---
 

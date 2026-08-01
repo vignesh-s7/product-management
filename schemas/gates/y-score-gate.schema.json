@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://productowner-skill.dev/schemas/gates/y-score-gate.schema.json",
+  "title": "Y-Score Gate Output",
+  "description": "Launch-readiness score from y-score-readiness across seven weighted dimensions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["score", "verdict", "dimensions", "blockers", "recommendations"],
+  "properties": {
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Weighted total across all dimensions."
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["go", "no-go"],
+      "description": "go when score >= 70 and no unresolved blockers."
+    },
+    "artifact": {
+      "type": "string",
+      "description": "Path to the PRD or pilot artifact scored."
+    },
+    "dimensions": {
+      "type": "object",
+      "description": "Per-dimension scores and notes.",
+      "additionalProperties": { "$ref": "#/$defs/dimension" },
+      "propertyNames": {
+        "enum": [
+          "problem_clarity",
+          "target_user",
+          "success_metric",
+          "constraints",
+          "compliance_posture",
+          "eval_plan",
+          "rollback_plan"
+        ]
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Must-fix items before launch."
+    },
+    "recommendations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Non-blocking improvements."
+    }
+  },
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "required": ["score"],
+      "additionalProperties": true,
+      "properties": {
+        "score": {
+          "type": "integer",
+          "enum": [0, 50, 100]
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

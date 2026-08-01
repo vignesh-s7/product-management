@@ -1,6 +1,7 @@
 ---
 name: cybersec-skill
 description: Mandatory security gate for the persona skill swarm. Blocks PII/PHI leakage, audits generated code and docs against OWASP Top 10, enforces no-network and dependency-risk policies, and returns a structured pass/block/warn verdict before downstream skills proceed.
+disable-model-invocation: true
 triggers:
   - "Threat model this"
   - "Act as AppSec"
@@ -9,6 +10,8 @@ triggers:
 ---
 
 # Cybersecurity Gate (AppSec / InfoSec)
+
+> **Invocation:** This skill runs only via explicit `/security-review` or the trigger phrases listed in frontmatter. It is **not** auto-invoked by the model (`disable-model-invocation: true`).
 
 The **license to operate** in BFSI, healthcare, and regulated domains. This skill runs **100% locally** — declarative markdown only, no shell scripts, no telemetry, no external network calls.
 

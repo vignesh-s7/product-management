@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://productowner-skill.dev/schemas/gates/qa-gate.schema.json",
+  "title": "QA Gate Output",
+  "description": "Structured verdict from qa-tester-skill. WARN-only gate — never blocks the persona swarm.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "edge_case_gaps"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "warn"],
+      "description": "QA gate never emits block."
+    },
+    "intensity": {
+      "type": "string",
+      "enum": ["lite", "full", "ultra"]
+    },
+    "scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "APIs, features, or files under test."
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of enumerated test cases."
+    },
+    "test_matrix_ref": {
+      "type": "string",
+      "description": "Path to the markdown or JSON test matrix artifact."
+    },
+    "edge_case_gaps": {
+      "type": "array",
+      "description": "Missing boundary, negative, or untestable acceptance criteria.",
+      "items": { "$ref": "#/$defs/edgeCaseGap" }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Free-form advisory notes."
+    }
+  },
+  "$defs": {
+    "edgeCaseGap": {
+      "type": "object",
+      "required": ["id", "severity", "message"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "severity": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "message": { "type": "string" },
+        "suggestion": { "type": "string" }
+      }
+    }
+  }
+}
