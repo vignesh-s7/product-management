@@ -38,6 +38,31 @@ const workflow = await readFile('.github/workflows/prd-pipeline.yml', 'utf8');
 assert(!workflow.includes('secrets.'), 'PRD workflow must not reference secrets');
 assert(!workflow.includes('pull_request_target'), 'untrusted target workflow is forbidden');
 assert(workflow.includes('permissions:\n  contents: read'), 'workflow permissions must be read-only');
+assert(!workflow.includes('orchestrate.sh'), 'PRD workflow must not reference orchestrate.sh');
+
+async function findShellScripts(dir) {
+  const results = [];
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return results;
+  }
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...await findShellScripts(full));
+    } else if (entry.name.endsWith('.sh')) {
+      results.push(full);
+    }
+  }
+  return results;
+}
+
+for (const skillsDir of ['skills', '.cursor/skills']) {
+  const shellScripts = await findShellScripts(skillsDir);
+  assert(shellScripts.length === 0, `${skillsDir}/ must not contain .sh files (found: ${shellScripts.join(', ')})`);
+}
 
 for (const path of ['.github/workflows/prd-pipeline.yml', '.github/workflows/ci.yml', '.github/workflows/pages.yml']) {
   const source = await readFile(path, 'utf8');

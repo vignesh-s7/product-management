@@ -59,7 +59,6 @@ jobs:
         with:
           fetch-depth: 2
       - name: Select and validate PRD
-        id: prd
         env:
           INPUT_PRD: ${{ inputs.prd }}
           EVENT_NAME: ${{ github.event_name }}
@@ -74,16 +73,6 @@ jobs:
           fi
           [[ "$prd" =~ ^prds/[A-Za-z0-9._-]+\.md$ ]] || { echo "Invalid PRD path" >&2; exit 1; }
           [[ -f "$prd" ]] || { echo "PRD file missing" >&2; exit 1; }
-          echo "path=$prd" >> "$GITHUB_OUTPUT"
-      - name: Run deterministic demo orchestrator
-        env:
-          PRD_PATH: ${{ steps.prd.outputs.path }}
-        shell: bash
-        run: ./orchestrate.sh "$PRD_PATH"
-      - name: Upload generated demo package
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: sdlc-output-${{ github.run_id }}
-          path: outputs/
-          if-no-files-found: error
-          retention-days: 1
+          grep -qiE '^##[[:space:]]+Problem' "$prd" || { echo "PRD missing required section: Problem" >&2; exit 1; }
+          grep -qiE '^##[[:space:]]+Target[[:space:]]+User' "$prd" || { echo "PRD missing required section: Target user(s)" >&2; exit 1; }
+          echo "PRD validation passed: $prd"

@@ -34,17 +34,17 @@
 
 | ID | Task | Persona | Status | Notes |
 |----|------|---------|--------|-------|
-| B-001 | Fix `prd-pipeline.yml` — remove `orchestrate.sh`, use declarative Y-Score only | Engineering | 🔲 | Trust killer |
-| B-002 | Remove `orchestrate.sh` refs from `AI_USE_CASES.md` | Security | 🔲 | |
-| B-003 | Create `TRUST.md` — file inventory, what executes vs not | Architect | 🔲 | |
-| B-004 | Expand `SECURITY.md` — zero retention, no profiling, no network, no exec | Security | 🔲 | |
-| B-005 | Mirror `skills/*` → `.cursor/skills/` in repo | Architect | 🔲 | Instant plugin access |
-| B-006 | Rewrite README — plugin-first, outcomes-first | PO + Business | 🔲 | |
-| B-007 | Fix `docs/INSTALL.md` repo URLs | Business | 🔲 | |
-| B-008 | CI: fail if `.sh` added under `skills/` or `.cursor/skills/` | Engineering | 🔲 | Extend check-source.mjs |
-| B-049 | Document dual end-user model (humans + client agents) in README + TRUST.md | PO + Architect | 🔲 | Core positioning |
-| B-050 | Create `docs/CLIENT-AGENT.md` — vendor boundary, what agent does, what we never do | Architect | 🔲 | |
-| B-051 | Update B-006 README scope — skills-for-agents, not "use our platform" | PO + Business | 🔲 | Replaces generic plugin-first |
+| B-001 | Fix `prd-pipeline.yml` — remove `orchestrate.sh`, use declarative Y-Score only | Engineering | ✅ | Trust killer |
+| B-002 | Remove `orchestrate.sh` refs from `AI_USE_CASES.md` | Security | ✅ | |
+| B-003 | Create `TRUST.md` — file inventory, what executes vs not | Architect | ✅ | |
+| B-004 | Expand `SECURITY.md` — zero retention, no profiling, no network, no exec | Security | ✅ | |
+| B-005 | Mirror `skills/*` → `.cursor/skills/` in repo | Architect | ✅ | Instant plugin access |
+| B-006 | Rewrite README — plugin-first, outcomes-first | PO + Business | ✅ | Skills-for-agents model |
+| B-007 | Fix `docs/INSTALL.md` repo URLs | Business | ✅ | |
+| B-008 | CI: fail if `.sh` added under `skills/` or `.cursor/skills/` | Engineering | ✅ | Extend check-source.mjs |
+| B-049 | Document dual end-user model (humans + client agents) in README + TRUST.md | PO + Architect | ✅ | Core positioning |
+| B-050 | Create `docs/CLIENT-AGENT.md` — vendor boundary, what agent does, what we never do | Architect | ✅ | |
+| B-051 | Update B-006 README scope — skills-for-agents, not "use our platform" | PO + Business | ✅ | |
 
 ---
 
@@ -52,11 +52,11 @@
 
 | ID | Task | Persona | Status | Notes |
 |----|------|---------|--------|-------|
-| B-009 | `examples/golden-run/` — human intent → client agent → POC/MVP + gate JSONs | PO | 🔲 | Proves dual-user flow |
+| B-009 | `examples/golden-run/` — human intent → client agent → POC/MVP + gate JSONs | PO | ✅ | Proves dual-user flow |
 | B-010 | JSON schemas for gate outputs (cybersec, ux, qa, y-score) | Engineering | 🔲 | |
-| B-011 | `QUICKSTART.md` — 3 steps: open repo → memory → trigger PO | Architect | 🔲 | |
-| B-012 | Trust badge on `docs/index.html` | UX | 🔲 | |
-| B-013 | Landing "Skills for your agent" + "Portfolio demo" — two paths, no confusion | UX | 🔲 | Was "Plugin vs Demo" |
+| B-011 | `QUICKSTART.md` — 3 steps: open repo → memory → trigger PO | Architect | ✅ | |
+| B-012 | Trust badge on `docs/index.html` | UX | ✅ | |
+| B-013 | Landing "Skills for your agent" + "Portfolio demo" — two paths, no confusion | UX | ✅ | Was "Plugin vs Demo" |
 | B-014 | Update `CASE_STUDY.md` — zero-exec plugin narrative | Business | 🔲 | |
 | B-015 | InfoSec one-pager — "approved in 1 review" | Business | 🔲 | |
 | B-016 | Auto-invoke Y-Score on every PRD write in productowner-skill | PO | 🔲 | |

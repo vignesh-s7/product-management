@@ -2,7 +2,7 @@
 
 > **Read before any agent run.** Captures current sprint context, decisions, execution plan, and pre-run state.
 > **Last updated:** 2026-08-01 (revised — dual end-user model)
-> **Sprint name:** P0 Trust + First-Access
+> **Sprint status:** P0 COMPLETE (2026-08-01)
 > **Branch:** `cursor/phase1-brainstorm-5-personas-fcfe`
 > **PR:** #2
 
@@ -54,7 +54,7 @@ Fix trust contradictions and deliver **first-access experience** so a human + th
 
 **Competitors:** OpenHands (~80k), MetaGPT (~70k), GPT-Engineer (~55k), ChatDev (~25k), SuperAGI (~18k), generic Cursor skills (often with `scripts/`).
 
-**Our moat:** Only solution combining regulated PO depth + persona gates + zero-execution plugin.
+**Our moat:** Only skills library where client AI agents build regulated POC/MVP end-to-end locally — no vendor runtime, no data egress to us.
 
 ---
 
@@ -73,8 +73,6 @@ Fix trust contradictions and deliver **first-access experience** so a human + th
 | README plugin-first rewrite | 🔲 Pending |
 | `TRUST.md` | 🔲 Pending |
 | Trust contradictions fixed | 🔲 Pending |
-
-**Our moat:** Only skills library where client AI agents build regulated POC/MVP end-to-end locally — no vendor runtime, no data egress to us.
 
 ---
 

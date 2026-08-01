@@ -1,0 +1,23 @@
+{
+  "verdict": "warn",
+  "intensity": "full",
+  "scope": ["POST /api/reminders", "overdue dashboard CSV import"],
+  "case_count": 8,
+  "coverage_gaps": [
+    {
+      "id": "QA-GAP-001",
+      "severity": "medium",
+      "message": "No AC for empty CSV upload — zero rows after parse",
+      "suggestion": "Add Gherkin: Given empty CSV When upload Then show inline error and no rows"
+    },
+    {
+      "id": "QA-GAP-002",
+      "severity": "low",
+      "message": "Duplicate invoice_id in CSV not specified in AC",
+      "suggestion": "Add boundary case: second row with same invoice_id rejected or merged"
+    }
+  ],
+  "warnings": [
+    "Reminder send is simulated in POC — add explicit test that no SMTP call occurs"
+  ]
+}

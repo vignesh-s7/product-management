@@ -1,145 +1,156 @@
-# productowner-skill — AI-Native PO Operating System
+# productowner-skill — Skills Library for Client-Side AI Agents
 
 **Author:** Vignesh AIPM · Senior PO · AI / BFSI / Healthcare
-## About
-
-**productowner-skill** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Owner, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Owner for teams shipping AI features in regulated industries.
-
-**Interactive portfolio demo:** https://vvs-PO.github.io/productowner-skill/
 
 ---
 
-**Live:** [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill)
-**Status:** Static portfolio demo · sample data · no authentication or live integrations
+## What we are
 
-> productowner-skill demonstrates product workflows and UI concepts. It does not authenticate users, call AI providers, connect enterprise systems, or process production data. See [LIMITATIONS.md](LIMITATIONS.md).
+**productowner-skill** is a **skills library** — markdown `SKILL.md` plugins that teach your local AI agent how to run Product Owner workflows in regulated domains (BFSI, healthcare, generic).
 
----
-
-## What is productowner-skill?
-
-productowner-skill is a full-lifecycle PO operating system that takes a product from first idea to post-launch review — generating every artifact a PO needs along the way.
-
-It does not replace Jira, Confluence, SharePoint, or Google Workspace. It **orchestrates** them, adding a PO-specific workflow layer on top of Atlassian Rovo, Microsoft 365 Copilot, Google Workspace AI, and Claude.
+We provide **skills only**. Your client-side AI agent (Cursor, Claude Code, Antigravity, Codex CLI, etc.) reads those skills, runs the persona swarm gates locally, and builds a complete POC/MVP in **your** repository.
 
 ---
 
-## The Problem
+## Two end users
 
-Product Owners spend 60–80% of their working week on documentation and re-work:
+| End user | Role | How they interact |
+|----------|------|-------------------|
+| **Humans** | POs, PO leads, designers, engineers, InfoSec | Set intent, review gate outputs, approve POC/MVP deliverables |
+| **Client-side AI agents** | Cursor Agent, Claude Code, Antigravity, etc. | Read `skills/` + `.agent/memory.md`, run discovery → delivery → gates, write artifacts |
 
-- Market research, SWOT, competitor analysis, ROI models — produced from scratch every time
-- Jira, Confluence, SharePoint, Yammer, Google Drive searched separately with no unified view
-- AI exists in each tool (Rovo, M365 Copilot, Gemini) but is not connected into a PO workflow
-- Nothing is reused across products, teams, or client engagements
+Humans speak to **their own IDE agent**. There is no account with us, no API to call, and no runtime link between your environment and this repository.
 
----
+```
+Human (PO) ──intent──► Client AI Agent (local)
+                              │
+                              ├── reads skills/ (copied into your repo)
+                              ├── reads .agent/memory.md (your repo)
+                              ├── runs persona swarm gates (local)
+                              └── writes artifacts/ + POC/MVP (your repo)
 
-## Two-Tier Product Model
-
-| | Standard | AI ✨ |
-|--|----------|-------|
-| **Search** | Federated KB search: Jira + Confluence (Rovo) · SharePoint + Yammer + Teams (M365) · Google Drive + Docs (Google API) | Same + AI chat grounded in KB (Rovo Chat + Claude) |
-| **Reporting** | Embedded PowerBI + Looker standard templates | PowerBI Copilot + Looker AI — natural language queries and screenshot interpretation |
-| **Research** | Browse + reuse artifact URLs | Deep research: internal KB + web, structured report (Quick / Standard / Deep) |
-| **Artifacts** | PO templates library — clone and edit | AI-generated drafts: SWOT, PRD, ROI model, KPI plan, release strategy |
-| **Org** | Multi-PO org KB · Client workspace (read-only) | AI-summarised client status · cross-product pattern recognition |
-
----
-
-## Four Engines
-
-### 1. Discovery Engine
-Input: problem statement + domain
-Output: market sizing (TAM/SAM/SOM) · SWOT · competitor matrix · ROI model · compliance risk map · GTM brief
-
-### 2. Delivery Engine
-Input: PRD
-Output: prioritised backlog (RICE/WSJF/MoSCoW) · KPI plan · Y-Score gate · beta strategy · phased rollout plan
-
-### 3. KB Layer
-- Indexed across: Jira, Confluence (Rovo) · SharePoint, Yammer, Teams (M365) · Google Drive, Docs (Google API)
-- Every artifact tagged: domain · stage · product-type · compliance-regime
-- Standard: search + reuse URLs · AI: Rovo Chat + Claude, cited responses
-- Client workspace: PO creates, client views — no Atlassian/M365 licence required for client
-- Shared Library: anonymised templates reusable across all client engagements
-
-### 4. Code Pipeline (original productowner-skill)
-Input: PRD → MetaGPT (architecture) → OpenHands (code) → Promptfoo (QA) → Cloudflare (deploy)
+productowner-skill repo ──provides skills only──► copied once, no runtime connection
+```
 
 ---
 
-## Live Pages
+## What your client agent does
+
+With our persona skills installed, your local agent can execute an end-to-end POC/MVP workflow:
+
+1. **Discovery** — SWOT, TAM/SAM/SOM, competitor matrix, compliance risk map, GTM brief
+2. **Delivery** — PRD with Gherkin AC, RICE backlog, KPI plan, rollout phases
+3. **Persona swarm gates** — cybersec → UX → QA → Y-Score (local verdict JSON)
+4. **Artifact release** — markdown outputs under `artifacts/` in your repo
+
+See [examples/golden-run/](examples/golden-run/) for a synthetic walkthrough of human intent → agent outputs → gate JSONs.
+
+---
+
+## What we do not do
+
+| We never | Why |
+|----------|-----|
+| Run a backend or SaaS | Skills are markdown; your agent is the runtime |
+| OAuth, login, or accounts | No vendor relationship at execution time |
+| Execute on our infrastructure | All codegen and doc generation runs on your machine |
+| Receive prompts, data, or telemetry | No data flows through us — ever |
+| Require API keys to productowner-skill | Use your agent's existing model and credentials |
+
+---
+
+## Quick install
+
+| Doc | Purpose |
+|-----|---------|
+| [QUICKSTART.md](QUICKSTART.md) | Three steps: open repo → create memory → trigger PO |
+| [docs/INSTALL.md](docs/INSTALL.md) | Full install guide (Cursor, Claude Code, Antigravity) |
+| [docs/CLIENT-AGENT.md](docs/CLIENT-AGENT.md) | Vendor boundary — what the client agent does vs what we provide |
+
+```bash
+git clone https://github.com/vvs-PO/productowner-skill.git
+mkdir -p .cursor/skills .agent artifacts
+cp -r productowner-skill/skills/* .cursor/skills/
+cp productowner-skill/.agent/memory.md .agent/memory.md   # then edit for your product
+```
+
+---
+
+## Skills list
+
+| Skill | Triggers | Gate role |
+|-------|----------|-----------|
+| `productowner-skill` | "Act as Product Owner", "Write a PRD", "Groom the backlog", "Run PO workflow", "Discovery to delivery" | Orchestrator |
+| `PO-discovery` | "run discovery", "SWOT", "market sizing", "competitor analysis", "discovery pack", "GTM brief" | Discovery pack |
+| `PO-delivery` | "prioritize backlog", "RICE score", "KPI plan", "delivery pack", "rollout plan", "write delivery artifacts" | Delivery pack |
+| `PO-kb-research` | "search KB", "find prior artifact", "reuse template", "what have we done before", "search artifacts" | Local KB search |
+| `PO-code-pipeline` | "run the pipeline", "PRD to SDLC", "full SDLC from PRD", "execute code pipeline", "discovery to release" | Pipeline router |
+| `cybersec-skill` | "Threat model this", "Act as AppSec", "security review", "check for PII" | **BLOCK** on PII/PHI / critical OWASP |
+| `ux-pro-skill` | "Review this UI", "Act as UX Pro", "accessibility review", "a11y check" | **BLOCK** on critical a11y; WARN on style drift |
+| `qa-tester-skill` | "write tests", "Act as QA", "edge cases", "test matrix" | **WARN** only — never blocks pipeline |
+| `y-score-readiness` | "is this ready to launch?", "readiness check", "score this PRD", `/y-score <prd.md>` | **BLOCK** if score &lt; 70 |
+| `prd-to-sdlc` | PRD → architecture + code skeleton + eval harness | SDLC bundle (Phase 5) |
+
+Skills live in `skills/` and `.claude/skills/`. Copy into `.cursor/skills/` or `.claude/skills/` in your target repo.
+
+---
+
+## Persona swarm gate model
+
+Every artifact passes through the gate chain **on the client agent** before release:
+
+```
+write artifact
+  → cybersec-skill      (BLOCK on PII/PHI or critical OWASP)
+  → ux-pro-skill        (BLOCK on critical a11y; WARN on token/style drift)
+  → qa-tester-skill     (WARN on missing edge cases or untestable AC)
+  → y-score-readiness   (BLOCK if score < 70 for launch-bound artifacts)
+  → release to artifacts/
+```
+
+- **BLOCK** — do not write or commit until resolved
+- **WARN** — write with `> ⚠️ finding:` callout; flag for human review
+- **pass** — proceed to next gate
+
+Example gate outputs: [examples/golden-run/gates/](examples/golden-run/gates/)
+
+---
+
+## Portfolio demo (illustration only)
+
+The static site at [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill/) and everything under [`docs/`](docs/) is an **illustrative portfolio demo** — sample data, simulated UI, no authentication, no live integrations.
+
+It shows what PO workflows *look like*; it is **not** the product runtime. The product is the skills library you copy into your repo.
+
+> Do not enter confidential information in the demo. See [LIMITATIONS.md](LIMITATIONS.md).
 
 | Page | URL |
 |------|-----|
 | Landing | [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill) |
 | PO Onboarding | [vvs-PO.github.io/productowner-skill/onboarding](https://vvs-PO.github.io/productowner-skill/onboarding/) |
 | CuCP Slide Deck | [vvs-PO.github.io/productowner-skill/cucp/presentation.html](https://vvs-PO.github.io/productowner-skill/cucp/presentation.html) |
-| Teams Tab | [vvs-PO.github.io/productowner-skill/onboarding/teams.html](https://vvs-PO.github.io/productowner-skill/onboarding/teams.html) |
 
 ---
 
-## Repository Structure
+## Enterprise integrations (Phase 2)
+
+Phase 2 adds optional enterprise KB orchestration — Atlassian Rovo, Microsoft 365 Copilot, Google Workspace AI — as **client-configured integrations**, not vendor-hosted services. Skills remain markdown-only; your agent and credentials connect to your org tools locally.
+
+See [ROADMAP.md](ROADMAP.md) and `planning/phase1_brainstorm_5_personas.md` for phased delivery.
+
+---
+
+## Repository structure
 
 ```
 productowner-skill/
-├── prds/                          # Reference PRDs
-│   ├── 00-productowner-skill-platform.md       # Master platform PRD (v0.4)
-│   ├── 01-y-score-framework.md    # Launch readiness framework
-│   ├── 02–08-*.md                 # Domain reference PRDs
-│   └── 09-cucp-program-ops.md    # Coupa CuCP 90-day rollout
-├── docs/                          # GitHub Pages (live site)
-│   ├── index.html                 # Landing page
-│   ├── onboarding/
-│   │   ├── index.html             # 6-step PO onboarding wizard
-│   │   ├── teams.html             # Microsoft Teams entry point
-│   │   └── manifest.json          # Teams app manifest
-│   ├── cucp/
-│   │   └── presentation.html      # CuCP slide deck (6 slides)
-│   └── product/
-│       ├── SRS.md                 # System requirements (v0.4)
-│       └── FRD.md                 # Functional requirements (v0.4)
-├── ROADMAP.md                     # Phased delivery plan
-└── .github/workflows/pages.yml   # Auto-deploy to GitHub Pages
+├── skills/                    # Persona skills (copy to your agent config)
+├── .agent/memory.md           # Memory schema — copy and customise per repo
+├── examples/golden-run/       # Synthetic human → agent → artifacts walkthrough
+├── docs/                      # Portfolio demo (GitHub Pages) + INSTALL.md
+├── prds/                      # Reference PRDs
+└── ROADMAP.md                 # Phased delivery plan
 ```
-
----
-
-## Integration Strategy
-
-productowner-skill builds on existing enterprise AI — it does not reinvent it:
-
-| Layer | Tool Used | productowner-skill Adds |
-|-------|-----------|-----------|
-| Jira + Confluence search + AI | Atlassian Rovo (Search + Chat) | PO templates, KB tagging, cross-product patterns |
-| SharePoint + Yammer + Teams | Microsoft 365 Copilot / Graph API | Unified view alongside Atlassian |
-| Google Drive + Docs + Chat | Google Workspace API + Gemini | Same unified view, Google-native orgs |
-| PowerBI + Looker reports | PowerBI Embed + Copilot · Looker API | PO pre-built templates, AI narrative layer |
-| AI chat + artifact generation | Rovo Chat + Claude Sonnet 4.6 | PO workflow context, cited KB responses |
-
----
-
-## Constraints
-
-- LLM cost < $0.50 per full discovery pack (Claude Sonnet 4.6 with prompt caching)
-- All outputs are human-editable markdown — no lock-in
-- AI outputs cite every source with URL (EU AI Act Art. 13 explainability)
-- Standard tier: zero LLM cost — Rovo + M365 + Google search only
-- Client data is fully isolated — separate tenants, never cross-contaminated
-- Rovo / M365 Copilot / Google Workspace licences required at org level
-
----
-
-## Explore the Demo
-
-Open [vvs-PO.github.io/productowner-skill](https://vvs-PO.github.io/productowner-skill/) or the [sample onboarding flow](https://vvs-PO.github.io/productowner-skill/onboarding/). No account, API key, or external connection is required. Do not enter confidential information.
-
----
-
-## Built With
-
-[Atlassian Rovo](https://www.atlassian.com/software/rovo) · [Microsoft 365 Copilot](https://www.microsoft.com/en-us/microsoft-365/copilot) · [Google Workspace AI](https://workspace.google.com/intl/en/features/ai/) · [Claude API (Anthropic)](https://www.anthropic.com) · [MetaGPT](https://github.com/geekan/MetaGPT) · [OpenHands](https://github.com/All-Hands-AI/OpenHands) · [Promptfoo](https://github.com/promptfoo/promptfoo) · [Cloudflare Workers](https://workers.cloudflare.com)
 
 ---
 

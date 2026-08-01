@@ -22,8 +22,8 @@ Install the productowner-skill persona swarm in any repository. No Docker, no AP
 Clone the repository (or copy the `skills/` directory from a release):
 
 ```bash
-git clone https://github.com/vvs-PO/productowner-skill.git
-cd productowner-skill
+git clone https://github.com/vignesh-s7/product-management.git
+cd product-management
 ```
 
 ### Cursor
@@ -66,7 +66,7 @@ Every skill reads `.agent/memory.md` first. Create it in **your target repositor
 
 ```bash
 mkdir -p .agent artifacts
-cp /path/to/productowner-skill/.agent/memory.md .agent/memory.md
+cp /path/to/product-management/.agent/memory.md .agent/memory.md
 ```
 
 Edit the YAML sections for your product:
@@ -210,4 +210,4 @@ your-repo/
 
 ---
 
-**Author:** Vignesh AIPM · [productowner-skill](https://github.com/vvs-PO/productowner-skill)
+**Author:** Vignesh AIPM · [product-management](https://github.com/vignesh-s7/product-management)

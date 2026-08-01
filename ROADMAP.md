@@ -42,7 +42,12 @@ the system that connects every knowledge source, generates every artifact, and l
 | Template library (`skills/*/templates/`) | ✅ Done | — |
 | Plugin install guide (`docs/INSTALL.md`) | ✅ Done | — |
 | CI skill validation (extend `check-source.mjs`) | ✅ Done | — |
-| Trust badge on landing page | 🔲 Next | P2 |
+| Trust badge on landing page | ✅ Done | — |
+| README skills-for-agents rewrite | ✅ Done | — |
+| `TRUST.md` + `QUICKSTART.md` + `CLIENT-AGENT.md` | ✅ Done | — |
+| Trust contradictions fixed | ✅ Done | — |
+| `examples/golden-run/` | ✅ Done | — |
+| Skills mirrored to `.cursor/skills/` | ✅ Done | — |
 
 **Exit criteria (outcomes):** Discovery pack in one session · PRD with Y-Score + Gherkin AC · PII blocked · edge-case matrix · WCAG pass on demo UI · install < 5 min.
 
