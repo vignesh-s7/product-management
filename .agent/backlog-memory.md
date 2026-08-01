@@ -1,7 +1,7 @@
 # Backlog Memory — 6-Persona Master Task List
 
 > **Persistent backlog** for Trustworthy Plugin Foundation → Top 1% in regulated PO plugin space.
-> **Last updated:** 2026-08-01
+> **Last updated:** 2026-08-01 (revised — dual end-user model: humans + client-side AI agents)
 > **Sprint filter:** P0 = current sprint (see `.agent/sprint-memory.md`)
 
 ---
@@ -17,6 +17,19 @@
 
 ---
 
+## Product model (backlog scope)
+
+**We provide skills. Client-side AI agents execute everything. No runtime connection to us.**
+
+| End user | Role |
+|----------|------|
+| **Human users** | POs, leads, designers, engineers, InfoSec — set intent, review gates, approve POC/MVP |
+| **Client-side AI agents** | Cursor, Claude Code, Antigravity — read skills + memory, run persona swarm, write artifacts, build POC/MVP locally |
+
+**Vendor boundary:** Copy skills once → client agent runs forever in client's repo. No OAuth, no API, no telemetry, no data to us.
+
+---
+
 ## P0 — Trust contradictions + first access (CURRENT SPRINT)
 
 | ID | Task | Persona | Status | Notes |
@@ -29,6 +42,9 @@
 | B-006 | Rewrite README — plugin-first, outcomes-first | PO + Business | 🔲 | |
 | B-007 | Fix `docs/INSTALL.md` repo URLs | Business | 🔲 | |
 | B-008 | CI: fail if `.sh` added under `skills/` or `.cursor/skills/` | Engineering | 🔲 | Extend check-source.mjs |
+| B-049 | Document dual end-user model (humans + client agents) in README + TRUST.md | PO + Architect | 🔲 | Core positioning |
+| B-050 | Create `docs/CLIENT-AGENT.md` — vendor boundary, what agent does, what we never do | Architect | 🔲 | |
+| B-051 | Update B-006 README scope — skills-for-agents, not "use our platform" | PO + Business | 🔲 | Replaces generic plugin-first |
 
 ---
 
@@ -36,11 +52,11 @@
 
 | ID | Task | Persona | Status | Notes |
 |----|------|---------|--------|-------|
-| B-009 | `examples/golden-run/` — memory → discovery + delivery + gate JSONs | PO | 🔲 | Outcome proof |
+| B-009 | `examples/golden-run/` — human intent → client agent → POC/MVP + gate JSONs | PO | 🔲 | Proves dual-user flow |
 | B-010 | JSON schemas for gate outputs (cybersec, ux, qa, y-score) | Engineering | 🔲 | |
 | B-011 | `QUICKSTART.md` — 3 steps: open repo → memory → trigger PO | Architect | 🔲 | |
 | B-012 | Trust badge on `docs/index.html` | UX | 🔲 | |
-| B-013 | Landing "Plugin vs Demo" section | UX | 🔲 | |
+| B-013 | Landing "Skills for your agent" + "Portfolio demo" — two paths, no confusion | UX | 🔲 | Was "Plugin vs Demo" |
 | B-014 | Update `CASE_STUDY.md` — zero-exec plugin narrative | Business | 🔲 | |
 | B-015 | InfoSec one-pager — "approved in 1 review" | Business | 🔲 | |
 | B-016 | Auto-invoke Y-Score on every PRD write in productowner-skill | PO | 🔲 | |
@@ -138,17 +154,17 @@ B-012, B-013, B-028, B-029, B-032, B-033, B-047
 
 ---
 
-## User outcomes mapped to backlog
+## User outcomes mapped to backlog (dual end-user model)
 
-| User outcome | Backlog IDs |
-|--------------|-------------|
-| "Installed in 5 min, no IT ticket" | B-005, B-007, B-011, B-021 |
-| "InfoSec approved in 1 review" | B-003, B-004, B-015, B-017, B-018, B-022 |
-| "Discovery pack in one session" | B-009, B-019, B-020 |
-| "PRD ready for engineering" | B-016, B-009, B-010 |
-| "No PII leaks" | B-001–B-004, B-008, B-017 |
-| "Accessible professional demo" | B-012, B-013, B-032, B-033 |
-| "Nothing executes from this repo" | B-001, B-003, B-008, B-018 |
+| Outcome | Who benefits | Backlog IDs |
+|---------|--------------|-------------|
+| "My agent built a full POC/MVP from skills alone" | Human + Client agent | B-009, B-049, B-050, B-051 |
+| "Installed skills in 5 min, no account with vendor" | Human + Admin | B-005, B-007, B-011, B-021 |
+| "InfoSec approved — no data leaves our perimeter" | Human + InfoSec | B-003, B-004, B-015, B-017, B-018, B-050 |
+| "Agent produced discovery pack in one session" | Client agent | B-009, B-019, B-020 |
+| "PRD with gates ready for engineering" | Human PO | B-016, B-009, B-010 |
+| "Agent never called vendor APIs" | Client agent | B-001–B-004, B-008, B-050 |
+| "Accessible demo explains skills model" | Human | B-012, B-013, B-032, B-033 |
 
 ---
 

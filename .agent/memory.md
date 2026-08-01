@@ -14,9 +14,86 @@
 name: productowner-skill
 display_name: productowner-skill — AI-Native PO Operating System
 tagline: Outcomes users want. Skills that deliver. Zero scripts. Zero telemetry.
-version: 0.4
+version: 0.5
 repository: productowner-skill
 author: Vignesh AIPM
+```
+
+---
+
+## product_model
+
+```yaml
+what_we_are: >
+  A skills library (markdown SKILL.md plugins) — NOT a SaaS platform,
+  NOT a hosted orchestrator, NOT an API you call.
+what_we_provide:
+  - Persona skills (PO, cybersec, UX, QA, discovery, delivery, pipeline)
+  - Templates, memory schema, gate rules, install docs
+  - Portfolio demo (static HTML — illustrative only)
+what_we_do_not_provide:
+  - No backend, no OAuth, no account with us
+  - No execution on our infrastructure
+  - No data flows through us — ever
+  - No direct connection between client and productowner-skill vendor at runtime
+who_executes_everything: >
+  The client's local AI agent (Cursor, Claude Code, Antigravity, etc.)
+  running on the client's machine, in the client's repo, using the client's
+  approved model and credentials.
+end_to_end_outcome: >
+  Human sets intent → client-side AI agent reads skills + memory →
+  agent produces complete product POC/MVP artifacts (discovery, PRD,
+  delivery pack, gated outputs) entirely within the client's environment.
+distribution: >
+  Copy or symlink skills/ into .cursor/skills/ or .claude/skills/.
+  Client owns the repo, the agent, the model, and all outputs.
+```
+
+---
+
+## end_users
+
+```yaml
+# TWO end-user types — both required for a complete POC/MVP
+
+human_users:
+  description: People who set direction, review gates, approve outcomes
+  roles:
+    - Product Owner — defines problem, reviews PRD, accepts delivery pack
+    - PO Lead — enforces Y-Score and persona gates across team
+    - Designer / Engineer — reviews UX and QA gate outputs
+    - Admin / InfoSec — installs skills, approves trust posture (no new infra)
+    - Consulting PO — packages client POC/MVP deliverables
+  interaction: >
+    Speaks to their own IDE agent. Never talks to productowner-skill servers
+    (there are none). Installs skills once; works in their repo forever.
+
+client_side_ai_agents:
+  description: The user's local AI agent — primary executor of all work
+  examples:
+    - Cursor Agent
+    - Claude Code
+    - Antigravity Agent
+    - Codex CLI / Gemini CLI (SKILL.md compatible)
+  interaction: >
+    Reads SKILL.md instructions + .agent/memory.md → writes artifacts to
+    client's repo → runs persona swarm gates locally → builds POC/MVP.
+    All codegen, doc generation, security review happens on client side.
+  we_never:
+    - Receive prompts, data, or artifacts from client agents
+    - Run skills on behalf of clients
+    - Store session state or telemetry
+    - Require API keys to productowner-skill
+
+relationship_diagram: |
+  Human (PO) ──intent──► Client AI Agent (local)
+                              │
+                              ├── reads skills/ (from our repo, copied locally)
+                              ├── reads .agent/memory.md (client's repo)
+                              ├── runs persona swarm gates (local)
+                              └── writes artifacts/ + POC/MVP (client's repo)
+
+  productowner-skill repo ──provides skills only──► copied once, no runtime link
 ```
 
 ---
@@ -56,11 +133,18 @@ external:
   - role: Client Stakeholder
     jtbd: View programme status and artifacts without Jira/Confluence licences
     frequency: weekly
+client_side_agents:
+  - role: IDE Agent (Cursor / Claude Code / Antigravity)
+    jtbd: Execute full POC/MVP workflow from skills — discovery through gated delivery — without calling vendor APIs
+    frequency: per session
+  - role: Persona sub-invocations (within client agent)
+    jtbd: PO-discovery, PO-delivery, cybersec, ux-pro, qa-tester run as skill chain on client machine
+    frequency: per artifact
 ```
 
 ---
 
-## compliance_regimes
+## domain
 
 ```yaml
 baseline:
@@ -216,7 +300,10 @@ CuCP: Change User Change Programme — enterprise rollout methodology (90-day de
 Standard Tier: Templates + local KB search — zero bundled LLM cost.
 AI Tier: Generation + chat grounded in org KB — requires user's agent model.
 Local Memory: This file (.agent/memory.md) — repo-specific context for all skills.
-KB Layer: Knowledge base — Phase 1 local only; Phase 2 federated enterprise search.
+Client-Side Agent: User's local AI agent that executes skills; never connects to us at runtime.
+Skills Library: What we ship — markdown instructions only; client agent is the runtime.
+POC/MVP: End-to-end product proof built by client agent using our skills in client's repo.
+Vendor Boundary: We provide skills; client agent + human do all execution. No direct relationship at runtime.
 RICE: Reach × Impact × Confidence / Effort — backlog prioritisation framework.
 WSJF: Weighted Shortest Job First — alternative prioritisation method.
 MoSCoW: Must / Should / Could / Won't — scope framing for delivery packs.

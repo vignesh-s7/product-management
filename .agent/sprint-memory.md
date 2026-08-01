@@ -1,16 +1,42 @@
 # Sprint Memory — Trustworthy Plugin Foundation (Top 1%)
 
 > **Read before any agent run.** Captures current sprint context, decisions, execution plan, and pre-run state.
-> **Last updated:** 2026-08-01
+> **Last updated:** 2026-08-01 (revised — dual end-user model)
 > **Sprint name:** P0 Trust + First-Access
 > **Branch:** `cursor/phase1-brainstorm-5-personas-fcfe`
 > **PR:** #2
 
 ---
 
+## Product model (revised — read before any agent run)
+
+**We are a skills library. Client-side AI agents do everything. No runtime connection to us.**
+
+| | Us (vendor) | Client |
+|--|-------------|--------|
+| **Provides** | `SKILL.md` plugins, templates, memory schema, install docs | Their repo, their IDE agent, their model |
+| **Executes** | Nothing at runtime | Full POC/MVP — discovery → PRD → gates → artifacts |
+| **Connects to us** | Never at runtime | Copy skills once; no API, no OAuth, no account |
+| **End users** | N/A — we don't have users at runtime | **Humans (POs)** + **Client AI agents** |
+
+```
+Human (PO) ──intent──► Client AI Agent (Cursor / Claude / Antigravity)
+                              │
+                              ├── reads skills/ (copied from our repo)
+                              ├── reads .agent/memory.md (client repo)
+                              ├── persona swarm gates (local)
+                              └── POC/MVP artifacts in client repo
+
+Our repo ──skills only──► copied once ──X── no runtime link
+```
+
+**Outcome we enable:** Complete product POC/MVP built entirely by the client's AI agent using our skills — not through us, not directly with us.
+
+---
+
 ## Sprint goal
 
-Fix trust contradictions and deliver **first-access experience** so a user who clones this repo gets top 1% outcomes — launch-ready PO artifacts — with **zero backend, zero OAuth, zero execution files** in the plugin path.
+Fix trust contradictions and deliver **first-access experience** so a human + their **client-side AI agent** can clone skills and produce a complete POC/MVP — with **zero backend, zero OAuth, zero execution files, zero runtime connection to us**.
 
 **Tagline:** *Outcomes users want. Skills that deliver. Zero scripts. Zero telemetry.*
 
@@ -20,10 +46,11 @@ Fix trust contradictions and deliver **first-access experience** so a user who c
 
 | We compete on | We do NOT compete on |
 |---------------|----------------------|
-| Regulated PO outcomes | GitHub stars / autonomous codegen |
-| Persona swarm gates (PO → cybersec → UX → QA) | Docker / Python orchestration |
-| Markdown-only plugin (`SKILL.md`) | MCP servers in core plugin |
-| InfoSec approves in 1 review | Feature parity with OpenHands/MetaGPT |
+| Skills for client agents to build POC/MVP locally | Hosted platforms / SaaS PO tools |
+| Regulated PO outcomes via persona gates | GitHub stars / autonomous codegen |
+| Markdown-only plugin (`SKILL.md`) — agent is runtime | Docker / Python orchestration on our side |
+| InfoSec approves in 1 review (no vendor data flow) | MCP servers / APIs that call us |
+| Dual end-user: humans + client AI agents | "Users log into our product" |
 
 **Competitors:** OpenHands (~80k), MetaGPT (~70k), GPT-Engineer (~55k), ChatDev (~25k), SuperAGI (~18k), generic Cursor skills (often with `scripts/`).
 
@@ -46,6 +73,19 @@ Fix trust contradictions and deliver **first-access experience** so a user who c
 | README plugin-first rewrite | 🔲 Pending |
 | `TRUST.md` | 🔲 Pending |
 | Trust contradictions fixed | 🔲 Pending |
+
+**Our moat:** Only skills library where client AI agents build regulated POC/MVP end-to-end locally — no vendor runtime, no data egress to us.
+
+---
+
+## Revised P0 tasks (includes dual end-user docs)
+
+| # | Task | Owner | Status |
+|---|------|-------|--------|
+| 1–8 | *(unchanged — trust + first access)* | — | 🔲 |
+| 9 | Document dual end-user model in README + TRUST.md | PO + Architect | 🔲 |
+| 10 | Add `docs/CLIENT-AGENT.md` — what client agent does, vendor boundary | Architect | 🔲 |
+| 11 | Golden-run: human intent → client agent → full POC/MVP path | PO | 🔲 |
 
 ---
 
@@ -130,7 +170,10 @@ User request
 3. **Enterprise KB APIs** deferred to Phase 2
 4. **Codegen loops** (MetaGPT/OpenHands) deferred to Phase 5 — separate repo if ever
 5. **Scope by user outcomes**, not feature count
-6. **Plugin ≠ demo site** — document both entry paths clearly
+6. **Plugin ≠ demo site** — demo is illustration; real work = client agent + skills
+7. **Dual end users** — humans set intent; client-side AI agents execute everything
+8. **No runtime vendor relationship** — skills copied once; never phone home
+9. **POC/MVP is the outcome** — not "using our platform" but "agent built it locally"
 
 ---
 
