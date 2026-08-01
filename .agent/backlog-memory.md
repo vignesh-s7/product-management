@@ -1,8 +1,8 @@
 # Backlog Memory — 6-Persona Master Task List
 
 > **Persistent backlog** for Trustworthy Plugin Foundation → Top 1% in regulated PO plugin space.
-> **Last updated:** 2026-08-01 (revised — dual end-user model: humans + client-side AI agents)
-> **Sprint filter:** P0 = current sprint (see `.agent/sprint-memory.md`)
+> **Last updated:** 2026-08-01 (session closed — merged to main)
+> **Sprint filter:** P0–P2 complete. Next: Phase 2 enterprise KB (B-036+)
 
 ---
 

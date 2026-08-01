@@ -1,10 +1,8 @@
 # Sprint Memory — P2 Polish + Distribution
 
 > **Last updated:** 2026-08-01
-> **Sprint status:** P2 COMPLETE
-> **Previous:** P0 Trust + P1 Outcomes (complete)
-> **Branch:** `cursor/phase1-brainstorm-5-personas-fcfe`
-> **PR:** #2
+> **Sprint status:** ALL SPRINTS COMPLETE — merged to `main`, PR #2 closed
+> **Phase:** Phase 1 Trustworthy Plugin Foundation **DONE**
 
 ---
 
