@@ -27,6 +27,28 @@ Never hardcode product names, client data, or compliance assumptions from this s
 
 This check enforces Definition of Ready (DoR) for every launch-bound deliverable.
 
+### DoR — Analytics / telemetry check (WARN only)
+
+Before releasing a PRD or launch-bound artifact, verify an **analytics / telemetry** section exists covering:
+
+| Required element | What to look for |
+|------------------|------------------|
+| **Events** | Named user/system events to track (e.g. `onboarding_completed`, `order_submitted`) |
+| **Properties** | Event payload fields and dimensions (user segment, feature flag, error code) |
+| **Success metrics** | Leading/lagging KPIs tied to events with baseline and target |
+
+**If any element is missing:** emit a **WARN** (not BLOCK) and append to the **DoR findings list**:
+
+```markdown
+## DoR findings
+
+| # | Dimension | Severity | Finding | Recommendation |
+|---|-----------|----------|---------|----------------|
+| DOR-001 | analytics | WARN | No telemetry events defined for core user flows | Add events + properties table before GA |
+```
+
+Proceed with release when Y-Score ≥ 70; surface WARN findings for human review. Do not block on missing analytics alone.
+
 ## 2. Gherkin Acceptance Criteria (Given/When/Then)
 Always enforce strict BDD/Gherkin acceptance criteria in every PRD and user story.
 * **Given** [context]
@@ -53,6 +75,7 @@ Every artifact passes through the persona swarm before release:
 
 ```
 write artifact
+  → DoR analytics check   (WARN if events/properties/success metrics missing — see §1)
   → cybersec-skill      (BLOCK on PII/PHI or critical OWASP findings)
   → ux-pro-skill        (BLOCK on critical a11y; WARN on style/token drift)
   → qa-tester-skill     (WARN on missing edge cases or untestable AC)
@@ -63,6 +86,8 @@ write artifact
       · proceed only if score ≥ 70
   → release to artifacts/
 ```
+
+**DoR WARN** = write with `> ⚠️ DoR finding:` callout in the artifact; include row in DoR findings list.
 
 **BLOCK** = do not write or commit until resolved. For Y-Score failures, always surface score, dimension notes, `blockers`, and `recommendations`.
 **WARN** = write with `> ⚠️ QA/UX finding:` callout; flag for human review.

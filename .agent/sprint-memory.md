@@ -1,9 +1,8 @@
-# Sprint Memory — P1 Outcomes + Proof
+# Sprint Memory — P2 Polish + Distribution
 
-> **Read before any agent run.** Captures current sprint context, decisions, execution plan, and pre-run state.
 > **Last updated:** 2026-08-01
-> **Sprint status:** P1 COMPLETE
-> **Previous sprint:** P0 Trust + First-Access (complete)
+> **Sprint status:** P2 COMPLETE
+> **Previous:** P0 Trust + P1 Outcomes (complete)
 > **Branch:** `cursor/phase1-brainstorm-5-personas-fcfe`
 > **PR:** #2
 
@@ -13,56 +12,57 @@
 
 **We provide skills. Client-side AI agents execute everything. No runtime connection to us.**
 
-Dual end users: **humans** (set intent) + **client-side AI agents** (build POC/MVP locally).
-
 ---
 
-## P1 sprint goal (COMPLETE)
+## P2 sprint goal (COMPLETE)
 
-Prove top 1% outcomes with schemas, walkthroughs, InfoSec one-pager, Y-Score mandatory gate, IDE matrix.
+Polish, distribution readiness, CI depth, team onboarding tooling.
 
 | ID | Task | Status |
 |----|------|--------|
-| B-010 | Gate JSON schemas (`schemas/gates/`) | ✅ |
-| B-014 | CASE_STUDY.md rewrite | ✅ |
-| B-015 | INFOSEC-ONEPAGER.md | ✅ |
-| B-016 | Y-Score mandatory on PRD release | ✅ |
-| B-017 | cybersec `disable-model-invocation` | ✅ |
-| B-018 | zero-execution verified in README | ✅ |
-| B-019 | BFSI walkthrough | ✅ |
-| B-020 | Healthcare walkthrough | ✅ |
-| B-021 | IDE compatibility matrix | ✅ |
+| B-022 | RELEASE.md + checksums workflow | ✅ |
+| B-023 | docs/DISTRIBUTION.md | ✅ |
+| B-024 | Story slicing in PO-delivery | ✅ |
+| B-025 | DoR analytics WARN gate | ✅ |
+| B-026 | PRD Y-Score CI validation | ✅ |
+| B-027 | Memory contract test harness | ✅ |
+| B-028 | Onboarding micro-interactions | ✅ |
+| B-029 | docs/quickstart.html | ✅ |
+| B-030 | paths frontmatter on skills | ✅ |
+| B-031 | npm run sync-skills | ✅ |
+| B-032 | Design tokens on docs | ✅ |
+| B-033 | focus-visible across demo | ✅ |
+| B-034 | GitHub metadata guide | ✅ |
+| B-035 | cybersec ultra dependency assessor | ✅ |
 
 **Exit criteria:**
-- [x] Gate schemas for all 4 persona gates
-- [x] Regulated domain walkthroughs (BFSI + healthcare)
-- [x] InfoSec one-pager for enterprise review
-- [x] Y-Score BLOCK < 70 enforced in productowner-skill
-- [x] `npm run check` + Playwright 7/7 pass
+- [x] Release checksum process documented + workflow
+- [x] Distribution guide for skills directories
+- [x] Story slicing + DoR gate in skills
+- [x] PRD CI validates Problem + Gherkin + metrics
+- [x] Memory contract tests in npm run check
+- [x] npm run check + Playwright 7/7 pass
 
 ---
 
-## Next sprint — P2 (polish + distribution)
+## New npm scripts
 
-| Priority | Tasks |
-|----------|-------|
-| P2 | B-022 signed releases, B-023 skills directories, B-024 story slicing, B-026 Y-Score CI on PRDs |
-| Phase 2 | B-036–B-038 enterprise KB search (deferred) |
+| Script | Purpose |
+|--------|---------|
+| `npm run checksums` | Generate SHA256 manifest |
+| `npm run sync-skills` | Copy skills/ → .cursor/skills/ |
+| `npm run test:skills` | Memory contract assertions |
 
 ---
 
-## Key files added in P1
+## Next — Phase 2 enterprise KB (P3 backlog B-036+)
 
-- `schemas/gates/*.schema.json` + README
-- `docs/INFOSEC-ONEPAGER.md`
-- `examples/walkthroughs/bfsi-poc-session.md`
-- `examples/walkthroughs/healthcare-poc-session.md`
+Deferred: Rovo / M365 / Google federated search — requires client-side OAuth, separate from plugin core.
 
 ---
 
 ## References
 
 - Backlog: `.agent/backlog-memory.md`
-- Repo context: `.agent/memory.md`
-- TRUST: `TRUST.md`
-- Client agent model: `docs/CLIENT-AGENT.md`
+- Release: `RELEASE.md`
+- Distribution: `docs/DISTRIBUTION.md`

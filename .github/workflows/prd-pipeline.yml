@@ -46,6 +46,9 @@ jobs:
             found=1
             [[ "$path" =~ ^prds/[A-Za-z0-9._-]+\.md$ ]] || { echo "Invalid PRD path" >&2; exit 1; }
             [[ -f "$path" ]] || { echo "PRD file missing" >&2; exit 1; }
+            grep -qiE '^##[[:space:]]+Problem' "$path" || { echo "PRD missing required section: Problem ($path)" >&2; exit 1; }
+            grep -qE '(^|[[:space:]])Given([[:space:]]|:)|\*\*Given\*\*' "$path" || { echo "PRD missing Gherkin acceptance criteria (Given) ($path)" >&2; exit 1; }
+            grep -qiE '\b(metric|KPI|target|baseline)\b' "$path" || { echo "PRD missing success metric keywords ($path)" >&2; exit 1; }
           done < <(git diff --name-only --diff-filter=ACMRT "$BASE_SHA" "$HEAD_SHA" -- prds/)
           [[ "$found" -eq 1 ]] || { echo "No changed PRD found" >&2; exit 1; }
 

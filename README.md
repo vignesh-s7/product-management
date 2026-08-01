@@ -144,16 +144,35 @@ See [ROADMAP.md](ROADMAP.md) and `planning/phase1_brainstorm_5_personas.md` for 
 
 ---
 
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [QUICKSTART.md](QUICKSTART.md) | 3-step first session |
+| [docs/INSTALL.md](docs/INSTALL.md) | Full install + IDE matrix |
+| [docs/CLIENT-AGENT.md](docs/CLIENT-AGENT.md) | What your agent does vs what we never do |
+| [docs/INFOSEC-ONEPAGER.md](docs/INFOSEC-ONEPAGER.md) | InfoSec review in one pass |
+| [TRUST.md](TRUST.md) | Zero-execution file inventory |
+| [schemas/gates/](schemas/gates/) | Gate output JSON schemas |
+| [examples/walkthroughs/](examples/walkthroughs/) | BFSI + healthcare POC sessions |
+| [RELEASE.md](RELEASE.md) | Signed release + checksum verification |
+| [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | Skills directory submission guide |
+
+---
+
 ## Repository structure
 
 ```
 productowner-skill/
-├── skills/                    # Persona skills (copy to your agent config)
-├── .agent/memory.md           # Memory schema — copy and customise per repo
-├── examples/golden-run/       # Synthetic human → agent → artifacts walkthrough
-├── docs/                      # Portfolio demo (GitHub Pages) + INSTALL.md
+├── .cursor/skills/            # Skills ready on clone (mirror of skills/)
+├── skills/                    # Source persona skills
+├── .agent/memory.md           # Memory schema — copy per repo
+├── schemas/gates/             # Gate output JSON schemas
+├── examples/golden-run/       # Synthetic gate JSON reference
+├── examples/walkthroughs/     # BFSI + healthcare POC sessions
+├── docs/                      # Portfolio demo + INSTALL, CLIENT-AGENT, INFOSEC
 ├── prds/                      # Reference PRDs
-└── ROADMAP.md                 # Phased delivery plan
+└── ROADMAP.md
 ```
 
 ---

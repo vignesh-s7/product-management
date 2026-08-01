@@ -1,6 +1,9 @@
 ---
 name: ux-pro-skill
 description: WCAG 2.1 AA accessibility enforcer, design-system adherence checker, and cognitive-load reviewer for HTML/React UI. Returns a structured UX Outcome Report JSON. Blocks on critical a11y failures; warns on style violations.
+paths:
+  - "docs/**/*.html"
+  - "**/*.{tsx,jsx,vue}"
 triggers:
   - "Review this UI"
   - "Act as UX Pro"

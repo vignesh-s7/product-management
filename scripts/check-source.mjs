@@ -64,7 +64,7 @@ for (const skillsDir of ['skills', '.cursor/skills']) {
   assert(shellScripts.length === 0, `${skillsDir}/ must not contain .sh files (found: ${shellScripts.join(', ')})`);
 }
 
-for (const path of ['.github/workflows/prd-pipeline.yml', '.github/workflows/ci.yml', '.github/workflows/pages.yml']) {
+for (const path of ['.github/workflows/prd-pipeline.yml', '.github/workflows/ci.yml', '.github/workflows/pages.yml', '.github/workflows/release-checksums.yml']) {
   const source = await readFile(path, 'utf8');
   assert(!/^\s*uses:\s+[^\s]+@v\d+/m.test(source), `${path} must pin actions by commit SHA`);
 }

@@ -57,6 +57,14 @@ Alternatively, symlink for live updates during development:
 ln -s ../../skills/productowner-skill .cursor/skills/productowner-skill
 ```
 
+Or use the sync helper (recommended for teams):
+
+```bash
+npm run sync-skills
+```
+
+This idempotently copies all `skills/*` directories into `.cursor/skills/`.
+
 ### Claude Code
 
 Copy skills into the Claude skills directory:
@@ -71,6 +79,27 @@ The `y-score-readiness` and `prd-to-sdlc` skills ship pre-installed under `.clau
 ### Antigravity / other agents
 
 Point your agent's skill loader at the repository `skills/` directory. Consult your agent's documentation for the equivalent config path.
+
+---
+
+## Team onboarding
+
+After cloning the repository, sync canonical skills from `skills/` into the Cursor agent path:
+
+```bash
+npm run sync-skills
+```
+
+This runs `scripts/sync-skills.mjs`, which copies every skill directory to `.cursor/skills/` (idempotent — safe to re-run after pulling updates).
+
+**When to sync:**
+- First clone or new team member setup
+- After editing skills under `skills/` (source of truth)
+- Before opening a PR that changes skill definitions
+
+**Source of truth:** `skills/` — always edit there, then run `npm run sync-skills` to mirror to `.cursor/skills/`.
+
+For Claude Code, copy manually or symlink as shown in Step 1 above.
 
 ---
 

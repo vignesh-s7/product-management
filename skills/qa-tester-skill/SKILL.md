@@ -1,6 +1,8 @@
 ---
 name: qa-tester-skill
 description: Boundary and edge-case test matrix generator for functions, APIs, and forms. Produces markdown test definitions with Playwright-oriented patterns. WARN-only gate in the persona swarm — never blocks pipeline progress.
+paths:
+  - "**/*.{ts,js,py,go}"
 triggers:
   - "write tests"
   - "Act as QA"

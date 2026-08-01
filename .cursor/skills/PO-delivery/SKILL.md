@@ -1,6 +1,9 @@
 ---
 name: PO-delivery
-description: Generate a delivery pack — RICE-scored backlog, KPI instrumentation plan, rollout phases, and PRD — from repo memory and an input PRD. Invokes y-score-readiness gate. Regulated-domain aware (BFSI/healthcare). Synthetic data only. Writes to artifacts/delivery/.
+description: Generate a delivery pack — RICE-scored backlog, KPI instrumentation plan, rollout phases, story slices, and PRD — from repo memory and an input PRD. Invokes y-score-readiness gate. Regulated-domain aware (BFSI/healthcare). Synthetic data only. Writes to artifacts/delivery/.
+paths:
+  - "prds/**"
+  - "artifacts/**"
 triggers:
   - "prioritize backlog"
   - "RICE score"
@@ -8,6 +11,8 @@ triggers:
   - "delivery pack"
   - "rollout plan"
   - "write delivery artifacts"
+  - "slice epic"
+  - "break into stories"
 ---
 
 # PO-delivery — Backlog, KPI & Rollout Pack
@@ -30,6 +35,7 @@ triggers:
 | `prd.md` | `templates/prd.md` | Problem, users, Gherkin AC, constraints |
 | `rice-backlog.md` | `templates/rice-backlog.md` | RICE-scored epics/stories |
 | `kpi-plan.md` | `templates/kpi-plan.md` | Leading/lagging metrics + instrumentation |
+| `story-slices.md` | `templates/story-slices.md` | Epic → independent deployable stories with Gherkin AC each |
 | `rollout-phases.md` | *(inline)* | Phased rollout with gates and rollback |
 
 ### Artifact frontmatter (required on every file)
@@ -37,25 +43,39 @@ triggers:
 ---
 domain: {{domain}}
 stage: delivery
-type: {{prd|rice-backlog|kpi-plan|rollout-phases}}
+type: {{prd|rice-backlog|kpi-plan|story-slices|rollout-phases}}
 compliance-regime: {{hipaa|pci-dss|gdpr|eu-ai-act|generic}}
 generated: {{ISO-date}}
 synthetic-data: true
 ---
 ```
 
+## Story Slicing (epic → deployable stories)
+
+Triggered by **"slice epic"** or **"break into stories"**. Use when an epic in the PRD or RICE backlog needs decomposition before engineering.
+
+1. Read the target epic from user input, `artifacts/delivery/prd.md`, or `artifacts/delivery/rice-backlog.md`.
+2. Copy `templates/story-slices.md` → fill `{{placeholders}}`.
+3. Slice the epic into **independent deployable stories** — each must:
+   - Ship behind a feature flag or safe default without requiring later slices
+   - Include at least one **Gherkin scenario** (Given/When/Then) per story
+   - Document deployability rationale, flag name, and rollback path
+4. Order slices by risk reduction and learning value; note dependencies in the slice map.
+5. Write `artifacts/delivery/story-slices.md` and run the standard gate flow below.
+
 ## Workflow
 1. Read memory + PRD → ensure every story has Gherkin AC (Given/When/Then).
 2. Copy templates from `skills/PO-delivery/templates/` → fill `{{placeholders}}`.
 3. Score backlog with RICE: **Reach × Impact × Confidence / Effort** — document assumptions.
 4. Build KPI plan: leading + lagging metrics, baseline, target, instrumentation owner.
-5. Define rollout phases: pilot → limited → GA — each with entry/exit criteria and rollback.
-6. **Invoke `y-score-readiness` gate** on the PRD — BLOCK delivery pack if score < 70.
-7. Run persona swarm gates:
+5. **Story slice** epics on request → write `story-slices.md` (see [Story Slicing](#story-slicing-epic--deployable-stories)).
+6. Define rollout phases: pilot → limited → GA — each with entry/exit criteria and rollback.
+7. **Invoke `y-score-readiness` gate** on the PRD — BLOCK delivery pack if score < 70.
+8. Run persona swarm gates:
    - `cybersec-skill` — BLOCK on PII/PHI
    - `ux-pro-skill` — BLOCK on critical a11y; WARN on style
    - `qa-tester-skill` — WARN on untestable AC or missing edge cases
-8. Write final pack to `artifacts/delivery/`.
+9. Write final pack to `artifacts/delivery/`.
 
 ## RICE Scoring Guide
 | Factor | Scale | Notes |
@@ -89,7 +109,7 @@ Delegate to `y-score-readiness` before marking delivery complete.
 Return a summary:
 ```
 Delivery pack: artifacts/delivery/
-Files: prd.md, rice-backlog.md, kpi-plan.md, rollout-phases.md
+Files: prd.md, rice-backlog.md, kpi-plan.md, story-slices.md, rollout-phases.md
 Y-Score: {{score}} ({{go|no-go}})
 Gates: cybersec {{PASS|BLOCK}} · ux {{PASS|WARN|BLOCK}} · qa {{PASS|WARN}}
 ```

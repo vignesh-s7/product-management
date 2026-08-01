@@ -1,6 +1,8 @@
 ---
 name: cybersec-skill
 description: Mandatory security gate for the persona skill swarm. Blocks PII/PHI leakage, audits generated code and docs against OWASP Top 10, enforces no-network and dependency-risk policies, and returns a structured pass/block/warn verdict before downstream skills proceed.
+paths:
+  - "**/*"
 disable-model-invocation: true
 triggers:
   - "Threat model this"
@@ -16,6 +18,8 @@ triggers:
 The **license to operate** in BFSI, healthcare, and regulated domains. This skill runs **100% locally** — declarative markdown only, no shell scripts, no telemetry, no external network calls.
 
 **Default intensity:** `full` (PII + OWASP). See [Intensity Levels](#6-intensity-levels) to override.
+
+**Read `.agent/memory.md`** before reviewing artifacts — use `domain`, `compliance_regimes`, and `constraints` to calibrate severity (e.g. healthcare/BFSI → minimum `full`, prefer `ultra` for dependency and authz checks).
 
 ---
 
@@ -159,6 +163,43 @@ Before approving a new package, demand in `findings`:
 4. **Pin** to explicit version or hash.
 
 At `lite` and `full` intensity, dependency checks are informational unless a finding is obviously critical (typosquat, install script exfil pattern).
+
+### Dependency Risk Assessor (ultra)
+
+When intensity is `ultra`, run this **document-only** checklist against every new or changed manifest (`package.json`, `package-lock.json`, `requirements.txt`, `pyproject.toml`, `Pipfile`, `Cargo.toml`). Do **not** execute install scripts or fetch registry metadata — flag risks from static inspection only.
+
+#### Unvetted npm / pip packages
+
+| Signal | Action |
+|--------|--------|
+| New dependency with no PRD justification, ADR, or commit message explaining why | **BLOCK** — emit finding `category: "dependency"` |
+| Package name not in existing lockfile and not listed in approved-deps doc | **BLOCK** until owner documents vetting |
+| Scoped internal package (`@org/...`) resolved from public registry | **BLOCK** — dependency confusion risk |
+| Version range `*`, `latest`, or floating `^`/`~` on security-sensitive deps in production | **WARN** (BLOCK if domain is `bfsi` or `healthcare` per `.agent/memory.md`) |
+
+#### Typosquatting patterns
+
+Flag **BLOCK** when a package name matches any of these heuristics (compare character-by-character to known-good names in the lockfile):
+
+- **Levenshtein distance ≤ 2** from a popular package (`lodash` → `lodahs`, `request` → `requets`)
+- **Homoglyph substitution** — `1`/`l`, `0`/`o`, `-`/`_` swaps (`eslint` → `es1int`, `react` → `re-act`)
+- **Scope confusion** — `@types/foo` vs `types-foo`, `@scope/pkg` vs `scope-pkg`
+- **Suffix/prefix bait** — `foo-utils`, `node-foo`, `foo-js` where `foo` is an established package not owned by the same publisher
+
+Document the suspected legitimate package and recommended replacement in `remediation`.
+
+#### Install scripts in `package.json`
+
+Inspect `scripts` and transitive `node_modules/*/package.json` entries **without running them**:
+
+| Script hook | Risk | Action |
+|-------------|------|--------|
+| `preinstall`, `install`, `postinstall` | Arbitrary code at install time | **BLOCK** on new deps unless script body is reviewed and empty or `echo`-only |
+| `prepare` / `prepublish` | Clones repos, curls URLs, writes outside package dir | **BLOCK** |
+| `npx` / `curl` / `wget` / `node -e` inside any lifecycle script | Supply-chain exfil or RCE | **BLOCK** |
+| `scripts` field in **root** `package.json` that pipes env or files to network | CI secret theft | **BLOCK** |
+
+Emit one finding per risky script with `location` set to `package.json#scripts.<name>` (or nested dep path). Recommend pinning with `npm ci --ignore-scripts` for emergency installs and replacing the package with a script-free alternative.
 
 ---
 

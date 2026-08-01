@@ -59,7 +59,12 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
 .tool-desc{font-size:11.5px;color:#94A3B8}
 .btn-connect{padding:6px 14px;border-radius:7px;border:1.5px solid #2563EB;background:#fff;color:#2563EB;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;flex-shrink:0}
 .btn-connect:hover{background:#EFF6FF}
+.btn-connect:disabled{opacity:.7;cursor:wait}
 .btn-connect.connected{border-color:#10B981;color:#10B981;pointer-events:none}
+.card.step-loading{position:relative}
+.card.step-loading>.step{opacity:.35;pointer-events:none}
+.card.step-loading::after{content:'';position:absolute;top:50%;left:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border:3px solid #E2E8F0;border-top-color:#2563EB;border-radius:50%;animation:spin .7s linear infinite;z-index:2}
+@keyframes spin{to{transform:rotate(360deg)}}
 .skip-row{text-align:center;margin-top:10px}
 .skip-link{font-size:12.5px;color:#94A3B8;cursor:pointer;text-decoration:underline}
 .skip-link-btn{border:0;background:transparent;font:inherit;padding:0}
@@ -443,19 +448,26 @@ let projType = 'new';
 let selectedKPIs = 0;
 
 function goTo(n) {
-  document.getElementById('step-' + currentStep).classList.remove('active');
-  for (let i = 1; i <= 6; i++) {
-    const dot = document.getElementById('dot-' + i);
-    const line = i < 6 ? document.getElementById('line-' + i) : null;
-    dot.removeAttribute('aria-current');
-    if (i < n) { dot.classList.remove('active'); dot.classList.add('done'); dot.textContent = '✓'; }
-    else if (i === n) { dot.classList.add('active'); dot.classList.remove('done'); dot.textContent = i < 6 ? i : '✓'; dot.setAttribute('aria-current', 'step'); }
-    else { dot.classList.remove('active','done'); dot.textContent = i < 6 ? i : '✓'; }
-    if (line) i < n ? line.classList.add('done') : line.classList.remove('done');
-  }
-  currentStep = n;
-  document.getElementById('step-' + n).classList.add('active');
-  if (n === 6) buildSummary();
+  const card = document.querySelector('.card');
+  card.classList.add('step-loading');
+  card.setAttribute('aria-busy', 'true');
+  setTimeout(() => {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    for (let i = 1; i <= 6; i++) {
+      const dot = document.getElementById('dot-' + i);
+      const line = i < 6 ? document.getElementById('line-' + i) : null;
+      dot.removeAttribute('aria-current');
+      if (i < n) { dot.classList.remove('active'); dot.classList.add('done'); dot.textContent = '✓'; }
+      else if (i === n) { dot.classList.add('active'); dot.classList.remove('done'); dot.textContent = i < 6 ? i : '✓'; dot.setAttribute('aria-current', 'step'); }
+      else { dot.classList.remove('active','done'); dot.textContent = i < 6 ? i : '✓'; }
+      if (line) i < n ? line.classList.add('done') : line.classList.remove('done');
+    }
+    currentStep = n;
+    document.getElementById('step-' + n).classList.add('active');
+    if (n === 6) buildSummary();
+    card.classList.remove('step-loading');
+    card.removeAttribute('aria-busy');
+  }, 180);
 }
 
 function toggleChip(el) {
@@ -470,14 +482,22 @@ function toggleKPI(el) {
 }
 
 function connect(tool) {
-  connected[tool] = true;
+  if (connected[tool]) return;
   const card = document.getElementById('tc-' + tool);
-  card.classList.add('connected');
   const btn = card.querySelector('.btn-connect');
-  btn.textContent = 'Selected for demo';
-  btn.classList.add('connected');
-  const label = btn.getAttribute('aria-label') || '';
-  btn.setAttribute('aria-label', label.replace(/^Connect (.+) for demo$/, '$1 selected for demo'));
+  if (btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = 'Connecting…';
+  btn.setAttribute('aria-busy', 'true');
+  setTimeout(() => {
+    connected[tool] = true;
+    card.classList.add('connected');
+    btn.textContent = 'Selected for demo';
+    btn.classList.add('connected');
+    btn.removeAttribute('aria-busy');
+    const label = btn.getAttribute('aria-label') || '';
+    btn.setAttribute('aria-label', label.replace(/^Connect (.+) for demo$/, '$1 selected for demo'));
+  }, 550);
 }
 
 function selectTier(t) {

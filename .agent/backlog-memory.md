@@ -68,24 +68,24 @@
 
 ---
 
-## P2 — Polish + distribution
+## P2 — Polish + distribution (COMPLETE)
 
 | ID | Task | Persona | Status | Notes |
 |----|------|---------|--------|-------|
-| B-022 | Signed GitHub releases + SHA256 checksums | Security | 🟡 | |
-| B-023 | Submit to skills directories (agentskills.io, top-agent-skills) | Business | 🟡 | |
-| B-024 | Story Slicing (Epic → Stories) in PO-delivery | PO | 🟡 | |
-| B-025 | DoR Gate — analytics tracking enforcement | PO | 🟡 | |
-| B-026 | GitHub Actions Y-Score validation on PRD PRs | Engineering | 🟡 | |
-| B-027 | Eval harness — "did skill read memory?" assertions | Engineering | 🟡 | |
-| B-028 | Micro-interactions on onboarding wizard | UX | 🟡 | |
-| B-029 | `docs/quickstart` CTA page | UX | 🟡 | |
-| B-030 | `paths` frontmatter on skills for monorepo scoping | Architect | 🟡 | |
-| B-031 | Symlink/copy helper in INSTALL for team onboarding | Architect | 🟡 | |
-| B-032 | Design tokens enforced on all `docs/` pages | UX | 🟡 | |
-| B-033 | Consistent focus-visible across all demo pages | UX | 🟡 | |
-| B-034 | GitHub topics + repo description aligned to plugin niche | Business | 🟡 | |
-| B-035 | Dependency Risk Assessor (cybersec ultra) — doc only | Security | 🟡 | |
+| B-022 | Signed GitHub releases + SHA256 checksums | Security | ✅ | RELEASE.md + workflow |
+| B-023 | Submit to skills directories (agentskills.io, top-agent-skills) | Business | ✅ | docs/DISTRIBUTION.md |
+| B-024 | Story Slicing (Epic → Stories) in PO-delivery | PO | ✅ | |
+| B-025 | DoR Gate — analytics tracking enforcement | PO | ✅ | WARN only |
+| B-026 | GitHub Actions Y-Score validation on PRD PRs | Engineering | ✅ | |
+| B-027 | Eval harness — "did skill read memory?" assertions | Engineering | ✅ | |
+| B-028 | Micro-interactions on onboarding wizard | UX | ✅ | |
+| B-029 | `docs/quickstart` CTA page | UX | ✅ | docs/quickstart.html |
+| B-030 | `paths` frontmatter on skills for monorepo scoping | Architect | ✅ | |
+| B-031 | Symlink/copy helper in INSTALL for team onboarding | Architect | ✅ | sync-skills.mjs |
+| B-032 | Design tokens enforced on all `docs/` pages | UX | ✅ | |
+| B-033 | Consistent focus-visible across all demo pages | UX | ✅ | |
+| B-034 | GitHub topics + repo description aligned to plugin niche | Business | ✅ | DISTRIBUTION.md |
+| B-035 | Dependency Risk Assessor (cybersec ultra) — doc only | Security | ✅ | |
 
 ---
 

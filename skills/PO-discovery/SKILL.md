@@ -1,6 +1,9 @@
 ---
 name: PO-discovery
 description: Generate a discovery pack — TAM/SAM/SOM, SWOT, competitor matrix, compliance risk map, and GTM brief — from repo memory context. Regulated-domain aware (BFSI/healthcare). Synthetic data only. Writes to artifacts/discovery/.
+paths:
+  - "prds/**"
+  - "artifacts/**"
 triggers:
   - "run discovery"
   - "SWOT"

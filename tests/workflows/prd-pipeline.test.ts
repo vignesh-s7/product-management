@@ -7,6 +7,9 @@ test('PRD workflow uses declarative validation only — no orchestrator or artif
   expect(workflow).toContain("github.ref == 'refs/heads/main'");
   expect(workflow).toContain('^prds/[A-Za-z0-9._-]+\\.md$');
   expect(workflow).toContain('permissions:\n  contents: read');
+  expect(workflow).toContain('PRD missing required section: Problem');
+  expect(workflow).toContain('PRD missing Gherkin acceptance criteria');
+  expect(workflow).toContain('PRD missing success metric keywords');
   expect(workflow).not.toContain('secrets.');
   expect(workflow).not.toContain('pull_request_target');
   expect(workflow).not.toContain('orchestrate.sh');
