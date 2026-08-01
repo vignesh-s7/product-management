@@ -62,6 +62,10 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
 .btn-connect.connected{border-color:#10B981;color:#10B981;pointer-events:none}
 .skip-row{text-align:center;margin-top:10px}
 .skip-link{font-size:12.5px;color:#94A3B8;cursor:pointer;text-decoration:underline}
+.skip-link-btn{border:0;background:transparent;font:inherit;padding:0}
+fieldset.field{border:0;padding:0;margin:0 0 16px}
+fieldset.field legend{font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;padding:0}
+.legend-hint{font-weight:400;color:#94A3B8}
 
 /* Tiers */
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:4px}
@@ -121,12 +125,14 @@ body{font-family:'Inter',sans-serif;background:#EEF2FF;min-height:100vh;display:
 button.chip,button.tier-card,button.toggle-btn,button.kpi-card{font:inherit;background-color:#fff;text-align:left}
 button.chip{background-color:transparent}
 .action-card{cursor:default}
+.ready-wrap{text-align:center}
+.ready-sub{margin-bottom:4px}
 </style>
 </head>
 <body>
 <a class="page-skip" href="#onboarding-main">Skip to onboarding</a>
 <div class="demo-data" aria-label="Portfolio demonstration using sample data">DEMO DATA</div>
-<div class="shell" id="onboarding-main">
+<main class="shell" id="onboarding-main">
 
   <div class="brand">
     <div class="brand-icon">PO</div>
@@ -134,19 +140,19 @@ button.chip{background-color:transparent}
   </div>
 
   <!-- Progress: 6 steps -->
-  <div class="progress">
-    <div class="step-dot active" id="dot-1">1</div>
-    <div class="step-line" id="line-1"></div>
-    <div class="step-dot" id="dot-2">2</div>
-    <div class="step-line" id="line-2"></div>
-    <div class="step-dot" id="dot-3">3</div>
-    <div class="step-line" id="line-3"></div>
-    <div class="step-dot" id="dot-4">4</div>
-    <div class="step-line" id="line-4"></div>
-    <div class="step-dot" id="dot-5">5</div>
-    <div class="step-line" id="line-5"></div>
-    <div class="step-dot" id="dot-6">✓</div>
-  </div>
+  <nav class="progress" aria-label="Onboarding progress">
+    <div class="step-dot active" id="dot-1" aria-label="Step 1 of 6: Profile">1</div>
+    <div class="step-line" id="line-1" aria-hidden="true"></div>
+    <div class="step-dot" id="dot-2" aria-label="Step 2 of 6: Connect tools">2</div>
+    <div class="step-line" id="line-2" aria-hidden="true"></div>
+    <div class="step-dot" id="dot-3" aria-label="Step 3 of 6: Choose tier">3</div>
+    <div class="step-line" id="line-3" aria-hidden="true"></div>
+    <div class="step-dot" id="dot-4" aria-label="Step 4 of 6: Project setup">4</div>
+    <div class="step-line" id="line-4" aria-hidden="true"></div>
+    <div class="step-dot" id="dot-5" aria-label="Step 5 of 6: Goals and KPIs">5</div>
+    <div class="step-line" id="line-5" aria-hidden="true"></div>
+    <div class="step-dot" id="dot-6" aria-label="Step 6 of 6: Ready">✓</div>
+  </nav>
 
   <div class="card">
 
@@ -156,7 +162,7 @@ button.chip{background-color:transparent}
       <p class="sub">Configure a sample workspace in five steps. This portfolio demo does not create an account or connect external systems.</p>
       <div class="row">
         <div class="field"><label for="PO-name">Full Name</label><input id="PO-name" maxlength="80" placeholder="Vignesh AIPM"></div>
-        <div class="field"><label>Role</label>
+        <div class="field"><label for="PO-role">Role</label>
           <select id="PO-role">
             <option>Product Owner</option><option>Senior PO</option>
             <option>PO Lead / Manager</option><option>CPO / VP Product</option>
@@ -165,8 +171,8 @@ button.chip{background-color:transparent}
         </div>
       </div>
       <div class="field"><label for="PO-org">Organisation</label><input id="PO-org" maxlength="120" placeholder="e.g. Example organisation"></div>
-      <div class="field">
-        <label>Domain Expertise <span style="font-weight:400;color:#94A3B8">(select all that apply)</span></label>
+      <fieldset class="field">
+        <legend>Domain Expertise <span class="legend-hint">(select all that apply)</span></legend>
         <div class="chips" id="domain-chips">
           <div class="chip" onclick="toggleChip(this)">BFSI</div>
           <div class="chip" onclick="toggleChip(this)">Healthcare</div>
@@ -178,8 +184,8 @@ button.chip{background-color:transparent}
           <div class="chip" onclick="toggleChip(this)">Logistics</div>
           <div class="chip" onclick="toggleChip(this)">EdTech</div>
         </div>
-      </div>
-      <div class="btn-row"><span></span><button class="btn-next" onclick="goTo(2)">Continue →</button></div>
+      </fieldset>
+      <div class="btn-row"><span></span><button type="button" class="btn-next" onclick="goTo(2)">Continue →</button></div>
     </div>
 
     <!-- STEP 2: Connect Tools -->
@@ -191,11 +197,11 @@ button.chip{background-color:transparent}
       <div class="tools">
         <div class="tool-card" id="tc-jira">
           <div class="tool-left"><div class="tool-icon">🔵</div><div><div class="tool-name">Jira</div><div class="tool-desc">Epics, issues, sprints — Rovo Search + Jira AI</div></div></div>
-          <button class="btn-connect" onclick="connect('jira')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('jira')" aria-label="Connect Jira for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-confluence">
           <div class="tool-left"><div class="tool-icon">📘</div><div><div class="tool-name">Confluence</div><div class="tool-desc">Pages, spaces, AI summaries — Rovo + Confluence AI</div></div></div>
-          <button class="btn-connect" onclick="connect('confluence')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('confluence')" aria-label="Connect Confluence for demo">Connect</button>
         </div>
       </div>
 
@@ -203,19 +209,19 @@ button.chip{background-color:transparent}
       <div class="tools">
         <div class="tool-card" id="tc-sharepoint">
           <div class="tool-left"><div class="tool-icon">📁</div><div><div class="tool-name">SharePoint</div><div class="tool-desc">Documents and sites — M365 Copilot</div></div></div>
-          <button class="btn-connect" onclick="connect('sharepoint')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('sharepoint')" aria-label="Connect SharePoint for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-yammer">
           <div class="tool-left"><div class="tool-icon">💬</div><div><div class="tool-name">Yammer / Viva Engage</div><div class="tool-desc">Posts and announcements — M365 Graph</div></div></div>
-          <button class="btn-connect" onclick="connect('yammer')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('yammer')" aria-label="Connect Yammer for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-teams">
           <div class="tool-left"><div class="tool-icon">🟣</div><div><div class="tool-name">Microsoft Teams</div><div class="tool-desc">Channels, files, meeting notes — M365 Copilot</div></div></div>
-          <button class="btn-connect" onclick="connect('teams')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('teams')" aria-label="Connect Microsoft Teams for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-powerbi">
           <div class="tool-left"><div class="tool-icon">📊</div><div><div class="tool-name">Power BI</div><div class="tool-desc">Reports and dashboards — Embed + Copilot API</div></div></div>
-          <button class="btn-connect" onclick="connect('powerbi')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('powerbi')" aria-label="Connect Power BI for demo">Connect</button>
         </div>
       </div>
 
@@ -223,26 +229,26 @@ button.chip{background-color:transparent}
       <div class="tools">
         <div class="tool-card" id="tc-gdrive">
           <div class="tool-left"><div class="tool-icon">🟡</div><div><div class="tool-name">Google Drive</div><div class="tool-desc">Docs, Sheets, Slides — Drive API + Gemini</div></div></div>
-          <button class="btn-connect" onclick="connect('gdrive')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('gdrive')" aria-label="Connect Google Drive for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-gdocs">
           <div class="tool-left"><div class="tool-icon">📝</div><div><div class="tool-name">Google Docs / Slides</div><div class="tool-desc">PRDs, decks, specs — Docs API + Gemini AI</div></div></div>
-          <button class="btn-connect" onclick="connect('gdocs')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('gdocs')" aria-label="Connect Google Docs for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-looker">
           <div class="tool-left"><div class="tool-icon">🔍</div><div><div class="tool-name">Looker / Google Data Studio</div><div class="tool-desc">BI reports and dashboards — Looker API</div></div></div>
-          <button class="btn-connect" onclick="connect('looker')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('looker')" aria-label="Connect Looker for demo">Connect</button>
         </div>
         <div class="tool-card" id="tc-gchat">
           <div class="tool-left"><div class="tool-icon">🟢</div><div><div class="tool-name">Google Chat / Gmail</div><div class="tool-desc">Threads, decisions — Google Workspace API</div></div></div>
-          <button class="btn-connect" onclick="connect('gchat')">Connect</button>
+          <button type="button" class="btn-connect" onclick="connect('gchat')" aria-label="Connect Google Chat for demo">Connect</button>
         </div>
       </div>
 
-      <div class="skip-row"><button type="button" class="skip-link" onclick="goTo(3)" style="border:0;background:transparent">Skip tool selection</button></div>
+      <div class="skip-row"><button type="button" class="skip-link skip-link-btn" onclick="goTo(3)">Skip tool selection</button></div>
       <div class="btn-row">
-        <button class="btn-back" onclick="goTo(1)">← Back</button>
-        <button class="btn-next" onclick="goTo(3)">Continue →</button>
+        <button type="button" class="btn-back" onclick="goTo(1)">← Back</button>
+        <button type="button" class="btn-next" onclick="goTo(3)">Continue →</button>
       </div>
     </div>
 
@@ -278,8 +284,8 @@ button.chip{background-color:transparent}
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn-back" onclick="goTo(2)">← Back</button>
-        <button class="btn-next" id="tier-btn" onclick="goTo(4)">Continue →</button>
+        <button type="button" class="btn-back" onclick="goTo(2)">← Back</button>
+        <button type="button" class="btn-next" id="tier-btn" onclick="goTo(4)">Continue →</button>
       </div>
     </div>
 
@@ -288,25 +294,25 @@ button.chip{background-color:transparent}
       <h2>Tell us about your project</h2>
       <p class="sub">productowner-skill tailors your KB, templates, and compliance checks based on your project context.</p>
 
-      <div class="field">
-        <label>Is this a new or existing project?</label>
+      <fieldset class="field">
+        <legend>Is this a new or existing project?</legend>
         <div class="toggle-row" id="proj-toggle">
           <div class="toggle-btn active-std" onclick="setToggle('new')">🆕 &nbsp;New Project</div>
           <div class="toggle-btn" onclick="setToggle('existing')">🔄 &nbsp;Existing Project</div>
         </div>
-      </div>
+      </fieldset>
 
       <div class="field"><label for="prod-name">Project / Product Name</label><input id="prod-name" maxlength="120" placeholder="e.g. AI-Assisted KYC Platform"></div>
 
       <div class="row">
-        <div class="field"><label>Domain</label>
+        <div class="field"><label for="prod-domain">Domain</label>
           <select id="prod-domain">
             <option>BFSI</option><option>Healthcare</option><option>SaaS / Enterprise</option>
             <option>Telecom</option><option>Consumer</option><option>Fintech</option>
             <option>E-Commerce</option><option>Logistics</option><option>EdTech</option>
           </select>
         </div>
-        <div class="field"><label>Compliance Regime</label>
+        <div class="field"><label for="prod-compliance">Compliance Regime</label>
           <select id="prod-compliance">
             <option>Auto-detect from domain</option><option>HIPAA</option><option>PCI-DSS</option>
             <option>GDPR</option><option>EU AI Act</option><option>FATF / KYC / AML</option>
@@ -315,8 +321,8 @@ button.chip{background-color:transparent}
         </div>
       </div>
 
-      <div class="field">
-        <label>Tech Stack <span style="font-weight:400;color:#94A3B8">(select all that apply)</span></label>
+      <fieldset class="field">
+        <legend>Tech Stack <span class="legend-hint">(select all that apply)</span></legend>
         <div class="chips" id="tech-chips">
           <div class="chip" onclick="toggleChip(this)">React</div>
           <div class="chip" onclick="toggleChip(this)">Next.js</div>
@@ -331,15 +337,15 @@ button.chip{background-color:transparent}
           <div class="chip" onclick="toggleChip(this)">Snowflake</div>
           <div class="chip" onclick="toggleChip(this)">LLM / GenAI</div>
         </div>
-      </div>
+      </fieldset>
 
       <div class="field"><label for="prod-ps">Problem Statement</label>
         <textarea id="prod-ps" maxlength="2000" placeholder="What problem are you solving, for whom, and why now?"></textarea>
       </div>
 
       <div class="btn-row">
-        <button class="btn-back" onclick="goTo(3)">← Back</button>
-        <button class="btn-next" onclick="goTo(5)">Continue →</button>
+        <button type="button" class="btn-back" onclick="goTo(3)">← Back</button>
+        <button type="button" class="btn-next" onclick="goTo(5)">Continue →</button>
       </div>
     </div>
 
@@ -348,7 +354,7 @@ button.chip{background-color:transparent}
       <h2>Goals, KPIs & expected outputs</h2>
       <p class="sub">productowner-skill uses this to pre-configure your discovery pack, reporting templates, and AI artifact suggestions.</p>
 
-      <div class="field"><label>Primary Goal</label>
+      <div class="field"><label for="goal-primary">Primary Goal</label>
         <select id="goal-primary">
           <option>Reduce operational cost</option>
           <option>Increase revenue / upsell</option>
@@ -361,8 +367,8 @@ button.chip{background-color:transparent}
         </select>
       </div>
 
-      <div class="field">
-        <label>KPI Focus Areas <span style="font-weight:400;color:#94A3B8">(pick up to 3)</span></label>
+      <fieldset class="field">
+        <legend>KPI Focus Areas <span class="legend-hint">(pick up to 3)</span></legend>
         <div class="kpi-grid" id="kpi-grid">
           <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">📈</div><div class="kpi-name">Adoption & Activation</div><div class="kpi-eg">DAU, onboarding rate</div></div>
           <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">💰</div><div class="kpi-name">Revenue Impact</div><div class="kpi-eg">ARR, conversion, upsell</div></div>
@@ -371,10 +377,10 @@ button.chip{background-color:transparent}
           <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">🛡️</div><div class="kpi-name">Compliance & Risk</div><div class="kpi-eg">Audit pass rate, incidents</div></div>
           <div class="kpi-card" onclick="toggleKPI(this)"><div class="kpi-icon">🚀</div><div class="kpi-name">Delivery Velocity</div><div class="kpi-eg">Sprint velocity, cycle time</div></div>
         </div>
-      </div>
+      </fieldset>
 
-      <div class="field">
-        <label>Outputs you need productowner-skill to generate</label>
+      <fieldset class="field">
+        <legend>Outputs you need productowner-skill to generate</legend>
         <div class="output-chips" id="output-chips">
           <div class="chip" onclick="toggleChip(this)">PRD</div>
           <div class="chip" onclick="toggleChip(this)">SWOT Analysis</div>
@@ -389,9 +395,9 @@ button.chip{background-color:transparent}
           <div class="chip" onclick="toggleChip(this)">Stakeholder Map</div>
           <div class="chip" onclick="toggleChip(this)">Risk Register</div>
         </div>
-      </div>
+      </fieldset>
 
-      <div class="field"><label>Target Launch Timeline</label>
+      <div class="field"><label for="prod-timeline">Target Launch Timeline</label>
         <select id="prod-timeline">
           <option>< 1 month (fast track)</option>
           <option>1–3 months (standard)</option>
@@ -402,32 +408,32 @@ button.chip{background-color:transparent}
       </div>
 
       <div class="btn-row">
-        <button class="btn-back" onclick="goTo(4)">← Back</button>
-        <button class="btn-next purple" onclick="goTo(6)">Generate My Setup ✨</button>
+        <button type="button" class="btn-back" onclick="goTo(4)">← Back</button>
+        <button type="button" class="btn-next purple" onclick="goTo(6)">Generate My Setup ✨</button>
       </div>
     </div>
 
     <!-- STEP 6: Ready -->
     <div class="step" id="step-6">
-      <div style="text-align:center">
-        <div class="ready-icon">✓</div>
+      <div class="ready-wrap">
+        <div class="ready-icon" aria-hidden="true">✓</div>
         <h2 id="ready-heading">You're all set\!</h2>
-        <p class="sub" style="margin-bottom:4px">productowner-skill is configured. Your discovery pack is being prepared.</p>
+        <p class="sub ready-sub">productowner-skill is configured. Your discovery pack is being prepared.</p>
       </div>
-      <div class="actions-grid">
-        <div class="action-card"><div class="a-icon">🔍</div><div class="a-label">Search KB</div></div>
-        <div class="action-card"><div class="a-icon">🚀</div><div class="a-label">Run Discovery</div></div>
-        <div class="action-card"><div class="a-icon">📊</div><div class="a-label">View Reports</div></div>
-        <div class="action-card"><div class="a-icon">🤖</div><div class="a-label">AI Chat</div></div>
-        <div class="action-card"><div class="a-icon">📋</div><div class="a-label">Templates</div></div>
-        <div class="action-card"><div class="a-icon">👥</div><div class="a-label">Client WS</div></div>
+      <div class="actions-grid" aria-label="Available platform actions" role="list">
+        <div class="action-card" role="listitem"><div class="a-icon" aria-hidden="true">🔍</div><div class="a-label">Search KB</div></div>
+        <div class="action-card" role="listitem"><div class="a-icon" aria-hidden="true">🚀</div><div class="a-label">Run Discovery</div></div>
+        <div class="action-card" role="listitem"><div class="a-icon" aria-hidden="true">📊</div><div class="a-label">View Reports</div></div>
+        <div class="action-card" role="listitem"><div class="a-icon" aria-hidden="true">🤖</div><div class="a-label">AI Chat</div></div>
+        <div class="action-card" role="listitem"><div class="a-icon" aria-hidden="true">📋</div><div class="a-label">Templates</div></div>
+        <div class="action-card" role="listitem"><div class="a-icon" aria-hidden="true">👥</div><div class="a-label">Client WS</div></div>
       </div>
       <div class="summary-box" id="summary-box" aria-live="polite"></div>
-      <button class="btn-full" onclick="window.location.href='../app/index.html'">Go to Dashboard →</button>
+      <button type="button" class="btn-full" onclick="window.location.href='../app/index.html'">Go to Dashboard →</button>
     </div>
 
   </div><!-- /card -->
-</div><!-- /shell -->
+</main><!-- /shell -->
 
 <script>
 let currentStep = 1;
@@ -470,6 +476,8 @@ function connect(tool) {
   const btn = card.querySelector('.btn-connect');
   btn.textContent = 'Selected for demo';
   btn.classList.add('connected');
+  const label = btn.getAttribute('aria-label') || '';
+  btn.setAttribute('aria-label', label.replace(/^Connect (.+) for demo$/, '$1 selected for demo'));
 }
 
 function selectTier(t) {

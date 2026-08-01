@@ -30,18 +30,18 @@ the system that connects every knowledge source, generates every artifact, and l
 | Microsoft Teams tab + manifest | ✅ Done | — |
 | CuCP 90-day rollout slide deck | ✅ Done | — |
 | Playwright security + a11y test suite | ✅ Done | — |
-| Local Memory Standard (`.agent/memory.md`) | 🔲 Next | P0 |
-| `cybersec-skill` (PII blocker + OWASP auditor) | 🔲 Next | P0 |
-| `PO-discovery` skill (SWOT, TAM/SAM/SOM, compliance map) | 🔲 Next | P0 |
-| `PO-delivery` skill (RICE backlog, KPI plan, rollout) | 🔲 Next | P0 |
-| `PO-kb-research` skill (local artifact search) | 🔲 Next | P1 |
-| `PO-code-pipeline` skill (declarative PRD → SDLC) | 🔲 Next | P1 |
-| `qa-tester-skill` (edge-case / boundary matrix) | 🔲 Next | P1 |
-| `ux-pro-skill` (a11y + design tokens + flow review) | 🔲 Next | P1 |
-| Portfolio demo UX pass (`docs/` onboarding + landing) | 🔲 Next | P1 |
-| Template library (`skills/*/templates/`) | 🔲 Next | P1 |
-| Plugin install guide (`docs/INSTALL.md`) | 🔲 Next | P1 |
-| CI skill validation (extend `check-source.mjs`) | 🔲 Next | P2 |
+| Local Memory Standard (`.agent/memory.md`) | ✅ Done | — |
+| `cybersec-skill` (PII blocker + OWASP auditor) | ✅ Done | — |
+| `PO-discovery` skill (SWOT, TAM/SAM/SOM, compliance map) | ✅ Done | — |
+| `PO-delivery` skill (RICE backlog, KPI plan, rollout) | ✅ Done | — |
+| `PO-kb-research` skill (local artifact search) | ✅ Done | — |
+| `PO-code-pipeline` skill (declarative PRD → SDLC) | ✅ Done | — |
+| `qa-tester-skill` (edge-case / boundary matrix) | ✅ Done | — |
+| `ux-pro-skill` (a11y + design tokens + flow review) | ✅ Done | — |
+| Portfolio demo UX pass (`docs/` onboarding + landing) | ✅ Done | — |
+| Template library (`skills/*/templates/`) | ✅ Done | — |
+| Plugin install guide (`docs/INSTALL.md`) | ✅ Done | — |
+| CI skill validation (extend `check-source.mjs`) | ✅ Done | — |
 | Trust badge on landing page | 🔲 Next | P2 |
 
 **Exit criteria (outcomes):** Discovery pack in one session · PRD with Y-Score + Gherkin AC · PII blocked · edge-case matrix · WCAG pass on demo UI · install < 5 min.
