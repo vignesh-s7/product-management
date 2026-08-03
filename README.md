@@ -1,6 +1,6 @@
-# productowner-skill — AI-Native PO Operating System
+# productowner-skill — AI-Native PO 
 
-**Author:** Vignesh AIPM · Senior PO · AI / BFSI / Healthcare
+**Author:** Vignesh AIPM · Senior PO · AI / BFSI / ANY Domain
 ## About
 
 **productowner-skill** is a Product Operating System that converts a Product Requirements Document into a full software development lifecycle. It orchestrates Claude Skills, MetaGPT, and Promptfoo so that a Product Owner, working alone, can move from a PRD to an eval-ready SDLC package in under two hours. Built by a Senior Product Owner for teams shipping AI features in regulated industries.
