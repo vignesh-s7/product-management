@@ -1,0 +1,1367 @@
+{
+  "platform": {
+    "name": "PI four-app product platform POC",
+    "scope": "Part A + Part B",
+    "version": "0.3.0",
+    "mode": "LOCAL_DETERMINISTIC_POC"
+  },
+  "handoff_contract": {
+    "id": "pi-five-file-authority",
+    "version": "1.0.0",
+    "status": "AUTHORITATIVE_LOCAL_HANDOFF",
+    "authority": {
+      "source_files": [
+        "AGENTS.md",
+        "index.html",
+        "layer_a.py",
+        "layer_a_config.json",
+        "test_layer_a.py"
+      ],
+      "exact_source_file_count": 5,
+      "sibling_dependency": false,
+      "absolute_path_dependency": false,
+      "new_source_files_allowed": false,
+      "generated_state_is_transfer_source": false,
+      "generated_local_artifacts": [
+        ".layer-a-state/",
+        "__pycache__/",
+        "*.pyc"
+      ],
+      "precedence": [
+        "current executable tests and validated configuration",
+        "current AGENTS.md product and security contract",
+        "current implementation",
+        "legacy analysis recorded in AGENTS.md"
+      ]
+    },
+    "product": {
+      "brand": "PI",
+      "assistant": "π Gen",
+      "single_user": true,
+      "end_user_rbac": false,
+      "owner_onboarding_field": false,
+      "apps": [
+        {
+          "id": "foundation",
+          "label": "Frame idea",
+          "owns": ["problem", "intended user", "context", "evidence framing", "desired outcome", "hypothesis", "decision"]
+        },
+        {
+          "id": "product",
+          "label": "Design product",
+          "owns": ["research review", "solution options", "requirements", "validation", "launch", "readiness", "handoff"]
+        },
+        {
+          "id": "assistant",
+          "label": "Ask π Gen",
+          "owns": ["conversation", "evidence-grounded guidance", "reviewable proposals", "session activity"]
+        },
+        {
+          "id": "advanced",
+          "label": "Advanced",
+          "owns": ["AI behavior", "credentials boundary", "skills", "plugins", "provider adapters", "policy"]
+        }
+      ],
+      "target_journey": [
+        "Create product",
+        "Frame problem",
+        "Confirm hypothesis",
+        "Start product design",
+        "Review evidence",
+        "Compare solutions",
+        "Define requirements and validation",
+        "Plan launch",
+        "Assess readiness",
+        "Preview handoff"
+      ],
+      "required_artifacts": [
+        "research dossier",
+        "BRD",
+        "PRD",
+        "FSD",
+        "user journeys",
+        "user stories",
+        "Gherkin-ready acceptance criteria",
+        "evidence traceability",
+        "assumptions, risks, decisions, and unknowns",
+        "Markdown, JSON, and YAML engineering handoff"
+      ],
+      "generic_primitives": [
+        "Knowledge",
+        "Memory",
+        "Decisions",
+        "Workflow",
+        "Approvals",
+        "Automation",
+        "AI Interaction",
+        "Execution"
+      ]
+    },
+    "build_agent": {
+      "preferred_family": "Gemini",
+      "role": "build-time-only",
+      "supported_context_surfaces": ["Google AI Studio", "Gemini coding agent", "other approved coding agent"],
+      "autonomy": "plan-edit-test-report within these five local source files",
+      "read_agents_first": true,
+      "baseline_before_edit": true,
+      "execution_evidence_required": true,
+      "claim_local_shell_without_connected_tool": false,
+      "runtime_provider_authority": false,
+      "stop_for_human": [
+        "network or provider access",
+        "credential creation, storage, or resolution",
+        "dependency or tool installation",
+        "external-system mutation",
+        "destructive data or schema change",
+        "publishing, deployment, migration, or release",
+        "scope or five-file contract change"
+      ]
+    },
+    "runtime_ai": {
+      "name": "π Gen",
+      "current_mode": "deterministic-local-mock",
+      "provider_policy": "provider-neutral-BYOK",
+      "provider_selection": null,
+      "provider_preference": null,
+      "silent_live_fallback": false,
+      "browser_secret_storage": false,
+      "secret_storage": "external-vault-reference-only",
+      "mutation_policy": "reviewable proposal with explicit human acceptance",
+      "candidates": [
+        {"id": "google-gemini", "enabled": false, "selected": false},
+        {"id": "xai-grok", "enabled": false, "selected": false},
+        {"id": "nvidia-nim", "enabled": false, "selected": false},
+        {"id": "other-provider", "enabled": false, "selected": false}
+      ],
+      "provider_adapter_contract": [
+        "capability discovery",
+        "health and model availability",
+        "generate and stream",
+        "structured tool calls",
+        "usage and cost metadata",
+        "timeout, cancellation, and normalized errors",
+        "redacted traces",
+        "no raw credential in request record or result"
+      ]
+    },
+    "database_contract": {
+      "current_mode": "local SQLite POC",
+      "encryption": "none",
+      "generated_data_in_source_bundle": false,
+      "canonical_product_key": "workspace_id + product_id",
+      "stores": [
+        {
+          "id": "memory",
+          "default_path": ".layer-a-state/memory.sqlite3",
+          "schema_version": 1,
+          "tables": ["memory_metadata", "memory_records", "memory_revisions", "memory_requests", "memory_audit"],
+          "rules": ["workspace binding", "immutable revisions", "optimistic conflict checks", "idempotency", "expiry", "tombstone and purge", "content-free audit hashes"]
+        },
+        {
+          "id": "products",
+          "default_path": ".layer-a-state/products.sqlite3",
+          "schema_version": 1,
+          "tables": ["product_blueprints"],
+          "rules": ["canonical blueprint JSON", "workspace isolation", "stable product ID", "optimistic revision", "fingerprint", "bounded size", "sensitive-data rejection"]
+        },
+        {
+          "id": "knowledge",
+          "default_path": ".layer-a-state/knowledge.sqlite3",
+          "schema_version": 1,
+          "tables": ["knowledge_sources", "knowledge_chunks"],
+          "rules": ["workspace and role scope", "source version and hash", "bounded local parsing", "deterministic lexical retrieval", "resolvable citation"]
+        },
+        {
+          "id": "governance",
+          "default_path": "caller-supplied local SQLite path",
+          "schema_version": 1,
+          "tables": ["governance_meta", "governance_budget", "governance_audit"],
+          "rules": ["policy fingerprint", "workspace budget", "metadata-only audit", "secret-reference hash only", "checked backup and restore"]
+        }
+      ],
+      "process_memory_only": ["pending approvals", "pending product proposals", "π Gen conversation and activity", "unsaved form drafts"],
+      "browser_persistence_forbidden": ["localStorage", "sessionStorage", "IndexedDB", "cookies", "URL state"],
+      "migration_rules": [
+        "never silently downgrade or discard unknown schema",
+        "migrations are versioned, tested, reversible where possible, and backed up before destructive change",
+        "writes are transactional and fail closed",
+        "production storage needs encryption, authenticated tenancy, retention, backup, restore, and audit review"
+      ]
+    },
+    "api_contract": {
+      "current_mode": "same-origin localhost POC",
+      "versioning": "unversioned current routes; version before production",
+      "request_body_limit_bytes": 1000000,
+      "error_shape": {"status": "ERROR", "error": "human-readable reason"},
+      "get_routes": ["/health", "/api/bootstrap", "/api/products", "/api/task", "/api/plugin", "/api/plugin/admin"],
+      "post_routes": [
+        "/api/intake", "/api/discover", "/api/compare",
+        "/api/products/create", "/api/products/open",
+        "/api/research", "/api/definition", "/api/solution", "/api/gtm", "/api/readiness",
+        "/api/copilot/propose", "/api/copilot/decision", "/api/export",
+        "/api/plugin/enable", "/api/plugin/disable", "/api/plugin/rollback"
+      ],
+      "production_requirements": [
+        "versioned request, response, and error schemas",
+        "authentication and tenancy boundary",
+        "idempotency and optimistic concurrency",
+        "pagination and bounded query contracts",
+        "archive or deletion lifecycle",
+        "compatibility and deprecation policy",
+        "audit correlation without prompt or secret logging"
+      ]
+    },
+    "acceptance_families": {
+      "part_a": "19 frozen gates; 18 locally validated and Gate 18 external sign-off",
+      "memory": "M1-M9; M8 optional and disabled",
+      "part_b": "B1-B8 validated POC experiences, not production readiness",
+      "plugins": "P1-P10 validated POC; P11-P13 should; P14-P15 could; P16 excluded",
+      "sessions": "S1-S5 validated local contract; S6 external gateway enforcement remains partial"
+    },
+    "moscow": {
+      "must": [
+        "retain exact five-file sole authority and passing baseline",
+        "use one canonical product identity and source across all four apps",
+        "keep single-user onboarding without owner or RBAC fields",
+        "persist explicit product work with revision and evidence traceability",
+        "separate workflow preparation, evidence confidence, decision readiness, delivery readiness, and approval",
+        "keep π Gen provider-neutral, conversational, context-visible, and proposal-only",
+        "store BYOK credentials only in approved server vault and never in browser, logs, URLs, files, or errors",
+        "preserve database schemas, migrations, backups, failure behavior, API contracts, and regression tests",
+        "meet keyboard, semantic dialog, 44-pixel target, contrast, reduced-motion, and responsive requirements",
+        "gate exports, destructive operations, provider calls, deployment, and release"
+      ],
+      "should": [
+        "add backend-backed draft recovery without browser storage",
+        "complete detailed BRD, PRD, FSD, journey, story, Gherkin, traceability, and handoff outputs",
+        "add archive/delete with confirmation, recovery policy, and audit",
+        "add metadata-only observability, cost limits, retry, cancellation, and rollback",
+        "add automated accessibility, responsive, security, migration, recovery, and concurrency tests"
+      ],
+      "could": [
+        "add voice, image, and attachment input only when processing and privacy behavior are real",
+        "add more provider adapters after neutral contract passes",
+        "add optional organization profiles, templates, and domain packs",
+        "add cloud collaboration or enterprise RBAC only through explicit new scope"
+      ],
+      "wont_now": [
+        "select or prefer Gemini, Grok, NVIDIA NIM, or another runtime provider",
+        "make Firebase, OpenHands, Agent Canvas, or any hosted service a product dependency",
+        "perform live research, remote extension installation, or unknown code execution",
+        "auto-approve AI changes, readiness, exports, releases, or deployment",
+        "store prompts, drafts, keys, or secrets in browser persistence",
+        "claim production, compliance, identity, encryption, or deployment certification"
+      ]
+    },
+    "known_gaps": [
+      "new products currently inherit synthetic blueprint sections instead of a blank canonical template",
+      "several product workflow inputs remain page-memory notes rather than durable canonical fields",
+      "legacy Foundation reference code remains broad and retains dormant technical routes outside the focused normal journey",
+      "current owner and role fields are engine fixtures, not intended end-user RBAC or onboarding",
+      "π Gen is a safe deterministic UI mock, not a live evidence-grounded model agent",
+      "current API lacks production versioning, deletion, durable sessions, authentication, vault, and deployment contracts",
+      "browser-rendered accessibility and responsive acceptance still require human or approved tool evidence"
+    ],
+    "missing_external_context": [
+      "referenced 98-section master product specification was never present in local source and cannot be reconstructed exactly",
+      "NDA-specific export examples were not provided and must not be guessed",
+      "production provider, hosting, database, identity, legal, security, data residency, retention, and release decisions remain open"
+    ]
+  },
+  "policy": {
+    "network": "deny",
+    "unknown_code_execution": "deny",
+    "raw_secrets": "deny",
+    "approval": "exact-match-once"
+  },
+  "governance": {
+    "id": "local-governance-gateway",
+    "version": "1.0.0",
+    "status": "VALIDATED",
+    "identity": {
+      "provider": "injected-claims",
+      "required_claims": ["subject_id", "workspace_id", "roles", "authenticated_by"],
+      "production_provider": "external"
+    },
+    "roles": {
+      "viewer": ["read", "health"],
+      "operator": ["read", "write", "health", "backup"],
+      "approver": ["read", "write", "approve", "health"],
+      "admin": ["read", "write", "approve", "audit", "health", "backup", "restore"]
+    },
+    "workspace": {
+      "exact_match": true
+    },
+    "secret_refs": {
+      "scheme": "secret://",
+      "resolution": "external-only"
+    },
+    "budgets": {
+      "max_cost_per_action": 5,
+      "max_cost_per_identity": 20
+    },
+    "audit": {
+      "provider": "sqlite",
+      "content": "metadata-hashes-only"
+    },
+    "provenance": {
+      "required_fields": ["source", "correlation_id"]
+    },
+    "operations": {
+      "health": true,
+      "backup": true,
+      "restore": true
+    }
+  },
+  "byok_registry": {
+    "version": "1.0.0",
+    "status": "VALIDATED",
+    "allowed_auth_schemes": ["bearer", "api-key"],
+    "connections": [
+      {
+        "id": "local-byok-fixture",
+        "version": "1.0.0",
+        "endpoint": "local://reviewed-model-handler",
+        "auth_scheme": "bearer",
+        "secret_ref": "secret://local-test/byok",
+        "enabled": true
+      },
+      {
+        "id": "remote-byok-example",
+        "version": "1.0.0",
+        "endpoint": "https://provider.invalid/v1",
+        "auth_scheme": "api-key",
+        "secret_ref": "secret://external/provider-key",
+        "enabled": false
+      }
+    ]
+  },
+  "extension_registry": {
+    "version": "1.0.0",
+    "status": "EXTERNAL_SIGN_OFF",
+    "allowed_kinds": ["mcp", "plugin", "skill"],
+    "allowed_permissions": ["memory:read", "memory:write", "tool:invoke"],
+    "connections": [
+      {
+        "id": "remote-skill-example",
+        "kind": "skill",
+        "url": "https://extensions.invalid/approved/skill",
+        "version": "1.0.0",
+        "integrity": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "permissions": ["memory:read"],
+        "auth_ref": "secret://external/extension-access"
+      }
+    ]
+  },
+  "manual_code_review": {
+    "version": "1.0.0",
+    "status": "VALIDATED",
+    "max_bytes": 32768,
+    "allowed_source_kinds": ["github_url", "pasted_text"],
+    "allowed_decisions": ["REJECTED", "APPROVED_FOR_FUTURE_CONTAINMENT"],
+    "required_provenance_fields": ["origin", "submitted_by"],
+    "warning": "Review does not make external or pasted code safe to execute.",
+    "execution": "deny",
+    "containment": "external"
+  },
+  "memory_core": {
+    "contract": {
+      "id": "layer-a-memory",
+      "schema_version": "1.0.0",
+      "namespaces": ["session", "user", "task", "workflow", "project", "organization"],
+      "types": ["fact", "preference", "decision", "summary", "artifact_ref"],
+      "sensitivities": ["public", "internal", "sensitive"],
+      "statuses": ["candidate", "quarantined", "active", "archived", "superseded", "expired", "deleted"]
+    },
+    "storage": {
+      "provider": "sqlite",
+      "relative_path": ".layer-a-state/memory.sqlite3",
+      "schema_version": 1,
+      "encryption_provider": "none"
+    },
+    "limits": {
+      "max_content_bytes": 4096,
+      "max_summary_bytes": 512,
+      "max_provenance_bytes": 2048,
+      "max_search_items": 20,
+      "max_context_bytes": 8192,
+      "max_import_items": 100
+    },
+    "access": {
+      "writer_roles": ["writer", "reviewer", "admin"],
+      "reviewer_roles": ["reviewer", "admin"],
+      "reader_roles": ["reader", "writer", "reviewer", "admin"],
+      "purge_roles": ["admin"]
+    },
+    "adapters": {
+      "sqlite": {"enabled": true, "kind": "first_party"},
+      "mem0": {
+        "enabled": false,
+        "kind": "optional_external",
+        "secret_ref": null,
+        "network_required": true
+      }
+    },
+    "acceptance": [
+      {"id": "M1", "state": "VALIDATED"},
+      {"id": "M2", "state": "VALIDATED"},
+      {"id": "M3", "state": "VALIDATED"},
+      {"id": "M4", "state": "VALIDATED"},
+      {"id": "M5", "state": "VALIDATED"},
+      {"id": "M6", "state": "VALIDATED"},
+      {"id": "M7", "state": "VALIDATED"},
+      {"id": "M8", "state": "VALIDATED_OPTIONAL_DISABLED"},
+      {"id": "M9", "state": "VALIDATED"}
+    ],
+    "status": "VALIDATED"
+  },
+  "agent_import": {
+    "uacp_version": "1.0.0",
+    "adapter": "manifest_json_static",
+    "manifest_names": ["agent.json", "manifest.json"],
+    "allowed_suffixes": [".json", ".py"],
+    "max_files": 50,
+    "max_file_bytes": 100000,
+    "max_total_bytes": 1000000,
+    "status": "VALIDATED"
+  },
+  "integration_registry": {
+    "version": "1.0.0",
+    "adapters": [
+      {
+        "id": "local-manifest",
+        "version": "1.0.0",
+        "kind": "manifest",
+        "handler": "manifest_json_static",
+        "enabled": true,
+        "requires_network": false,
+        "executes_code": false,
+        "protocol_versions": ["uacp-1.0.0"]
+      },
+      {
+        "id": "approved-http",
+        "version": "1.0.0",
+        "kind": "http",
+        "handler": null,
+        "enabled": false,
+        "requires_network": true,
+        "executes_code": false,
+        "protocol_versions": ["json-1.0"]
+      },
+      {
+        "id": "approved-subprocess-json",
+        "version": "1.0.0",
+        "kind": "subprocess_json",
+        "handler": null,
+        "enabled": false,
+        "requires_network": false,
+        "executes_code": true,
+        "protocol_versions": ["json-1.0"]
+      }
+    ],
+    "status": "VALIDATED"
+  },
+  "runtime": {
+    "version": "1.0.0",
+    "allowed_tools": ["local.echo", "local.sum"],
+    "approval_required_tools": ["local.sum"],
+    "max_steps": 5,
+    "max_cost_units": 10,
+    "max_timeout_seconds": 1.0,
+    "status": "VALIDATED"
+  },
+  "workflow_registry": {
+    "version": "1.0.0",
+    "max_node_executions": 30,
+    "workflows": [
+      {
+        "id": "deterministic-local-workflow",
+        "version": "1.0.0",
+        "start": "plan",
+        "nodes": [
+          {"id": "plan", "type": "agent", "handler": "agent.plan", "next": "condition"},
+          {"id": "condition", "type": "condition", "path": "input.continue", "equals": true, "if_true": "router", "if_false": "cancel"},
+          {"id": "router", "type": "router", "path": "input.route", "routes": {"parallel": "parallel"}, "default": "retry"},
+          {"id": "parallel", "type": "parallel", "tasks": [{"id": "left", "handler": "tool.echo"}, {"id": "right", "handler": "tool.echo"}], "next": "retry"},
+          {"id": "retry", "type": "retry", "handler": "tool.retry", "max_attempts": 2, "next": "checkpoint"},
+          {"id": "checkpoint", "type": "checkpoint", "next": "approval"},
+          {"id": "approval", "type": "approval", "target_version": "1.0.0", "next": "finish"},
+          {"id": "cancel", "type": "cancel", "path": "input.cancelled", "next": "finish"},
+          {"id": "finish", "type": "tool", "handler": "tool.finish", "next": null}
+        ]
+      }
+    ],
+    "status": "VALIDATED"
+  },
+  "protocol_registry": {
+    "version": "1.0.0",
+    "connections": [
+      {"id": "local-mcp", "protocol": "mcp", "protocol_version": "2025-06-18", "transport": "local_stdio", "handler": "protocol.mcp", "permissions": ["discover", "call"], "enabled": true},
+      {"id": "local-a2a-simulator", "protocol": "a2a", "protocol_version": "1.0", "transport": "deterministic_simulator", "handler": "protocol.a2a", "permissions": ["discover", "delegate"], "enabled": true},
+      {"id": "remote-disabled", "protocol": "mcp", "protocol_version": "2025-06-18", "transport": "remote_http", "handler": null, "permissions": [], "enabled": false}
+    ],
+    "status": "VALIDATED"
+  },
+  "model_registry": {
+    "version": "1.0.0",
+    "providers": [
+      {"id": "deterministic-local", "kind": "deterministic", "handler": "model.deterministic", "endpoint": "local://deterministic", "secret_ref": null, "capabilities": ["generate", "stream", "embed", "tools", "health"], "max_timeout_seconds": 1.0, "enabled": true},
+      {"id": "openai-compatible-disabled", "kind": "openai_compatible", "handler": null, "endpoint": "https://example.invalid/v1", "secret_ref": "secret://approved/model-key", "capabilities": ["generate", "stream", "embed", "tools", "health"], "max_timeout_seconds": 30.0, "enabled": false},
+      {"id": "approved-http-disabled", "kind": "approved_http", "handler": null, "endpoint": "https://example.invalid/model", "secret_ref": "secret://approved/http-model", "capabilities": ["generate", "health"], "max_timeout_seconds": 30.0, "enabled": false}
+    ],
+    "status": "VALIDATED"
+  },
+  "fixture_registry": {
+    "version": "1.0.0",
+    "fixtures": [
+      {"id": "fixture-model", "kind": "model", "version": "1.0.0", "request": {"operation": "model"}, "response": {"state": "SIMULATED", "kind": "model"}, "outcome": "SUCCESS", "fingerprint": "affce8bcb2552ea61d192b1afa5e984599977a08c7950952cffbdcdaefcd38fd"},
+      {"id": "fixture-mcp", "kind": "mcp", "version": "1.0.0", "request": {"operation": "mcp"}, "response": {"state": "SIMULATED", "kind": "mcp"}, "outcome": "SUCCESS", "fingerprint": "49e251253b46731622445e0776728f5bfb2d44c0460d8c65c7943be4c1dd1b19"},
+      {"id": "fixture-a2a", "kind": "a2a", "version": "1.0.0", "request": {"operation": "a2a"}, "response": {"state": "SIMULATED", "kind": "a2a"}, "outcome": "SUCCESS", "fingerprint": "d96459f8fa914cd82cd252879f5af7512027bd5cd6ea128ec626df1984bf00dc"},
+      {"id": "fixture-storage", "kind": "storage", "version": "1.0.0", "request": {"operation": "storage"}, "response": {"state": "SIMULATED", "kind": "storage"}, "outcome": "SUCCESS", "fingerprint": "f30c3a33481b2a46ef47e46f432b83df90f36a6789981c7d8298918cc0957e6d"},
+      {"id": "fixture-event", "kind": "event", "version": "1.0.0", "request": {"operation": "event"}, "response": {"state": "SIMULATED", "kind": "event"}, "outcome": "SUCCESS", "fingerprint": "c7319d7938f8dd60755fed73d64ccfc798a289d7b3279cef76846f629c87ce09"},
+      {"id": "fixture-secret", "kind": "secret", "version": "1.0.0", "request": {"operation": "secret"}, "response": {"state": "SIMULATED", "kind": "secret"}, "outcome": "SUCCESS", "fingerprint": "2b1ac049aaaa4bb7e9667e2ba5ef951954b1e19691a5a9f7713137fd3af86739"},
+      {"id": "fixture-identity", "kind": "identity", "version": "1.0.0", "request": {"operation": "identity"}, "response": {"state": "SIMULATED", "kind": "identity"}, "outcome": "SUCCESS", "fingerprint": "8898c53cbd0b7295513199d9143c4561cebfc957fe2b1fb642bc815bdaa5d23f"},
+      {"id": "fixture-timeout", "kind": "timeout", "version": "1.0.0", "request": {"operation": "timeout"}, "response": {"state": "SIMULATED", "kind": "timeout"}, "outcome": "FAILURE", "fingerprint": "5bc9a55eb23da0adf6b8fc52626723a4c0516988ef49317e2f10d8b55d9fe719"},
+      {"id": "fixture-failure", "kind": "failure", "version": "1.0.0", "request": {"operation": "failure"}, "response": {"state": "SIMULATED", "kind": "failure"}, "outcome": "FAILURE", "fingerprint": "1f7327d1f56fe025bc77e47f1484dab3b8deca0deecf31af832f56a8baa93a6e"}
+    ],
+    "status": "VALIDATED"
+  },
+  "knowledge_core": {
+    "version": "1.0.0",
+    "storage_path": ".layer-a-state/knowledge.sqlite3",
+    "allowed_suffixes": [".txt", ".md", ".csv", ".json", ".html"],
+    "max_file_bytes": 100000,
+    "max_chunks_per_source": 100,
+    "max_results": 20,
+    "ingest_roles": ["reviewer", "admin"],
+    "read_roles": ["reader", "writer", "reviewer", "admin"],
+    "status": "VALIDATED"
+  },
+  "agent_plugin": {
+    "contract": {
+      "id": "agent-plugin-must-v1",
+      "specification": "1.0.0",
+      "must_feature_count": 10,
+      "status": "VALIDATED_POC"
+    },
+    "package": {
+      "resource_mode": "embedded-exportable",
+      "manifest_path": "plugin.json",
+      "skills_path": "skills",
+      "mcp_path": "mcp.json",
+      "mcp_protocol_version": "2025-06-18",
+      "max_files": 8,
+      "max_file_bytes": 1000000,
+      "embedded_resources": {
+        "plugin.json": {
+          "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+          "name": "layer-a-product-discovery",
+          "version": "0.3.0",
+          "description": "Natural product discovery and governed SQLite memory backed by local Layer A validation, trust, and evidence controls.",
+          "author": {"name": "Local Layer A POC Owner"},
+          "license": "UNLICENSED",
+          "keywords": ["product-discovery", "agent-evaluation", "local-first", "enterprise"]
+        },
+        "mcp.json": {
+          "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+          "mcpServers": {
+            "layer-a-local": {
+              "type": "stdio",
+              "command": "python3",
+              "args": ["${PLUGIN_ROOT}/layer_a.py", "mcp", "--config", "${PLUGIN_ROOT}/layer_a_config.json"],
+              "cwd": "${PLUGIN_ROOT}"
+            }
+          }
+        },
+        "skills/product-discovery/SKILL.md": [
+          "---",
+          "name: product-discovery",
+          "description: Guide natural product discovery before solution design. Use when a product manager, product owner, founder, or internal team describes a problem or idea and needs user questions, evidence gaps, research factors, ranked risks or opportunities, a safe next test, or an evidence-backed hypothesis without technical manifests or JSON.",
+          "---",
+          "",
+          "# Product Discovery",
+          "",
+          "Talk naturally. Treat user statements as unverified observations. Never invent market facts, dates, laws, metrics, or research.",
+          "",
+          "Ask no more than three missing questions: who experiences problem, what evidence shows pain, and what decision discovery supports.",
+          "",
+          "Use local product_discovery MCP tool when available. Show known input, unknowns, evidence status, and one safe next action. Keep manifests, task packets, and trust internals hidden unless requested.",
+          "",
+          "Stop before hypothesis when problem or evidence remains weak. Never request secrets, credentials, financial statements, account numbers, card numbers, or private enterprise data."
+        ]
+      }
+    },
+    "identity": {
+      "publisher_url": "https://internal.example.invalid/layer-a",
+      "publisher_status": "LOCAL_POC_PLACEHOLDER",
+      "source_kind": "embedded-local",
+      "source_pointer": "embedded:layer_a_config.json"
+    },
+    "trust_policy": {
+      "states": ["VERIFIED", "UNSIGNED", "INVALID"],
+      "invalid_action": "refuse",
+      "allow_unsigned_local_with_exact_approval": true,
+      "approved_signature_verifiers": [],
+      "freshness_max_age_seconds": 86400
+    },
+    "permissions": {
+      "required": ["plugin:read", "process:stdio", "network:none", "secrets:none"],
+      "allowed": ["plugin:read", "process:stdio", "network:none", "secrets:none"],
+      "forbidden_mcp_commands": ["bash", "curl", "gh", "sh", "wget", "zsh"],
+      "allowed_mcp_commands": ["python3"]
+    },
+    "compatibility_profiles": [
+      {
+        "id": "local-reference-client",
+        "approved": true,
+        "schemas": ["https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"],
+        "components": ["skills", "mcp"],
+        "transports": ["stdio"],
+        "evidence_level": "LOCAL_PROFILE_CONFORMANCE_ONLY"
+      },
+      {
+        "id": "local-second-client",
+        "approved": true,
+        "schemas": ["https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"],
+        "components": ["skills", "mcp"],
+        "transports": ["stdio"],
+        "evidence_level": "LOCAL_PROFILE_CONFORMANCE_ONLY"
+      }
+    ],
+    "progressive_loading": {
+      "initial": ["plugin_metadata", "selected_skill_metadata"],
+      "on_skill_use": ["skills/product-discovery/SKILL.md", "selected_question_contract"],
+      "deferred": ["full_product_blueprint", "evaluation_schema", "admin_trust_evidence"],
+      "max_task_packet_characters": 4000
+    },
+    "user_experience": {
+      "normal_mode": "natural_conversation",
+      "hide_manifests": true,
+      "hide_mcp": true,
+      "hide_task_packet": true,
+      "admin_evidence_on_request": true
+    },
+    "must_features": [
+      {"id": "P1", "title": "Natural Product Discovery", "state": "VALIDATED"},
+      {"id": "P2", "title": "Portable Agent Plugin package", "state": "VALIDATED"},
+      {"id": "P3", "title": "Hidden Part A MCP surface", "state": "VALIDATED"},
+      {"id": "P4", "title": "Trust gate before activation", "state": "VALIDATED"},
+      {"id": "P5", "title": "Canonical identity freshness and deduplication", "state": "VALIDATED"},
+      {"id": "P6", "title": "Enable disable update diff and rollback", "state": "VALIDATED"},
+      {"id": "P7", "title": "Automated compatibility profiles", "state": "VALIDATED"},
+      {"id": "P8", "title": "Exact trust outcomes", "state": "VALIDATED"},
+      {"id": "P9", "title": "Progressive loading and compact task packets", "state": "VALIDATED"},
+      {"id": "P10", "title": "Layman installation and use", "state": "VALIDATED"}
+    ]
+  },
+  "scope_contract": {
+    "id": "part-a-scope-v1",
+    "status": "FROZEN",
+    "gate_count": 19
+  },
+  "scope_gates": [
+    {
+      "id": 1,
+      "title": "Import a supported agent project",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 2,
+      "title": "Add an integration without core redesign",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 3,
+      "title": "Run one agent safely",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 4,
+      "title": "Run multi-agent workflows",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 5,
+      "title": "Use MCP and A2A",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 6,
+      "title": "Use an approved model endpoint",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 7,
+      "title": "Ground agents in approved knowledge",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 8,
+      "title": "Manage typed memory",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 9,
+      "title": "Define reusable evaluation suites",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 10,
+      "title": "Define a business job without core edits",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 11,
+      "title": "Assess agent-job fit",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 12,
+      "title": "Diagnose capability gaps",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 13,
+      "title": "Test the smallest approved remediation",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 14,
+      "title": "Compare agents fairly",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 15,
+      "title": "Test external dependencies locally",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 16,
+      "title": "Govern enterprise use",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 17,
+      "title": "Supply BYOK through a generic connection manifest",
+      "state": "VALIDATED"
+    },
+    {
+      "id": 18,
+      "title": "Add or sync an approved remote MCP, plugin, or skill",
+      "state": "EXTERNAL_SIGN_OFF"
+    },
+    {
+      "id": 19,
+      "title": "Review pasted POC code without false safety claims",
+      "state": "VALIDATED"
+    }
+  ],
+  "session_contract": {
+    "id": "portable-session-quality",
+    "version": "1.0.0",
+    "required_context_ids": [
+      "user-session-instructions"
+    ],
+    "required_sections": [
+      "SUMMARY",
+      "OPINION",
+      "PLAN",
+      "RISKS",
+      "ASK"
+    ],
+    "allow_extra_sections": false,
+    "claim_source_required_for": [
+      "date",
+      "metric",
+      "identity",
+      "policy"
+    ],
+    "unknown_marker": "UNKNOWN",
+    "ask_section": "ASK",
+    "failure_action": "BLOCK"
+  },
+  "context_packs": [
+    {
+      "id": "user-session-instructions",
+      "version": "1.0.0",
+      "rules": {
+        "missing_information": "Use UNKNOWN and ask the user",
+        "unsupported_claims": "Do not assert dates, metrics, identity, or policy without source",
+        "format": "Use the configured required sections exactly once"
+      }
+    }
+  ],
+  "agent": {
+    "id": "research-agent",
+    "version": "1.0.0",
+    "framework": "generic-manifest",
+    "capabilities": [
+      "answer"
+    ],
+    "tools": [],
+    "protocols": [
+      "local"
+    ],
+    "knowledge": []
+  },
+  "job": {
+    "id": "grounded-answer",
+    "version": "1.0.0",
+    "fit_threshold": 0.8,
+    "requirements": [
+      {
+        "id": "answer",
+        "kind": "capability",
+        "value": "answer",
+        "weight": 1.0,
+        "blocker": false
+      },
+      {
+        "id": "tool_use",
+        "kind": "tool",
+        "value": "mcp.knowledge.search",
+        "weight": 1.0,
+        "blocker": false
+      },
+      {
+        "id": "evidence_grounding",
+        "kind": "knowledge",
+        "value": "approved-enterprise-knowledge",
+        "weight": 1.0,
+        "blocker": true
+      },
+      {
+        "id": "source_citation",
+        "kind": "capability",
+        "value": "cite-source",
+        "weight": 1.0,
+        "blocker": true
+      },
+      {
+        "id": "mcp_protocol",
+        "kind": "protocol",
+        "value": "mcp",
+        "weight": 1.0,
+        "blocker": false
+      }
+    ]
+  },
+  "evaluation_registry": {
+    "version": "1.0.0",
+    "environment": {
+      "mode": "LOCAL_DETERMINISTIC_POC",
+      "python": "3.11+",
+      "network": "deny"
+    },
+    "suites": [
+      {
+        "id": "baseline-agent-regression",
+        "version": "1.0.0",
+        "fixture_ref": "agent",
+        "fixture_fingerprint": "0293fb89a676345b027c2bee0d694c200078668c34bf565701cc9559219eff0f",
+        "job_ref": "job",
+        "job_fingerprint": "99ead375c873b36f53d88c72e27f859ece67550fc5cf97c8c65f39da1164373d",
+        "environment_fingerprint": "ac320f6a4b32cf5bf15e6acf1159703901c5b70846d5468c5056745fb8595275",
+        "evaluator_version": "deterministic-1.0.0",
+        "threshold": 1.0,
+        "cases": [
+          {"id": "baseline-fit", "evaluator": "job_fit", "expected": "NOT_FIT"},
+          {"id": "tool-check", "evaluator": "collection_contains", "collection": "tools", "value": "mcp.knowledge.search", "expected": false},
+          {"id": "citation-check", "evaluator": "collection_contains", "collection": "capabilities", "value": "cite-source", "expected": false}
+        ]
+      }
+    ],
+    "status": "VALIDATED"
+  },
+  "comparison_contract": {
+    "id": "part-a-agent-fit-comparison",
+    "version": "1.0.0",
+    "fixture": {
+      "id": "declared-agent-manifest-fit",
+      "version": "1.0.0",
+      "input_kind": "static-declared-capabilities"
+    },
+    "dimensions": [
+      "score",
+      "confidence",
+      "blocker_clear"
+    ],
+    "status": "VALIDATED"
+  },
+  "remediation": {
+    "id": "attach-approved-mcp-knowledge-tool",
+    "version": "1.0.0",
+    "mode": "SIMULATED",
+    "reason": "Close only evidence-backed grounded-answer job gaps using declared local metadata.",
+    "risk": {
+      "level": "LOW",
+      "summary": "Simulation changes a copied agent manifest only; it installs and executes nothing."
+    },
+    "cost": {
+      "units": 1,
+      "currency_cost": 0
+    },
+    "affected_tests": [
+      "tool_use",
+      "evidence_grounding",
+      "source_citation",
+      "mcp_protocol"
+    ],
+    "rollback": {
+      "strategy": "remove-exact-additions",
+      "automatic": true
+    },
+    "adds": {
+      "capabilities": [
+        "cite-source"
+      ],
+      "tools": [
+        "mcp.knowledge.search"
+      ],
+      "protocols": [
+        "mcp"
+      ],
+      "knowledge": [
+        "approved-enterprise-knowledge"
+      ]
+    }
+  },
+  "part_b": {
+    "scope_contract": {
+      "id": "part-b-product-config-v1",
+      "status": "VALIDATED_POC",
+      "experience_count": 8
+    },
+    "experiences": [
+      {"id": 1, "title": "Entry and Portfolio Overview", "state": "VALIDATED"},
+      {"id": 2, "title": "Strategic Definition and Problem Alignment", "state": "VALIDATED"},
+      {"id": 3, "title": "Parallel Research and Competitive Intelligence", "state": "VALIDATED"},
+      {"id": 4, "title": "Solution and Feature Architecture", "state": "VALIDATED"},
+      {"id": 5, "title": "Go-to-Market Strategy", "state": "VALIDATED"},
+      {"id": 6, "title": "Execution and Readiness Assessment", "state": "VALIDATED"},
+      {"id": 7, "title": "AI Copilot Guidance", "state": "VALIDATED"},
+      {"id": 8, "title": "Executive Handoff and Export", "state": "VALIDATED"}
+    ],
+    "product_store": {
+      "version": "1.0.0",
+      "provider": "sqlite",
+      "max_blueprint_bytes": 262144,
+      "status": "VALIDATED"
+    },
+    "product_blueprint": {
+      "schema": "part-b.product-blueprint",
+      "version": "0.1.0",
+      "product": {
+        "id": "portable-product-example",
+        "name": "Portable Product Research Example",
+        "owner": "local-poc-owner-label",
+        "workspace_id": "local-poc-workspace",
+        "revision": 1,
+        "type": "internal",
+        "lifecycle_phase": "discovery",
+        "status": "draft"
+      },
+      "portfolio": {
+        "initiative_ids": ["portable-product-example"],
+        "readiness_summary": null,
+        "risk_count": null
+      },
+      "research": {
+        "scope": "internal_first",
+        "as_of": "fixture-v1",
+        "execution": {
+          "mode": "parallel_fan_out_fan_in",
+          "task_unit": "research_factor",
+          "failure_policy": "continue_with_visible_gap",
+          "required_factor_failure": "block_synthesis_gate"
+        },
+        "factor_review": [
+          {"factor": "users_and_customers", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-users"]},
+          {"factor": "internal_operations", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-operations"]},
+          {"factor": "market_and_demand", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-market"]},
+          {"factor": "competitors_and_alternatives", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-alternatives"]},
+          {"factor": "industry_and_value_chain", "required": false, "status": "NOT_RELEVANT", "evidence_ids": [], "reason": "Synthetic internal POC does not assert an industry claim."},
+          {"factor": "macroeconomic", "required": false, "status": "NOT_RELEVANT", "evidence_ids": [], "reason": "Synthetic internal POC does not assert a macroeconomic claim."},
+          {"factor": "microeconomic_and_unit_economics", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-unit"]},
+          {"factor": "recent_events_and_news", "required": false, "status": "UNKNOWN", "evidence_ids": []},
+          {"factor": "legal_and_regulatory", "required": false, "status": "UNKNOWN", "evidence_ids": []},
+          {"factor": "technology_and_security", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-technology"]},
+          {"factor": "organization_and_change", "required": true, "status": "ASSESSED", "evidence_ids": ["evidence-organization"]}
+        ],
+        "evidence": [
+          {"id": "evidence-users", "factor": "users_and_customers", "observation": "Synthetic fixture: one user group reports repeated manual handoff pain.", "source_ref": "sample:research/users", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 0.9},
+          {"id": "evidence-operations", "factor": "internal_operations", "observation": "Synthetic fixture: two problem patterns differ in severity and reach.", "source_ref": "sample:research/operations", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 0.9},
+          {"id": "evidence-market", "factor": "market_and_demand", "observation": "Synthetic fixture: severe problem has small addressable reach while another opportunity has broader reach.", "source_ref": "sample:research/market", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 0.9},
+          {"id": "evidence-alternatives", "factor": "competitors_and_alternatives", "observation": "Synthetic fixture: current manual and tool alternatives remain available.", "source_ref": "sample:research/alternatives", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 0.8},
+          {"id": "evidence-unit", "factor": "microeconomic_and_unit_economics", "observation": "Synthetic fixture: opportunity value depends on reachable users and adoption.", "source_ref": "sample:research/unit-economics", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 0.8},
+          {"id": "evidence-technology", "factor": "technology_and_security", "observation": "Synthetic fixture: local deterministic execution is feasible; live integrations are not approved.", "source_ref": "sample:research/technology", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 1.0},
+          {"id": "evidence-organization", "factor": "organization_and_change", "observation": "Synthetic fixture: broader opportunity has stronger sponsor and user motivation assumptions.", "source_ref": "sample:research/organization", "source_type": "synthetic_fixture", "version_or_date": "fixture-v1", "confidence": 0.8}
+        ],
+        "findings": {
+          "user_groups": [
+            {"id": "user-group-specialist", "name": "Small specialist group"},
+            {"id": "user-group-broad", "name": "Broader internal user group"}
+          ],
+          "risks": [
+            {"id": "risk-adoption", "name": "Low adoption motivation can erase opportunity value"}
+          ],
+          "problems": [
+            {"id": "problem-severe-small-reach", "user_group_id": "user-group-specialist", "impact": 5, "frequency": 5, "evidence_strength": 0.9, "evidence_ids": ["evidence-users", "evidence-market"]},
+            {"id": "problem-broad-opportunity", "user_group_id": "user-group-broad", "impact": 4, "frequency": 4, "evidence_strength": 0.95, "evidence_ids": ["evidence-operations", "evidence-unit", "evidence-organization"]}
+          ],
+          "opportunities": [
+            {"id": "opportunity-severe-small-reach", "problem_id": "problem-severe-small-reach", "addressable_value_or_reach": 1, "user_motivation": 2, "strategic_fit": 3, "differentiation": 2, "feasibility": 4, "timing": 3, "risk_penalty": 0.1},
+            {"id": "opportunity-broad-reach", "problem_id": "problem-broad-opportunity", "addressable_value_or_reach": 5, "user_motivation": 5, "strategic_fit": 4, "differentiation": 4, "feasibility": 5, "timing": 4, "risk_penalty": 0.1}
+          ]
+        },
+        "ranking_method": {
+          "id": "problem_then_opportunity_then_risk",
+          "problem_formula": "impact_x_frequency_x_evidence_strength",
+          "opportunity_factors": ["addressable_value_or_reach", "user_motivation", "strategic_fit", "differentiation", "feasibility", "timing"],
+          "risk_adjustment": true,
+          "version": "0.2.0"
+        }
+      },
+      "definition": {
+        "vision": "",
+        "problem_statement": "Synthetic fixture: broad internal users lose time in a repeated workflow.",
+        "personas": [{"id": "user-group-broad", "name": "Broader internal user group"}],
+        "customer_pain_points": [],
+        "constraints": ["Live integrations require explicit approval."],
+        "decision": "test",
+        "problem_evidence": ["evidence-operations", "evidence-unit", "evidence-organization"],
+        "selected_problem_ids": ["problem-broad-opportunity"],
+        "assumptions": ["Users will adopt a simpler approved workflow."],
+        "kpis": [{"id": "kpi-task-completion", "name": "Verified task completion", "baseline": null, "target": null, "unit": null, "measurement_source": null}],
+        "hypotheses": [
+          {"id": "hypothesis-broad-workflow", "problem_id": "problem-broad-opportunity", "user_group_id": "user-group-broad", "change": "offer one bounded guided workflow", "expected_outcome": "reduce repeated manual effort", "primary_metric": "verified task completion", "status": "DRAFT"}
+        ]
+      },
+      "market": {
+        "tam": null,
+        "sam": null,
+        "som": null,
+        "competitors": [],
+        "unique_value_proposition": "",
+        "evidence_refs": ["evidence-market", "evidence-alternatives"]
+      },
+      "solution": {
+        "prioritization_method": "value_effort",
+        "prioritization_methods": ["moscow", "value_effort", "rice"],
+        "epics": [
+          {
+            "id": "epic-guided-handoff",
+            "title": "Bounded guided handoff",
+            "problem_id": "problem-broad-opportunity",
+            "opportunity_id": "opportunity-broad-reach",
+            "evidence_ids": ["evidence-operations", "evidence-unit", "evidence-organization"],
+            "moscow": "MUST",
+            "value": 5,
+            "effort": 2,
+            "reach": 5,
+            "impact": 4,
+            "confidence": 0.8
+          }
+        ],
+        "user_stories": [
+          {
+            "id": "story-guided-handoff",
+            "epic_id": "epic-guided-handoff",
+            "title": "As an internal user, I complete one evidence-linked guided handoff.",
+            "acceptance_criteria": ["Selected problem and evidence remain visible."],
+            "evidence_ids": ["evidence-operations"]
+          }
+        ],
+        "technical_requirements": [
+          {
+            "id": "requirement-local-boundary",
+            "story_id": "story-guided-handoff",
+            "description": "Keep deterministic local execution and explicit approval boundaries.",
+            "evidence_ids": ["evidence-technology"]
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "dependency-local-boundary",
+            "item_id": "requirement-local-boundary",
+            "depends_on_id": "story-guided-handoff"
+          }
+        ]
+      },
+      "gtm": {
+        "positioning": "One approved guided workflow for repeated internal handoffs.",
+        "target_segments": ["user-group-broad"],
+        "channels": ["internal-guided-onboarding"],
+        "pricing_or_internal_adoption_model": {
+          "kind": "internal_adoption",
+          "owner_role": "product-operations",
+          "approach": "guided onboarding with explicit feedback"
+        },
+        "experiments": [
+          {
+            "id": "experiment-guided-handoff",
+            "hypothesis_id": "hypothesis-broad-workflow",
+            "method": "bounded internal usability test",
+            "evidence_refs": ["evidence-operations", "evidence-organization"],
+            "success_metric_id": "metric-verified-completion"
+          }
+        ],
+        "launch_metrics": [
+          {
+            "id": "metric-verified-completion",
+            "name": "Verified task completion",
+            "baseline": null,
+            "target": null,
+            "measurement_source": "UNKNOWN"
+          }
+        ],
+        "required_fields_by_product_type": {
+          "internal": ["positioning", "target_segments", "channels", "pricing_or_internal_adoption_model", "experiments", "launch_metrics"],
+          "external": ["positioning", "target_segments", "channels", "pricing_or_internal_adoption_model", "experiments", "launch_metrics"]
+        },
+        "model_kind_by_product_type": {
+          "internal": "internal_adoption",
+          "external": "external_pricing"
+        }
+      },
+      "execution": {
+        "milestones": [
+          {"id": "milestone-usability", "name": "Bounded usability evidence", "exit_evidence_refs": ["evidence-operations"], "timing": "UNKNOWN"}
+        ],
+        "launch_phases": [
+          {"id": "phase-local-poc", "name": "Local POC", "status": "IN_PROGRESS"}
+        ],
+        "risks": [
+          {"id": "risk-live-integration", "severity": "HIGH", "status": "OPEN", "mitigation": "Keep live integration disabled until approval.", "evidence_refs": ["evidence-technology"]}
+        ],
+        "approvals": [
+          {"id": "approval-live-integration", "required": true, "status": "PENDING", "owner_role": "security-reviewer"}
+        ],
+        "evidence_refs": ["evidence-operations", "evidence-technology"]
+      },
+      "assistant": {
+        "enabled": true,
+        "context_mode": "current_section",
+        "allowed_context_modes": ["current_section", "full_product", "blueprint_rules"],
+        "allowed_patch_sections": ["definition", "solution", "gtm", "execution"],
+        "require_user_acceptance": true,
+        "show_sources": true,
+        "agent_selection": {
+          "candidate_scope": "all_approved",
+          "recommendation_limit": 3,
+          "rank_by": ["job_fit", "observed_evidence", "compatibility", "provenance", "security", "maintenance", "user_motivation"],
+          "github_stars_primary_signal": false,
+          "low_ranked_remain_discoverable": true
+        }
+      },
+      "readiness": {
+        "product_score": null,
+        "agent_fitness": null,
+        "scores_must_remain_separate": true,
+        "missing_items": [],
+        "rules_version": "1.0.0",
+        "checks": [
+          {"id": "definition", "kind": "definition_complete", "weight": 0.2, "blocker": true},
+          {"id": "research", "kind": "required_research_complete", "weight": 0.2, "blocker": true},
+          {"id": "solution", "kind": "solution_evidence_complete", "weight": 0.2, "blocker": true},
+          {"id": "gtm", "kind": "gtm_complete", "weight": 0.15, "blocker": false},
+          {"id": "execution", "kind": "execution_evidence_complete", "weight": 0.15, "blocker": true},
+          {"id": "approvals", "kind": "required_approvals_resolved", "weight": 0.1, "blocker": true}
+        ]
+      },
+      "exports": {
+        "formats": ["json", "markdown", "prd", "executive_brief"],
+        "preserve_unknowns": true,
+        "preserve_evidence": true,
+        "prd_templates": [
+          {
+            "id": "standard-ai-feature",
+            "version": "1.0.0",
+            "title": "PRD Template — Standard AI Feature",
+            "applies_when": "product includes an AI feature",
+            "mandatory_metadata": ["Owner", "Date", "Version", "Status"],
+            "mandatory_sections": [
+              {"number": 1, "title": "Problem", "guidance": "One paragraph. Named user, quantified pain, cited evidence. Use UNKNOWN rather than inventing missing facts."},
+              {"number": 2, "title": "Users (P1 → P3)", "table_columns": ["Persona", "Job to be Done", "Pain today"], "blank_rows": 3},
+              {"number": 3, "title": "What we are building", "guidance": "Feature scope in two sentences. No architecture or implementation."},
+              {"number": 4, "title": "What we are NOT building", "guidance": "Explicit non-goals preventing scope creep and boundary violations."},
+              {"number": 5, "title": "Success metrics", "table_columns": ["Metric", "Baseline", "Target", "Guardrail"], "blank_rows": 2},
+              {"number": 6, "title": "Model boundary specification", "fields": ["Recommends", "Does NOT decide", "Escalates when", "Refuses when"]},
+              {"number": 7, "title": "Human-in-the-loop specification", "fields": ["Who reviews (role, not person)", "Threshold for review", "Reviewer confidence gate", "Audit log fields"]},
+              {"number": 8, "title": "Eval specification", "fields": ["Golden test cases owned by", "Rubric weights (correctness / grounding / calibration / safety / auditability)", "Failure mode taxonomy", "Frequency of eval refresh"]},
+              {"number": 10, "title": "Risks", "table_columns": ["Risk", "Likelihood", "Impact", "Mitigation"], "blank_rows": 3}
+            ],
+            "optional_sections": [
+              {"number": 9, "title": "Trade-offs considered", "table_columns": ["Option", "Trade-off", "Chosen?", "Why"], "blank_rows": 2},
+              {"number": 11, "title": "Decision log (ADRs)", "fields": ["ADR-001 [date]", "ADR-002 [date]"]},
+              {"number": 12, "title": "Timeline", "guidance": "Optional until owner supplies milestones or dates. Never invent dates.", "table_columns": ["Milestone", "Exit evidence", "Timing (only if supplied)"], "blank_rows": 2}
+            ]
+          }
+        ]
+      },
+      "connections": {
+        "layer_a": {"enabled": false, "adapter_id": null},
+        "sso": {"enabled": false, "adapter_id": null},
+        "secret_store": {"enabled": false, "adapter_id": null},
+        "knowledge_sources": [],
+        "model_providers": [],
+        "mcp_servers": [],
+        "skills": [],
+        "plugins": []
+      },
+      "audit": {
+        "revision": 1,
+        "events": [],
+        "last_updated_by": "local-poc-owner-label"
+      },
+      "extensions": {
+      }
+    },
+    "user_experience": {
+      "mode": "guided_questions_and_insights",
+      "max_intake_characters": 1200,
+      "questions": [
+        {"id": "problem", "label": "What problem or idea are you exploring?", "guidance": "Describe pain, not solution architecture.", "required": true, "max_characters": 400},
+        {"id": "users", "label": "Who experiences this problem?", "guidance": "Name user group or write UNKNOWN.", "required": true, "max_characters": 250},
+        {"id": "evidence", "label": "What evidence or observations do you already have?", "guidance": "Citations, interviews, data, or UNKNOWN.", "required": false, "max_characters": 300},
+        {"id": "constraints", "label": "What constraints or risks matter?", "guidance": "Security, legal, cost, timing, adoption, or UNKNOWN.", "required": false, "max_characters": 150},
+        {"id": "decision", "label": "What decision should this research support?", "guidance": "Example: test, reject, narrow, or proceed.", "required": true, "max_characters": 100}
+      ],
+      "insight_outputs": [
+        "research_factor_coverage",
+        "evidence_quality_and_unknowns",
+        "ranked_problem",
+        "separate_opportunity_score",
+        "risks",
+        "safe_next_test",
+        "model_comparison_and_feedback",
+        "standard_ai_feature_prd"
+      ]
+    },
+    "e2e_evaluation": {
+      "id": "expense-product-research-comparison",
+      "version": "1.1.0",
+      "task": "A product owner struggles to track food, shopping, POS, movies, and other expenses across several statements. Manual categorization is difficult. Some alternatives may have performance or security concerns. Research whether there is an evidence-backed problem and worthwhile opportunity before proposing a hypothesis. Do not invent current facts, market size, competitor behavior, law, dates, or metrics. Use UNKNOWN where evidence is unavailable. Never request or include real bank statements, account numbers, card numbers, credentials, or private financial data.",
+      "required_research_factors": [
+        "users_and_customers",
+        "internal_operations",
+        "market_and_demand",
+        "competitors_and_alternatives",
+        "industry_and_value_chain",
+        "macroeconomic",
+        "microeconomic_and_unit_economics",
+        "recent_events_and_news",
+        "legal_and_regulatory",
+        "technology_and_security",
+        "organization_and_change"
+      ],
+      "required_risk_categories": ["privacy", "security", "performance", "legal", "adoption"],
+      "execution_profile": {
+        "id": "free-browser-model-compact",
+        "prompt_mode": "compact_free_plan",
+        "max_prompt_characters": 5000,
+        "target_response_characters": 10000,
+        "hard_response_bytes": 50000,
+        "max_evidence_records": 5,
+        "max_unknowns": 5,
+        "max_total_rounds": 2,
+        "parallel_research_preferred": true
+      },
+      "output_schema": {
+        "agent": "model label",
+        "research_factors": [
+          {
+            "factor": "users_and_customers",
+            "status": "UNKNOWN",
+            "evidence_ids": []
+          }
+        ],
+        "evidence": [
+          {
+            "id": "E1",
+            "claim": "UNKNOWN",
+            "source_ref": "UNKNOWN",
+            "source_status": "UNKNOWN"
+          }
+        ],
+        "user_groups": [
+          {
+            "id": "U1",
+            "name": "text",
+            "motivation": "UNKNOWN",
+            "evidence_ids": [
+              "E1"
+            ]
+          }
+        ],
+        "problems": [
+          {
+            "id": "P1",
+            "user_group_id": "U1",
+            "impact": 1,
+            "frequency": 1,
+            "evidence_strength": 0.0,
+            "evidence_ids": [
+              "E1"
+            ]
+          }
+        ],
+        "opportunities": [
+          {
+            "id": "O1",
+            "problem_id": "P1",
+            "addressable_value_or_reach": 1,
+            "user_motivation": 1,
+            "strategic_fit": 1,
+            "differentiation": 1,
+            "feasibility": 1,
+            "timing": 1,
+            "risks": [
+              "privacy"
+            ]
+          }
+        ],
+        "selected_problem_id": "P1",
+        "hypothesis": {
+          "problem_id": "P1",
+          "user_group_id": "U1",
+          "change": "text",
+          "expected_outcome": "text",
+          "primary_metric": "UNKNOWN",
+          "unknowns": [
+            "text"
+          ]
+        },
+        "risks": [
+          {
+            "category": "privacy",
+            "description": "text",
+            "evidence_ids": [
+              "E1"
+            ]
+          }
+        ],
+        "next_test": {
+          "type": "text",
+          "uses_synthetic_data": true,
+          "success_measure": "text"
+        },
+        "unknowns": [
+          "text"
+        ]
+      }
+    },
+    "infeasible_without_approved_integration": [
+      "Live market, competitor, macroeconomic, industry, news, legal, or regulatory research",
+      "Real LLM or external agent execution",
+      "Remote MCP, A2A, plugin, skill, model, cloud, email, or GitHub actions",
+      "Automatic synchronization between AI products or companies",
+      "Authenticated enterprise SSO, RBAC, approvals, or secret-store retrieval",
+      "Safe execution of pasted, downloaded, or unknown code",
+      "Durable distributed parallel workers, queues, checkpoints, and recovery",
+      "Production database, portfolio UI, collaboration, monitoring, backup, or certification",
+      "Legal, security, compliance, market, or investment approval",
+      "Proof that GitHub stars, popularity, or declared skills equal user motivation or capability"
+    ]
+  }
+}
