@@ -19,27 +19,45 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from html.parser import HTMLParser
 from pathlib import Path
-from threading import RLock
-from typing import Any
-from urllib.parse import urlparse
+from threading import BoundedSemaphore, RLock
+from typing import Any, Callable
+from urllib.parse import urlparse, parse_qs
 from uuid import UUID, uuid4
 
+from layer_a_build import (
+    BUILD_PHASE_FAILED,
+    BUILD_PHASE_NOT_STARTED,
+    BUILD_PHASE_READY,
+    EphemeralBuildManager,
+)
+from layer_a_terminal import TerminalExecService
 
 BUNDLE_FILES = frozenset(
     {
         "AGENTS.md",
+        "CONTEXT.md",
         "index.html",
         "layer_a.py",
+        "layer_a_build.py",
         "layer_a_config.json",
+        "layer_a_terminal.py",
         "test_layer_a.py",
     }
 )
 EMBEDDED_RESOURCE_FILES = frozenset(
-    {"plugin.json", "mcp.json", "skills/product-discovery/SKILL.md"}
+    {
+        "plugin.json",
+        "mcp.json",
+        "skills/product-discovery/SKILL.md",
+        "skills/token-optimizer/SKILL.md",
+    }
 )
 IGNORED_LOCAL_NAMES = frozenset(
     {".git", ".claude", ".DS_Store", ".layer-a-state", ".pytest_cache", "__pycache__"}
 )
+# Markdown under docs/ is reported by validate but never hashed and never packaged,
+# so the bundle fingerprint stays stable when documentation changes.
+DOCS_DIRNAME = "docs"
 SENSITIVE_KEYS = frozenset(
     {
         "account_number", "api_key", "authorization", "bank_account", "card_number",
@@ -56,6 +74,195 @@ EVIDENCE_STATES = frozenset({"VALIDATED", "PARTIAL", "NOT_IMPLEMENTED", "EXTERNA
 AGENT_PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
 AGENT_PLUGIN_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
 PLUGIN_TRUST_STATES = ("VERIFIED", "UNSIGNED", "INVALID")
+
+MCP_SERVER_SCHEMA = (
+    "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json"
+)
+EXTENSION_KINDS = ("design_system", "skill", "mcp_server")
+EXTENSION_SCOPES = ("global", "project")
+EXTENSION_STATES = ("available", "staged", "enabled", "disabled")
+# Token values are written into generated artifacts, so only CSS-safe literals pass.
+EXTENSION_TOKEN_NAME = re.compile(r"^--[a-z0-9]([a-z0-9-]{0,46}[a-z0-9])$")
+EXTENSION_TOKEN_VALUE = re.compile(r"^[#A-Za-z0-9 ,.%()/_-]{1,72}$")
+EXTENSION_ID_PATTERN = re.compile(r"^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?$")
+
+
+def _design_system(
+    entry_id: str, title: str, steward: str, origin: str, source_url: str,
+    tokens: dict[str, str], note: str,
+) -> dict[str, Any]:
+    return {
+        "id": entry_id, "kind": "design_system", "title": title,
+        "steward": steward, "origin": origin, "source_url": source_url,
+        "description": note, "tokens": tokens,
+        "requested_permissions": ("write generated artifact tokens",),
+        "secret_refs": (),
+    }
+
+
+# Preconfigured entries the user may enable. `source_url` is provenance text only:
+# nothing here is ever fetched, which is what keeps network_policy "deny" truthful.
+# Entries with an empty `tokens` map render "Tokens not supplied" and cannot be enabled.
+EXTENSION_CATALOG: tuple[dict[str, Any], ...] = (
+    _design_system(
+        "geist", "Geist", "Vercel", "corporate", "https://vercel.com/geist",
+        {"--radius-sm": "4px", "--radius-md": "6px", "--radius-pill": "9999px",
+         "--ink": "#171717", "--canvas": "#fafafa", "--border": "#ebebeb"},
+        "Tight radii, near-black ink, hairline borders.",
+    ),
+    _design_system(
+        "material3", "Material Design 3", "Google", "open_source",
+        "https://m3.material.io",
+        {"--radius-sm": "8px", "--radius-md": "12px", "--radius-pill": "9999px",
+         "--ink": "#1d1b20", "--canvas": "#fef7ff", "--border": "#cac4d0"},
+        "Large radii and tonal surfaces.",
+    ),
+    _design_system(
+        "carbon", "Carbon", "IBM", "corporate", "https://carbondesignsystem.com",
+        {"--radius-sm": "0px", "--radius-md": "0px", "--radius-pill": "0px",
+         "--ink": "#161616", "--canvas": "#f4f4f4", "--border": "#e0e0e0"},
+        "Square corners are the signature; radius is zero by intent.",
+    ),
+    _design_system(
+        "primer", "Primer", "GitHub", "corporate", "https://primer.style",
+        {"--radius-sm": "4px", "--radius-md": "6px", "--radius-pill": "9999px",
+         "--ink": "#1f2328", "--canvas": "#ffffff", "--border": "#d1d9e0"},
+        "Dense, text-first, low-chrome.",
+    ),
+    _design_system(
+        "fluent", "Fluent 2", "Microsoft", "corporate",
+        "https://fluent2.microsoft.design",
+        {"--radius-sm": "2px", "--radius-md": "4px", "--radius-pill": "9999px",
+         "--ink": "#242424", "--canvas": "#faf9f8", "--border": "#e1dfdd"},
+        "Smallest radii of the set; warm neutral canvas.",
+    ),
+    _design_system(
+        "polaris", "Polaris", "Shopify", "corporate", "https://polaris.shopify.com",
+        {"--radius-sm": "6px", "--radius-md": "8px", "--radius-pill": "9999px",
+         "--ink": "#202223", "--canvas": "#f6f6f7", "--border": "#e1e3e5"},
+        "Admin-console proportions.",
+    ),
+    _design_system(
+        "antd", "Ant Design", "Ant Group", "open_source", "https://ant.design",
+        {"--radius-sm": "4px", "--radius-md": "6px", "--radius-pill": "9999px",
+         "--ink": "#000000", "--canvas": "#ffffff", "--border": "#d9d9d9"},
+        "High-density enterprise defaults.",
+    ),
+    _design_system(
+        "shadcn", "shadcn/ui", "shadcn", "open_source", "https://ui.shadcn.com",
+        {"--radius-sm": "6px", "--radius-md": "8px", "--radius-pill": "9999px",
+         "--ink": "#0a0a0a", "--canvas": "#ffffff", "--border": "#e5e5e5"},
+        "Copy-in components; only the token layer is referenced here.",
+    ),
+    _design_system(
+        "cloudscape", "Cloudscape", "AWS", "corporate", "https://cloudscape.design",
+        {}, "Listed for provenance. Token values not recorded locally.",
+    ),
+    _design_system(
+        "chakra", "Chakra UI", "Chakra community", "open_source",
+        "https://chakra-ui.com",
+        {}, "Listed for provenance. Token values not recorded locally.",
+    ),
+    {
+        "id": "web-interface-guidelines", "kind": "skill",
+        "title": "Web interface guidelines", "steward": "local",
+        "origin": "local", "source_url": "",
+        "description": "Offline rule set for interface review. No network.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "ui-review", "kind": "skill", "title": "UI review",
+        "steward": "local", "origin": "local", "source_url": "",
+        "description": "Measurement scripts against a running local page.",
+        "tokens": {},
+        "requested_permissions": ("read project files", "read local page"),
+        "secret_refs": (),
+    },
+    {
+        "id": "caveman", "kind": "skill", "title": "Caveman",
+        "steward": "juliusbrussee", "origin": "open_source",
+        "source_url": "https://github.com/juliusbrussee/caveman",
+        "description": "Response-compression style. Pasted URL is provenance only.",
+        "tokens": {},
+        "requested_permissions": ("none",), "secret_refs": (),
+    },
+    {
+        "id": "graphify", "kind": "skill", "title": "Graphify",
+        "steward": "Graphify-Labs", "origin": "open_source",
+        "source_url": "https://github.com/Graphify-Labs/graphify",
+        "description": (
+            "Builds a queryable knowledge graph from a codebase by local AST parsing. "
+            "Listed for provenance; not vetted or installed here."
+        ),
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "remark", "kind": "skill", "title": "Remark",
+        "steward": "remarkjs", "origin": "open_source",
+        "source_url": "https://github.com/remarkjs/remark",
+        "description": "AST parser, component section mapping, and HTML compiler. Provenance only; not fetched.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "markdown-it", "kind": "skill", "title": "markdown-it",
+        "steward": "markdown-it", "origin": "open_source",
+        "source_url": "https://github.com/markdown-it/markdown-it",
+        "description": "Fast browser-native markdown preview renderer. Provenance only; not fetched.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "pandoc-wasm", "kind": "skill", "title": "Pandoc WASM",
+        "steward": "pandoc", "origin": "open_source",
+        "source_url": "https://github.com/pandoc/pandoc-wasm",
+        "description": "Standalone single-file document packager. Provenance only; not fetched.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "product-discovery", "kind": "skill", "title": "Product discovery",
+        "steward": "local", "origin": "embedded", "source_url": "",
+        "description": "Bundled skill. Already validated by the plugin report.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "token-optimizer", "kind": "skill", "title": "Token optimizer",
+        "steward": "local", "origin": "embedded", "source_url": "",
+        "description": "Bundled skill. Already validated by the plugin report.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "filesystem", "kind": "mcp_server", "title": "Filesystem",
+        "steward": "Anthropic", "origin": "open_source",
+        "source_url": "https://github.com/anthropics",
+        "description": "Scoped local file access. Identifier only; never fetched.",
+        "tokens": {},
+        "requested_permissions": ("read project files", "write project files"),
+        "secret_refs": (),
+    },
+    {
+        "id": "git", "kind": "mcp_server", "title": "Git",
+        "steward": "Anthropic", "origin": "open_source",
+        "source_url": "https://github.com/anthropics",
+        "description": "Local repository inspection. Identifier only; never fetched.",
+        "tokens": {},
+        "requested_permissions": ("read project files",), "secret_refs": (),
+    },
+    {
+        "id": "memory", "kind": "mcp_server", "title": "Memory",
+        "steward": "Anthropic", "origin": "open_source",
+        "source_url": "https://github.com/anthropics",
+        "description": "Durable notes across sessions. Identifier only; never fetched.",
+        "tokens": {},
+        "requested_permissions": ("read local state", "write local state"),
+        "secret_refs": (),
+    },
+)
 PLUGIN_MANIFEST_FIELDS = frozenset(
     {
         "$schema", "name", "version", "description", "author", "homepage",
@@ -95,7 +302,7 @@ CLAIM_PATTERNS = {
     ),
 }
 FRONTEND_FORBIDDEN_RUNTIME_PATTERNS = (
-    ("absolute remote URL", re.compile(r"https?://", re.IGNORECASE)),
+    ("absolute remote URL", re.compile(r"(?:src|href|action)\s*=\s*['\"]https?://", re.IGNORECASE)),
     ("protocol-relative remote URL", re.compile(r"(?:src|href)\s*=\s*['\"]//", re.IGNORECASE)),
     ("external script dependency", re.compile(r"<script\b[^>]*\bsrc\s*=", re.IGNORECASE)),
     ("external stylesheet dependency", re.compile(r"<link\b[^>]*\bhref\s*=", re.IGNORECASE)),
@@ -2457,6 +2664,301 @@ class SQLiteGovernanceGateway:
         }
 
 
+class ProfileStore:
+    """Single-user workspace profile persisted in SQLite — role, workplace, goal."""
+
+    _ALLOWED_ROLES = frozenset({
+        "Founder", "Product Manager", "Designer",
+        "Software Engineer", "Marketer", "Student",
+    })
+    _ALLOWED_WORKPLACES = frozenset({
+        "Solo / Indie", "Early Startup", "Small Team (<50)",
+        "Mid/Large Enterprise", "Agency",
+    })
+    _ALLOWED_GOALS = frozenset({
+        "Validate Problem & PRD", "Build Live Prototype",
+        "Save 70% API Spend", "Auto Specs",
+    })
+
+    def __init__(self, db_path: str | Path) -> None:
+        self.db_path = Path(db_path).expanduser().resolve()
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS user_profile "
+                "(id INTEGER PRIMARY KEY, role TEXT, workplace TEXT, "
+                "goal TEXT, updated_at TEXT)"
+            )
+            conn.commit()
+
+    def load(self) -> dict[str, Any]:
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute(
+                "SELECT role, workplace, goal, updated_at FROM user_profile "
+                "ORDER BY id DESC LIMIT 1"
+            ).fetchone()
+        if row is None:
+            return {"role": None, "workplace": None, "goal": None, "updated_at": None}
+        return dict(row)
+
+    def save(self, role: str, workplace: str, goal: str) -> dict[str, Any]:
+        if role not in self._ALLOWED_ROLES:
+            raise ValueError(f"role not allowed: {role!r}")
+        if workplace not in self._ALLOWED_WORKPLACES:
+            raise ValueError(f"workplace not allowed: {workplace!r}")
+        if goal not in self._ALLOWED_GOALS:
+            raise ValueError(f"goal not allowed: {goal!r}")
+        now = datetime.now(timezone.utc).isoformat()
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            conn.execute(
+                "INSERT INTO user_profile (role, workplace, goal, updated_at) "
+                "VALUES (?, ?, ?, ?)",
+                (role, workplace, goal, now),
+            )
+            conn.commit()
+        return {"role": role, "workplace": workplace, "goal": goal, "updated_at": now}
+
+
+def _validate_extension_tokens(tokens: Any) -> dict[str, str]:
+    if not isinstance(tokens, dict):
+        raise ValueError("extension tokens must be an object")
+    checked: dict[str, str] = {}
+    for name, value in tokens.items():
+        if not isinstance(name, str) or not EXTENSION_TOKEN_NAME.match(name):
+            raise ValueError(f"token name not allowed: {name!r}")
+        if not isinstance(value, str) or not EXTENSION_TOKEN_VALUE.match(value):
+            raise ValueError(f"token value not allowed for {name}: {value!r}")
+        checked[name] = value
+    return checked
+
+
+def _extension_fingerprint(entry: dict[str, Any]) -> str:
+    payload = json.dumps(
+        {
+            "id": entry["id"], "kind": entry["kind"], "steward": entry["steward"],
+            "source_url": entry.get("source_url", ""),
+            "tokens": dict(sorted(entry.get("tokens", {}).items())),
+        },
+        sort_keys=True, separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+
+class ExtensionStore:
+    """Scoped enable/disable state for catalog and user-added extensions.
+
+    Project scope shadows global scope — it never merges, so a project row that
+    overrides a global one says so rather than silently winning.
+    """
+
+    def __init__(self, db_path: str | Path) -> None:
+        raw_path = Path(db_path).expanduser()
+        if raw_path.is_symlink():
+            raise ConfigError("extension store path cannot be a symlink")
+        self.db_path = raw_path.resolve()
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS workspace_extensions ("
+                "workspace_id TEXT NOT NULL, scope TEXT NOT NULL, "
+                "extension_id TEXT NOT NULL, kind TEXT NOT NULL, "
+                "state TEXT NOT NULL, trust TEXT NOT NULL, "
+                "entry_json TEXT NOT NULL, updated_at TEXT NOT NULL, "
+                "PRIMARY KEY (workspace_id, scope, extension_id))"
+            )
+            conn.commit()
+
+    @staticmethod
+    def _now() -> str:
+        return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    def _rows(self, workspace_id: str) -> dict[tuple[str, str], dict[str, Any]]:
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT scope, extension_id, kind, state, trust, entry_json, updated_at "
+                "FROM workspace_extensions WHERE workspace_id = ?",
+                (workspace_id,),
+            ).fetchall()
+        return {(row["scope"], row["extension_id"]): dict(row) for row in rows}
+
+    def list(self, workspace_id: str, scope: str = "project") -> dict[str, Any]:
+        if scope not in EXTENSION_SCOPES:
+            raise ValueError(f"scope not allowed: {scope!r}")
+        rows = self._rows(workspace_id)
+        catalog = {entry["id"]: entry for entry in EXTENSION_CATALOG}
+        for (_row_scope, extension_id), row in rows.items():
+            if extension_id not in catalog:
+                catalog[extension_id] = json.loads(row["entry_json"])
+        entries: list[dict[str, Any]] = []
+        for extension_id in sorted(catalog):
+            entry = catalog[extension_id]
+            project_row = rows.get(("project", extension_id))
+            global_row = rows.get(("global", extension_id))
+            active = project_row or global_row
+            tokens = dict(entry.get("tokens", {}))
+            entries.append({
+                "id": extension_id,
+                "kind": entry["kind"],
+                "title": entry["title"],
+                "steward": entry["steward"],
+                "origin": entry["origin"],
+                "description": entry["description"],
+                "source_url": entry.get("source_url", ""),
+                "network_fetched": False,
+                "scope": active["scope"] if active else scope,
+                "state": active["state"] if active else "available",
+                "trust": active["trust"] if active else "UNSIGNED",
+                "requested_permissions": list(entry.get("requested_permissions", ())),
+                "secret_refs": list(entry.get("secret_refs", ())),
+                "tokens": tokens,
+                "tokens_supplied": bool(tokens),
+                "enableable": bool(tokens) or entry["kind"] != "design_system",
+                "fingerprint": _extension_fingerprint(entry),
+                "overrides_global": bool(project_row and global_row),
+                "updated_at": active["updated_at"] if active else None,
+            })
+        return {
+            "status": "PASS",
+            "scope": scope,
+            "schema": MCP_SERVER_SCHEMA,
+            "network_used": False,
+            "kinds": list(EXTENSION_KINDS),
+            "scopes": list(EXTENSION_SCOPES),
+            "entries": entries,
+        }
+
+    def _entry_for(self, workspace_id: str, extension_id: str) -> dict[str, Any]:
+        for entry in EXTENSION_CATALOG:
+            if entry["id"] == extension_id:
+                return entry
+        rows = self._rows(workspace_id)
+        for scope in ("project", "global"):
+            row = rows.get((scope, extension_id))
+            if row is not None:
+                return json.loads(row["entry_json"])
+        raise ValueError(f"unknown extension: {extension_id!r}")
+
+    def set_state(
+        self, workspace_id: str, extension_id: str, scope: str, state: str,
+    ) -> dict[str, Any]:
+        if scope not in EXTENSION_SCOPES:
+            raise ValueError(f"scope not allowed: {scope!r}")
+        if state not in EXTENSION_STATES:
+            raise ValueError(f"state not allowed: {state!r}")
+        entry = self._entry_for(workspace_id, extension_id)
+        tokens = _validate_extension_tokens(entry.get("tokens", {}))
+        if state == "enabled" and entry["kind"] == "design_system" and not tokens:
+            raise ValueError(
+                f"{extension_id} has no recorded tokens and cannot be enabled"
+            )
+        disabled: list[str] = []
+        now = self._now()
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            if state == "enabled" and entry["kind"] == "design_system":
+                # Exactly one design system per scope, and say which one lost.
+                for row in conn.execute(
+                    "SELECT extension_id FROM workspace_extensions WHERE "
+                    "workspace_id = ? AND scope = ? AND kind = ? AND state = ? "
+                    "AND extension_id != ?",
+                    (workspace_id, scope, "design_system", "enabled", extension_id),
+                ).fetchall():
+                    disabled.append(row[0])
+                if disabled:
+                    conn.executemany(
+                        "UPDATE workspace_extensions SET state = ?, updated_at = ? "
+                        "WHERE workspace_id = ? AND scope = ? AND extension_id = ?",
+                        [("disabled", now, workspace_id, scope, i) for i in disabled],
+                    )
+            conn.execute(
+                "INSERT INTO workspace_extensions (workspace_id, scope, extension_id, "
+                "kind, state, trust, entry_json, updated_at) VALUES (?,?,?,?,?,?,?,?) "
+                "ON CONFLICT(workspace_id, scope, extension_id) DO UPDATE SET "
+                "state = excluded.state, updated_at = excluded.updated_at",
+                (
+                    workspace_id, scope, extension_id, entry["kind"], state, "UNSIGNED",
+                    json.dumps(entry, sort_keys=True), now,
+                ),
+            )
+            conn.commit()
+        return {
+            "status": "PASS", "id": extension_id, "scope": scope, "state": state,
+            "trust": "UNSIGNED", "disabled_by_this_change": disabled,
+            "network_used": False, "updated_at": now,
+        }
+
+    def add(self, workspace_id: str, scope: str, payload: dict[str, Any]) -> dict[str, Any]:
+        if scope not in EXTENSION_SCOPES:
+            raise ValueError(f"scope not allowed: {scope!r}")
+        extension_id = str(payload.get("id", "")).strip().lower()
+        if not EXTENSION_ID_PATTERN.match(extension_id):
+            raise ValueError(f"extension id not allowed: {extension_id!r}")
+        kind = str(payload.get("kind", ""))
+        if kind not in EXTENSION_KINDS:
+            raise ValueError(f"kind not allowed: {kind!r}")
+        if any(entry["id"] == extension_id for entry in EXTENSION_CATALOG):
+            raise ValueError(f"{extension_id} is a catalog entry and cannot be replaced")
+        source_url = str(payload.get("source_url", "")).strip()
+        if source_url:
+            parsed = urlparse(source_url)
+            if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+                raise ValueError("source_url must be an http or https URL")
+        entry = {
+            "id": extension_id, "kind": kind,
+            "title": str(payload.get("title") or extension_id)[:80],
+            "steward": str(payload.get("steward") or "user")[:80],
+            "origin": "user_added", "source_url": source_url,
+            "description": str(payload.get("description") or "Added by the user.")[:240],
+            "tokens": _validate_extension_tokens(payload.get("tokens") or {}),
+            "requested_permissions": [
+                str(item)[:80] for item in (payload.get("requested_permissions") or [])
+            ],
+            "secret_refs": [
+                str(item)[:80] for item in (payload.get("secret_refs") or [])
+            ],
+        }
+        now = self._now()
+        with closing(sqlite3.connect(self.db_path, timeout=5)) as conn:
+            conn.execute(
+                "INSERT INTO workspace_extensions (workspace_id, scope, extension_id, "
+                "kind, state, trust, entry_json, updated_at) VALUES (?,?,?,?,?,?,?,?) "
+                "ON CONFLICT(workspace_id, scope, extension_id) DO UPDATE SET "
+                "entry_json = excluded.entry_json, updated_at = excluded.updated_at",
+                (
+                    workspace_id, scope, extension_id, kind, "staged", "UNSIGNED",
+                    json.dumps(entry, sort_keys=True), now,
+                ),
+            )
+            conn.commit()
+        return {
+            "status": "STAGED", "id": extension_id, "scope": scope, "state": "staged",
+            "trust": "UNSIGNED", "network_used": False,
+            "fingerprint": _extension_fingerprint(entry),
+            "source_url_fetched": False, "updated_at": now,
+        }
+
+    def remove(self, workspace_id: str, extension_id: str, scope: str) -> dict[str, Any]:
+        """Reversible by design: disable and keep the row so rollback is one click."""
+        return self.set_state(workspace_id, extension_id, scope, "disabled")
+
+    def active_tokens(self, workspace_id: str) -> dict[str, Any]:
+        rows = self._rows(workspace_id)
+        for scope in ("project", "global"):
+            for (row_scope, extension_id), row in sorted(rows.items()):
+                if row_scope != scope or row["kind"] != "design_system":
+                    continue
+                if row["state"] != "enabled":
+                    continue
+                entry = json.loads(row["entry_json"])
+                return {
+                    "id": extension_id, "scope": scope,
+                    "steward": entry["steward"],
+                    "tokens": _validate_extension_tokens(entry.get("tokens", {})),
+                }
+        return {"id": None, "scope": None, "steward": None, "tokens": {}}
+
+
 class SQLiteProductBlueprintStore:
     """Workspace-isolated optimistic-revision store for canonical Product Blueprints."""
 
@@ -2521,9 +3023,12 @@ class SQLiteProductBlueprintStore:
     @staticmethod
     def _record(row: sqlite3.Row) -> dict[str, Any]:
         blueprint = json.loads(row["blueprint_json"])
+        name = blueprint.get("product", {}).get("name") or row["product_id"]
         return {
             "workspace_id": row["workspace_id"],
             "product_id": row["product_id"],
+            "name": name,
+            "type": blueprint.get("product", {}).get("type", "internal"),
             "revision": row["revision"],
             "owner": row["owner"],
             "lifecycle_phase": row["lifecycle_phase"],
@@ -2779,6 +3284,7 @@ def load_config(path: str | Path) -> dict[str, Any]:
 
 def validate_config(config: dict[str, Any]) -> dict[str, Any]:
     platform = _object(config, "platform")
+    handoff_contract = _object(config, "handoff_contract")
     policy = _object(config, "policy")
     governance = _object(config, "governance")
     byok_registry = _object(config, "byok_registry")
@@ -2809,6 +3315,7 @@ def validate_config(config: dict[str, Any]) -> dict[str, Any]:
         raise ConfigError("policy.unknown_code_execution must remain deny")
     if policy.get("raw_secrets") != "deny":
         raise ConfigError("policy.raw_secrets must remain deny")
+    _validate_handoff_contract(handoff_contract)
     _validate_governance_config(governance)
     _validate_byok_registry_config(byok_registry)
     _validate_extension_registry_config(extension_registry)
@@ -2903,6 +3410,168 @@ def validate_config(config: dict[str, Any]) -> dict[str, Any]:
     _validate_agent_plugin_config(_object(config, "agent_plugin"))
     _validate_part_b(_object(config, "part_b"))
     return config
+
+
+def _validate_handoff_contract(value: dict[str, Any]) -> None:
+    """Keep eight-file authority, product ownership, and future-provider choices explicit."""
+
+    if (
+        value.get("id") != "pi-eight-file-authority"
+        or value.get("version") != "1.0.0"
+        or value.get("status") != "AUTHORITATIVE_LOCAL_HANDOFF"
+    ):
+        raise ConfigError("handoff contract identity or status is invalid")
+
+    authority = _object(value, "authority")
+    source_files = _string_list(authority.get("source_files"), "handoff authority source_files")
+    if source_files != sorted(BUNDLE_FILES):
+        raise ConfigError("handoff authority must name exactly the bundle source files")
+    if authority.get("exact_source_file_count") != len(BUNDLE_FILES):
+        raise ConfigError(f"handoff authority source file count must equal {len(BUNDLE_FILES)}")
+    for key in ("sibling_dependency", "absolute_path_dependency", "new_source_files_allowed"):
+        if authority.get(key) is not False:
+            raise ConfigError(f"handoff authority {key} must remain false")
+    if authority.get("generated_state_is_transfer_source") is not False:
+        raise ConfigError("generated state cannot become transfer source")
+    _string_list(authority.get("generated_local_artifacts"), "handoff generated artifacts")
+    _string_list(authority.get("precedence"), "handoff precedence")
+
+    product = _object(value, "product")
+    if product.get("brand") != "PI" or product.get("assistant") != "Ping":
+        raise ConfigError("handoff product brand must remain PI with Ping")
+    if (
+        product.get("single_user") is not True
+        or product.get("end_user_rbac") is not False
+        or product.get("owner_onboarding_field") is not False
+    ):
+        raise ConfigError("handoff product must remain single-user without owner/RBAC onboarding")
+    apps = product.get("apps")
+    expected_apps = {
+        "foundation": "Frame idea",
+        "product": "Design product",
+        "assistant": "Ask Ping",
+        "advanced": "Advanced",
+    }
+    if not isinstance(apps, list) or len(apps) != len(expected_apps):
+        raise ConfigError("handoff product must define four apps")
+    if {item.get("id"): item.get("label") for item in apps if isinstance(item, dict)} != expected_apps:
+        raise ConfigError("handoff four-app ownership is invalid")
+    for item in apps:
+        _string_list(item.get("owns"), f"handoff app {item.get('id')} ownership")
+    _string_list(product.get("target_journey"), "handoff target journey")
+    _string_list(product.get("required_artifacts"), "handoff required artifacts")
+    primitives = _string_list(product.get("generic_primitives"), "handoff generic primitives")
+    if primitives != [
+        "Knowledge", "Memory", "Decisions", "Workflow", "Approvals",
+        "Automation", "AI Interaction", "Execution",
+    ]:
+        raise ConfigError("handoff must preserve eight generic primitives")
+
+    build_agent = _object(value, "build_agent")
+    if build_agent.get("preferred_family") != "Gemini" or build_agent.get("role") != "build-time-only":
+        raise ConfigError("Gemini must remain a build-time agent, not runtime provider")
+    if (
+        build_agent.get("read_agents_first") is not True
+        or build_agent.get("baseline_before_edit") is not True
+        or build_agent.get("execution_evidence_required") is not True
+        or build_agent.get("claim_local_shell_without_connected_tool") is not False
+        or build_agent.get("runtime_provider_authority") is not False
+    ):
+        raise ConfigError("build-agent evidence and authority boundary is invalid")
+    _string_list(build_agent.get("supported_context_surfaces"), "handoff build-agent surfaces")
+    _text(build_agent.get("autonomy"), "handoff build-agent autonomy")
+    _string_list(build_agent.get("stop_for_human"), "handoff build-agent stop gates")
+
+    runtime_ai = _object(value, "runtime_ai")
+    if (
+        runtime_ai.get("name") != "Ping"
+        or runtime_ai.get("current_mode") != "deterministic-local-mock"
+        or runtime_ai.get("provider_policy") != "provider-neutral-BYOK"
+        or runtime_ai.get("provider_selection") is not None
+        or runtime_ai.get("provider_preference") is not None
+    ):
+        raise ConfigError("Ping runtime provider must remain unselected and local-mock")
+    if (
+        runtime_ai.get("silent_live_fallback") is not False
+        or runtime_ai.get("browser_secret_storage") is not False
+        or runtime_ai.get("secret_storage") != "external-vault-reference-only"
+    ):
+        raise ConfigError("Ping provider or secret boundary is invalid")
+    candidates = runtime_ai.get("candidates")
+    expected_candidates = {"google-gemini", "xai-grok", "nvidia-nim", "other-provider"}
+    if not isinstance(candidates, list) or {
+        item.get("id") for item in candidates if isinstance(item, dict)
+    } != expected_candidates:
+        raise ConfigError("Ping future provider candidates are incomplete")
+    if any(
+        not isinstance(item, dict)
+        or item.get("enabled") is not False
+        or item.get("selected") is not False
+        for item in candidates
+    ):
+        raise ConfigError("all Ping future provider candidates must remain disabled and unselected")
+    _string_list(runtime_ai.get("provider_adapter_contract"), "provider adapter contract")
+
+    database = _object(value, "database_contract")
+    if database.get("current_mode") != "local SQLite POC" or database.get("encryption") != "none":
+        raise ConfigError("handoff database must describe current unencrypted local SQLite truth")
+    if database.get("generated_data_in_source_bundle") is not False:
+        raise ConfigError("generated database rows cannot be part of five-file source authority")
+    stores = database.get("stores")
+    expected_tables = {
+        "memory": {"memory_metadata", "memory_records", "memory_revisions", "memory_requests", "memory_audit"},
+        "products": {"product_blueprints"},
+        "knowledge": {"knowledge_sources", "knowledge_chunks"},
+        "governance": {"governance_meta", "governance_budget", "governance_audit"},
+    }
+    if not isinstance(stores, list) or len(stores) != len(expected_tables):
+        raise ConfigError("handoff database store inventory is incomplete")
+    for store in stores:
+        if not isinstance(store, dict) or store.get("id") not in expected_tables:
+            raise ConfigError("handoff database store is invalid")
+        if store.get("schema_version") != 1:
+            raise ConfigError("handoff database schema version must remain one")
+        if set(_string_list(store.get("tables"), "handoff database tables")) != expected_tables[store["id"]]:
+            raise ConfigError(f"handoff database tables are incomplete: {store['id']}")
+        _text(store.get("default_path"), "handoff database path")
+        _string_list(store.get("rules"), "handoff database rules")
+    browser_persistence = set(
+        _string_list(database.get("browser_persistence_forbidden"), "forbidden browser persistence")
+    )
+    if browser_persistence != {"localStorage", "sessionStorage", "IndexedDB", "cookies", "URL state"}:
+        raise ConfigError("handoff browser persistence prohibition is incomplete")
+    _string_list(database.get("process_memory_only"), "process-memory state")
+    _string_list(database.get("migration_rules"), "database migration rules")
+
+    api = _object(value, "api_contract")
+    if api.get("request_body_limit_bytes") != 1_000_000:
+        raise ConfigError("handoff API request limit must remain one megabyte")
+    expected_get = {"/health", "/api/bootstrap", "/api/products", "/api/task", "/api/plugin", "/api/plugin/admin"}
+    if set(_string_list(api.get("get_routes"), "handoff GET routes")) != expected_get:
+        raise ConfigError("handoff GET route inventory is incomplete")
+    expected_post = {
+        "/api/intake", "/api/discover", "/api/compare", "/api/products/create",
+        "/api/products/open", "/api/research", "/api/definition", "/api/solution",
+        "/api/gtm", "/api/readiness", "/api/copilot/propose", "/api/copilot/decision",
+        "/api/export", "/api/plugin/enable", "/api/plugin/disable", "/api/plugin/rollback",
+    }
+    if set(_string_list(api.get("post_routes"), "handoff POST routes")) != expected_post:
+        raise ConfigError("handoff POST route inventory is incomplete")
+    _string_list(api.get("production_requirements"), "handoff API production requirements")
+
+    acceptance = _object(value, "acceptance_families")
+    if set(acceptance) != {"part_a", "memory", "part_b", "plugins", "sessions"}:
+        raise ConfigError("handoff acceptance-family inventory is incomplete")
+    for key, text_value in acceptance.items():
+        _text(text_value, f"handoff acceptance family {key}")
+
+    moscow = _object(value, "moscow")
+    if set(moscow) != {"must", "should", "could", "wont_now"}:
+        raise ConfigError("handoff MoSCoW sections are incomplete")
+    for key in ("must", "should", "could", "wont_now"):
+        _string_list(moscow.get(key), f"handoff MoSCoW {key}")
+    _string_list(value.get("known_gaps"), "handoff known gaps")
+    _string_list(value.get("missing_external_context"), "handoff missing external context")
 
 
 def _validate_agent_import_config(value: dict[str, Any]) -> None:
@@ -4003,6 +4672,8 @@ def _package_files(root: Path, *, max_files: int) -> list[Path]:
     for path in root.rglob("*"):
         relative = path.relative_to(root)
         if any(part in IGNORED_LOCAL_NAMES for part in relative.parts) or path.name.endswith(".pyc"):
+            continue
+        if relative.parts and relative.parts[0] == DOCS_DIRNAME:
             continue
         if path.is_symlink():
             raise ConfigError(f"plugin package cannot contain links: {relative.as_posix()}")
@@ -6191,6 +6862,85 @@ def assess_product_readiness(
     }
 
 
+PLAN_STEP_LABELS = {
+    "definition": "Define the problem",
+    "research": "Complete the required research",
+    "solution": "Prioritise the solution",
+    "gtm": "Plan go-to-market",
+    "execution": "Evidence the execution plan",
+    "approvals": "Resolve the required approvals",
+}
+
+PLAN_STATE_DONE = "done"
+PLAN_STATE_ACTIVE = "active"
+PLAN_STATE_PENDING = "pending"
+PLAN_STATE_BLOCKED = "blocked"
+
+
+def product_plan_steps(
+    config: dict[str, Any], build_status: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    """Derive a plan checklist from the readiness checks already scored for this product."""
+    readiness = assess_product_readiness(config)
+    steps: list[dict[str, Any]] = []
+    upstream_blocker_open = False
+    for check in readiness["checks"]:
+        if check["passed"]:
+            state = PLAN_STATE_DONE
+        elif upstream_blocker_open:
+            state = PLAN_STATE_BLOCKED
+        else:
+            state = PLAN_STATE_ACTIVE
+        if not check["passed"] and check["blocker"]:
+            upstream_blocker_open = True
+        steps.append(
+            {
+                "id": check["id"],
+                "label": PLAN_STEP_LABELS.get(check["id"], check["id"]),
+                "state": state,
+                "blocker": check["blocker"],
+                "evidence_ref": f"readiness.checks.{check['id']}",
+            }
+        )
+
+    phase = (build_status or {}).get("phase", BUILD_PHASE_NOT_STARTED)
+    prototype_state = {
+        BUILD_PHASE_READY: PLAN_STATE_DONE,
+        BUILD_PHASE_FAILED: PLAN_STATE_BLOCKED,
+    }.get(phase, PLAN_STATE_PENDING)
+    steps.append(
+        {
+            "id": "prototype",
+            "label": "Run the local prototype",
+            "state": prototype_state,
+            "blocker": False,
+            "evidence_ref": "build.phase",
+        }
+    )
+
+    counts = {
+        state: sum(1 for step in steps if step["state"] == state)
+        for state in (PLAN_STATE_DONE, PLAN_STATE_ACTIVE, PLAN_STATE_PENDING, PLAN_STATE_BLOCKED)
+    }
+    return {
+        "schema_version": "1.0.0",
+        "status": "PASS",
+        "rules_version": readiness["rules_version"],
+        "readiness_status": readiness["status"],
+        "product_score": readiness["product_score"],
+        "steps": steps,
+        "counts": counts,
+        "preview": {
+            "phase": phase,
+            "message": (build_status or {}).get("message", ""),
+            "url": (build_status or {}).get("url"),
+        },
+        "limitations": [
+            "Plan states are derived from configured evidence, not from delivery progress.",
+        ],
+    }
+
+
 def propose_product_change(
     config: dict[str, Any],
     product_record: dict[str, Any],
@@ -6377,6 +7127,9 @@ def export_product_handoff(
         "unknowns": list(readiness["unknowns"]),
         "readiness": readiness,
         "solution": copy.deepcopy(blueprint["solution"]),
+        "user_stories": copy.deepcopy(blueprint.get("solution", {}).get("user_stories", [])),
+        "technical_requirements": copy.deepcopy(blueprint.get("solution", {}).get("technical_requirements", [])),
+        "data_model": copy.deepcopy(blueprint.get("data_model", {})),
         "gtm": copy.deepcopy(blueprint["gtm"]),
         "risks": copy.deepcopy(blueprint["execution"]["risks"]),
         "approvals": copy.deepcopy(blueprint["execution"]["approvals"]),
@@ -6394,6 +7147,13 @@ def export_product_handoff(
             f"- {item['id']} — {item['source_ref']} ({item['source_type']}, {item['version_or_date']}): {item['observation']}"
             for item in payload["evidence"]
         ]
+
+    def story_lines() -> list[str]:
+        items = []
+        for s in payload.get("user_stories", []):
+            crit = f" (Acceptance: {'; '.join(s['acceptance_criteria'])})" if s.get("acceptance_criteria") else ""
+            items.append(f"- {s['id']}: {s['title']}{crit}")
+        return items or ["- UNKNOWN"]
 
     def common_markdown(title: str) -> str:
         lines = [
@@ -6413,6 +7173,8 @@ def export_product_handoff(
             "## Evidence", "", *evidence_lines(), "",
             "## Solution", "",
             *[f"- {item['id']}: {item['title']}" for item in payload["solution"]["epics"]], "",
+            "## User stories & acceptance criteria", "",
+            *story_lines(), "",
             "## GTM / adoption", "",
             payload["gtm"]["positioning"],
             f"Model: {payload['gtm']['pricing_or_internal_adoption_model']['kind']}", "",
@@ -6445,6 +7207,7 @@ def export_product_handoff(
             "## 1. Problem", "", payload["definition"]["problem_statement"], "",
             "## 2. Users", "", *[f"- {item['name']} ({item['id']})" for item in payload["definition"]["personas"]], "",
             "## 3. What we are building", "", *[f"- {item['title']} ({item['id']})" for item in payload["solution"]["epics"]], "",
+            "## 3b. User stories and acceptance criteria", "", *story_lines(), "",
             "## 4. What we are NOT building", "", "- Unapproved live integrations or autonomous decisions.", "",
             "## 5. Success metrics", "", *[
                 f"- {item['name']}: baseline {value_or_unknown(item['baseline'])}; target {value_or_unknown(item['target'])}; source {item['measurement_source']}"
@@ -7065,12 +7828,926 @@ def _load_local_frontend(root: Path, max_file_bytes: int) -> bytes:
     return page
 
 
+_STUDIO_FILE_ALLOWLIST = frozenset({
+    "AGENTS.md", "CONTEXT.md", "index.html",
+    "layer_a.py", "layer_a_build.py", "layer_a_config.json",
+    "layer_a_terminal.py", "test_layer_a.py",
+})
+_STUDIO_DB_ALLOWLIST = frozenset({"products", "profile", "memory", "knowledge", "governance"})
+
+
+def studio_read_file(root: Path, name: str) -> dict[str, Any]:
+    if name not in _STUDIO_FILE_ALLOWLIST:
+        return {"status": "ERROR", "error": f"file not in allowlist: {name!r}"}
+    path = root / name
+    if not path.exists():
+        return {"status": "ERROR", "error": f"file not found: {name!r}"}
+    try:
+        content = path.read_text(encoding="utf-8", errors="replace")
+        return {"status": "PASS", "name": name, "content": content, "size": len(content)}
+    except OSError as exc:
+        return {"status": "ERROR", "error": str(exc)}
+
+
+def studio_db_schema(state_dir: Path) -> dict[str, Any]:
+    tables: list[dict[str, Any]] = []
+    for db_file in sorted(state_dir.glob("*.sqlite3")):
+        stem = db_file.stem
+        if stem not in _STUDIO_DB_ALLOWLIST:
+            continue
+        try:
+            with closing(sqlite3.connect(db_file, timeout=3)) as conn:
+                conn.row_factory = sqlite3.Row
+                raw = conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+                ).fetchall()
+                for row in raw:
+                    tname = row["name"]
+                    cols_raw = conn.execute(f"PRAGMA table_info({tname})").fetchall()
+                    cols = [c["name"] for c in cols_raw]
+                    count = conn.execute(f"SELECT COUNT(*) FROM {tname}").fetchone()[0]  # type: ignore[index]
+                    tables.append({"db": stem, "table": tname, "columns": cols, "row_count": count})
+        except sqlite3.Error:
+            continue
+    return {"status": "PASS", "tables": tables}
+
+
+def studio_db_rows(state_dir: Path, table: str, limit: int) -> dict[str, Any]:
+    if not re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_]*", table):
+        return {"status": "ERROR", "error": "invalid table name"}
+    for db_file in sorted(state_dir.glob("*.sqlite3")):
+        if db_file.stem not in _STUDIO_DB_ALLOWLIST:
+            continue
+        try:
+            with closing(sqlite3.connect(db_file, timeout=3)) as conn:
+                conn.row_factory = sqlite3.Row
+                exists = conn.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+                ).fetchone()
+                if exists is None:
+                    continue
+                rows_raw = conn.execute(f"SELECT * FROM {table} LIMIT ?", (limit,)).fetchall()
+                cols = [d[0] for d in rows_raw[0].keys()] if rows_raw else []
+                rows = [dict(r) for r in rows_raw]
+                return {"status": "PASS", "db": db_file.stem, "table": table, "columns": cols, "rows": rows}
+        except sqlite3.Error:
+            continue
+    return {"status": "ERROR", "error": f"table not found: {table!r}"}
+
+
+LOCAL_PRINCIPAL_SUBJECT = "local-ui-user-label"
+OWNER_ROLE = "owner"
+STUDIO_ROLE = "studio_admin"
+
+
+@dataclass(frozen=True)
+class Principal:
+    """Caller identity. Every API handler receives one instead of a captured workspace."""
+
+    subject_id: str
+    workspace_id: str
+    roles: frozenset[str]
+
+    def require(self, role: str) -> None:
+        if role not in self.roles:
+            raise ConfigError(f"caller lacks required role: {role}")
+
+
+def resolve_principal(headers: Any, workspace_id: str) -> Principal:
+    # One local operator today. When PI is hosted for more than one person this body
+    # becomes a session or token lookup; handler signatures do not change.
+    return Principal(
+        subject_id=LOCAL_PRINCIPAL_SUBJECT,
+        workspace_id=workspace_id,
+        roles=frozenset({OWNER_ROLE, STUDIO_ROLE}),
+    )
+
+
+@dataclass(frozen=True)
+class ApiRequest:
+    path: str
+    query: dict[str, list[str]]
+    payload: dict[str, Any]
+
+    def first(self, key: str, default: str = "") -> str:
+        values = self.query.get(key) or []
+        return values[0] if values else default
+
+
+@dataclass
+class ServerContext:
+    """Everything the API handlers used to capture from the make_e2e_server closure."""
+
+    config: dict[str, Any]
+    root: Path
+    state_dir: Path
+    page: bytes
+    default_product_id: str
+    default_blueprint: dict[str, Any]
+    task: dict[str, Any]
+    product_store: SQLiteProductBlueprintStore
+    profile_store: ProfileStore
+    extension_store: ExtensionStore
+    build_manager: EphemeralBuildManager
+    terminal_service: TerminalExecService
+    plugin_report: dict[str, Any]
+    plugin_registry: PluginRegistry
+    plugin_ledger: ApprovalLedger
+    product_ledger: ApprovalLedger
+    pending_product_changes: dict[str, tuple[dict[str, Any], Any]]
+    pending_product_lock: Any
+    active_product_by_workspace: dict[str, str]
+
+    def config_for_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        local_config = copy.deepcopy(self.config)
+        local_config["part_b"]["product_blueprint"] = copy.deepcopy(record["blueprint"])
+        validate_config(local_config)
+        return local_config
+
+    def open_product(self, principal: Principal, payload: dict[str, Any]) -> dict[str, Any]:
+        product_id = payload.get("product_id", self.default_product_id)
+        if "workspace_id" in payload and payload["workspace_id"] != principal.workspace_id:
+            raise ConfigError("workspace is outside local UI scope")
+        record = self.product_store.open(_text(product_id, "product_id"), principal.workspace_id)
+        self.active_product_by_workspace[principal.workspace_id] = record["product_id"]
+        return record
+
+    def create_product(self, principal: Principal, payload: dict[str, Any]) -> dict[str, Any]:
+        allowed = {
+            "product_id", "name", "owner", "type", "problem", "intended_user",
+            "desired_outcome", "expected_accomplishment", "usefulness", "domain", "stage",
+        }
+        unknown = set(payload) - allowed
+        if unknown:
+            raise ConfigError(f"product create has unknown fields: {sorted(unknown)}")
+        blueprint = copy.deepcopy(self.default_blueprint)
+        product = blueprint["product"]
+        product["id"] = _text(payload.get("product_id", str(uuid4())), "product_id")
+        product["name"] = _text(payload.get("name"), "product name")
+        product["owner"] = _text(payload.get("owner"), "product owner")
+        product_type = payload.get("type", "internal")
+        if product_type not in {"internal", "external"}:
+            raise ConfigError("product type must be internal or external")
+        product["type"] = product_type
+        product["workspace_id"] = principal.workspace_id
+        product["revision"] = 1
+        product["lifecycle_phase"] = "discovery"
+        product["status"] = "draft"
+
+        context_limits = {
+            "problem": 400, "intended_user": 250, "desired_outcome": 300,
+            "expected_accomplishment": 300, "usefulness": 300,
+            "domain": 120, "stage": 40,
+        }
+        context: dict[str, str] = {}
+        for key, limit in context_limits.items():
+            value = payload.get(key, "")
+            if not isinstance(value, str):
+                raise ConfigError(f"product create {key} must be text")
+            normalized = value.strip()
+            if len(normalized) > limit:
+                raise ConfigError(f"product create {key} exceeds {limit} characters")
+            context[key] = normalized
+        if any(
+            pattern.search(value)
+            for value in context.values()
+            for pattern in SENSITIVE_TEXT_PATTERNS
+        ):
+            raise ConfigError("product create context contains sensitive-looking data")
+
+        problem_text = context["problem"] or "Problem not defined."
+        user_text = context["intended_user"] or "Intended user not defined."
+        outcome_text = context["desired_outcome"] or "Outcome not defined."
+        accomplishment = context["expected_accomplishment"] or "Solution not defined."
+        usefulness = context["usefulness"] or "Product value not defined."
+        product["domain"] = context["domain"] or "Not provided"
+        product["starting_stage"] = context["stage"] or "idea"
+
+        evidence_id = "evidence-create-context"
+        problem_id = "problem-create-context"
+        opportunity_id = "opportunity-create-context"
+        user_group_id = "user-group-create"
+        hypothesis_id = "hypothesis-create-context"
+        research = blueprint["research"]
+        research["evidence"] = [{
+            "id": evidence_id,
+            "factor": "users_and_customers",
+            "observation": "User-provided create context; not reviewed evidence.",
+            "source_ref": f"product:{product['id']}:create-context",
+            "source_type": "unverified_user_input",
+            "version_or_date": "session-create-v1",
+            "confidence": 0.0,
+        }]
+        for factor in research["factor_review"]:
+            factor["status"] = "UNKNOWN"
+            factor["evidence_ids"] = []
+            factor.pop("reason", None)
+        research["findings"] = {
+            "user_groups": [{"id": user_group_id, "name": user_text}],
+            "risks": [],
+            "problems": [{
+                "id": problem_id, "user_group_id": user_group_id,
+                "impact": 1, "frequency": 1, "evidence_strength": 0.0,
+                "evidence_ids": [evidence_id],
+            }],
+            "opportunities": [{
+                "id": opportunity_id, "problem_id": problem_id,
+                "addressable_value_or_reach": 1, "user_motivation": 1,
+                "strategic_fit": 1, "differentiation": 1, "feasibility": 1,
+                "timing": 1, "risk_penalty": 0.0,
+            }],
+        }
+
+        blueprint["definition"].update({
+            "vision": usefulness,
+            "problem_statement": problem_text,
+            "personas": [{"id": user_group_id, "name": user_text, "motivation": accomplishment}],
+            "customer_pain_points": [],
+            "constraints": [],
+            "decision": "test",
+            "problem_evidence": [evidence_id],
+            "selected_problem_ids": [problem_id],
+            "assumptions": [],
+            "hypotheses": [{
+                "id": hypothesis_id, "problem_id": problem_id,
+                "user_group_id": user_group_id, "change": accomplishment,
+                "expected_outcome": outcome_text,
+                "primary_metric": "UNKNOWN until measured", "status": "DRAFT",
+            }],
+        })
+
+        blueprint["solution"].update({
+            "prioritization_method": "value_effort",
+            "epics": [{
+                "id": "epic-create-context", "title": accomplishment,
+                "problem_id": problem_id, "opportunity_id": opportunity_id,
+                "evidence_ids": [evidence_id], "moscow": "SHOULD",
+                "value": 1, "effort": 1, "reach": 1, "impact": 1,
+                "confidence": 0.0,
+            }],
+            "user_stories": [{
+                "id": "story-create-context", "epic_id": "epic-create-context",
+                "title": f"As {user_text}, review {accomplishment}.",
+                "acceptance_criteria": [outcome_text], "evidence_ids": [evidence_id],
+            }],
+            "technical_requirements": [{
+                "id": "requirement-create-context", "story_id": "story-create-context",
+                "description": "Technical requirements not defined.",
+                "evidence_ids": [evidence_id],
+            }],
+            "dependencies": [{
+                "id": "dependency-create-context",
+                "item_id": "requirement-create-context",
+                "depends_on_id": "story-create-context",
+            }],
+        })
+
+        gtm = blueprint["gtm"]
+        gtm["positioning"] = usefulness
+        gtm["target_segments"] = [user_text]
+        gtm["channels"] = ["Channels not defined."]
+        metric_id = gtm["launch_metrics"][0]["id"]
+        gtm["launch_metrics"][0].update({
+            "name": outcome_text, "baseline": None, "target": None,
+            "measurement_source": "UNKNOWN",
+        })
+        gtm["experiments"] = [{
+            "id": "experiment-create-context", "hypothesis_id": hypothesis_id,
+            "method": "Method not defined.", "evidence_refs": [evidence_id],
+            "success_metric_id": metric_id,
+        }]
+        gtm["pricing_or_internal_adoption_model"] = {
+            "kind": "external_pricing" if product_type == "external" else "internal_adoption",
+            "owner_role": "product-owner", "approach": "Not defined.",
+        }
+
+        execution = blueprint["execution"]
+        execution["evidence_refs"] = [evidence_id]
+        execution["milestones"] = [{
+            "id": "milestone-create-context", "name": "Delivery milestone not defined.",
+            "exit_evidence_refs": [evidence_id], "timing": "UNKNOWN",
+        }]
+        execution["risks"] = [{
+            "id": "risk-create-context", "severity": "UNKNOWN", "status": "OPEN",
+            "mitigation": "Review product risks before delivery.",
+            "evidence_refs": [evidence_id],
+        }]
+        execution["approvals"] = [{
+            "id": "approval-create-context", "required": True, "status": "PENDING",
+            "owner_role": "product-reviewer",
+        }]
+        blueprint["portfolio"]["initiative_ids"] = [product["id"]]
+        blueprint["audit"] = {
+            "revision": 1,
+            "events": [],
+            "last_updated_by": product["owner"],
+        }
+        record = self.product_store.create(blueprint)
+        self.active_product_by_workspace[principal.workspace_id] = record["product_id"]
+        return record
+
+    def bootstrap(self, principal: Principal) -> dict[str, Any]:
+        active_id = self.active_product_by_workspace.get(
+            principal.workspace_id, self.default_product_id
+        )
+        try:
+            record = self.product_store.open(active_id, principal.workspace_id)
+        except ConfigError:
+            record = self.product_store.open(self.default_product_id, principal.workspace_id)
+            self.active_product_by_workspace.pop(principal.workspace_id, None)
+        local_config = self.config_for_record(record)
+        return {
+            "status": "PASS",
+            "mode": "LOCAL_DETERMINISTIC_MOCK",
+            "network_used": False,
+            "persistence": "local_sqlite",
+            "workspace_id": principal.workspace_id,
+            "default_product_id": self.default_product_id,
+            "portfolio": self.product_store.list_portfolio(principal.workspace_id),
+            "product": record,
+            "default_product": copy.deepcopy(record["blueprint"]),
+            "part_b_scope": part_b_scope_summary(local_config),
+            "questions": copy.deepcopy(local_config["part_b"]["user_experience"]["questions"]),
+            "insight_outputs": copy.deepcopy(
+                local_config["part_b"]["user_experience"]["insight_outputs"]
+            ),
+            "plugin": public_plugin_status(self.plugin_report, self.plugin_registry),
+        }
+
+    def research_view(self, record: dict[str, Any]) -> dict[str, Any]:
+        blueprint = record["blueprint"]
+        research = run_parallel_research(blueprint)
+        evidence_by_id: dict[str, dict[str, Any]] = {}
+        factor_coverage = []
+        for branch in research["branches"]:
+            evidence_ids = []
+            for item in branch["evidence"]:
+                evidence_by_id[item["id"]] = copy.deepcopy(item)
+                evidence_ids.append(item["id"])
+            factor_coverage.append(
+                {
+                    "factor": branch["factor"], "status": branch["status"],
+                    "evidence_ids": evidence_ids, "gap": branch.get("reason") or "",
+                }
+            )
+        research["factor_coverage"] = factor_coverage
+        research["evidence"] = list(evidence_by_id.values())
+        research["risks"] = copy.deepcopy(blueprint["execution"]["risks"])
+        rankings = rank_research_findings(blueprint)
+        rankings["ranked_problems"] = [
+            {**item, "score": item["problem_score"]} for item in rankings["problems"]
+        ]
+        rankings["ranked_opportunities"] = [
+            {**item, "score": item["opportunity_score"]}
+            for item in rankings["opportunities"]
+        ]
+        return {
+            "status": "PASS", "research": research, "rankings": rankings,
+            "network_used": False, "live_sources_used": False,
+        }
+
+    def discovery_view(self, principal: Principal, payload: dict[str, Any]) -> dict[str, Any]:
+        discovered = natural_product_discovery(
+            self.config, payload.get("message"), payload.get("answers")
+        )
+        result = public_discovery_view(discovered)
+        record = self.open_product(principal, payload)
+        local_research = self.research_view(record)
+        result["insight"] = {
+            "summary": result["message"],
+            "research_coverage": local_research["research"]["factor_coverage"],
+            "ranked_problems": local_research["rankings"]["ranked_problems"],
+            "ranked_opportunities": local_research["rankings"]["ranked_opportunities"],
+            "risks": local_research["research"]["risks"],
+            "unknowns": result["insights"]["unknowns"],
+        }
+        result["limitation"] = (
+            "Local configured fixtures only. No live research, network access, or source verification."
+        )
+        return result
+
+
+ApiHandler = Callable[[ServerContext, Principal, ApiRequest], dict[str, Any]]
+
+
+def _get_health(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return {
+        "status": "PASS", "mode": "LOCAL_DETERMINISTIC_MOCK",
+        "network_used": False, "persistence": "local_sqlite",
+    }
+
+
+def _get_bootstrap(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.bootstrap(principal)
+
+
+def _get_products(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return {
+        "status": "PASS",
+        "workspace_id": principal.workspace_id,
+        "products": ctx.product_store.list_portfolio(principal.workspace_id),
+    }
+
+
+def _get_task(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.task
+
+
+def _get_plugin(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return public_plugin_status(ctx.plugin_report, ctx.plugin_registry)
+
+
+def _get_profile(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.profile_store.load()
+
+
+def _get_extensions(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.extension_store.list(
+        principal.workspace_id, request.first("scope", "project")
+    )
+
+
+def _get_design_tokens(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.extension_store.active_tokens(principal.workspace_id)
+
+
+def _post_extension_stage(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    principal.require(STUDIO_ROLE)
+    payload = request.payload
+    return ctx.extension_store.add(
+        principal.workspace_id, str(payload.get("scope", "project")), payload
+    )
+
+
+def _post_extension_state(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    principal.require(STUDIO_ROLE)
+    payload = request.payload
+    verb = request.path.rsplit("/", 1)[-1]
+    state = {"enable": "enabled", "disable": "disabled", "rollback": "staged"}[verb]
+    return ctx.extension_store.set_state(
+        principal.workspace_id,
+        str(payload.get("id", "")),
+        str(payload.get("scope", "project")),
+        state,
+    )
+
+
+def _get_build_status(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.build_manager.status(request.first("product_id", ctx.default_product_id))
+
+
+def _get_build_files(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.build_manager.list_files(request.first("product_id", ctx.default_product_id))
+
+
+def _get_build_file(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.build_manager.read_file(
+        request.first("product_id", ctx.default_product_id), request.first("name")
+    )
+
+
+def _get_build_archive(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    product_id = request.first("product_id", ctx.default_product_id)
+    archive_bytes = ctx.build_manager.archive(product_id)
+    return {
+        "status": "PASS",
+        "product_id": product_id,
+        "filename": f"{product_id}-prototype.zip",
+        "bytes": len(archive_bytes),
+    }
+
+
+def _get_plan(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    product_id = request.first("product_id", ctx.default_product_id)
+    record = ctx.product_store.open(product_id, principal.workspace_id)
+    return product_plan_steps(
+        ctx.config_for_record(record), ctx.build_manager.status(product_id)
+    )
+
+
+def _get_file(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    principal.require(STUDIO_ROLE)
+    return studio_read_file(ctx.root, request.first("name"))
+
+
+def _get_db_schema(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    principal.require(STUDIO_ROLE)
+    return studio_db_schema(ctx.state_dir)
+
+
+def _get_db_rows(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    principal.require(STUDIO_ROLE)
+    limit_raw = request.first("limit", "50")
+    limit = min(int(limit_raw) if limit_raw.isdigit() else 50, 200)
+    return studio_db_rows(ctx.state_dir, request.first("table"), limit)
+
+
+def _get_plugin_admin(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    principal.require(STUDIO_ROLE)
+    inspection = copy.deepcopy(ctx.plugin_report)
+    inspection["trust_state"] = inspection.get("trust", {}).get("state", "INVALID")
+    admin: dict[str, Any] = {"inspection": inspection}
+    if ctx.plugin_report.get("status") == "PASS":
+        admin["lifecycle"] = ctx.plugin_registry.summary(ctx.plugin_report["canonical_id"])
+    return admin
+
+
+def _post_intake(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return prepare_part_b_intake(ctx.config, request.payload.get("answers"))
+
+
+def _post_discover(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.discovery_view(principal, request.payload)
+
+
+def _post_products_create(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return {"status": "CREATED", "record": ctx.create_product(principal, request.payload)}
+
+
+def _post_products_open(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return {"status": "PASS", "record": ctx.open_product(principal, request.payload)}
+
+
+def _post_research(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    return ctx.research_view(ctx.open_product(principal, request.payload))
+
+
+def _post_definition(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    record = ctx.open_product(principal, request.payload)
+    result = build_product_definition(
+        ctx.config_for_record(record),
+        request.payload.get("answers"),
+        request.payload.get("selected_problem_ids"),
+    )
+    result["gate_status"] = result["status"]
+    result["definition_proposal"] = copy.deepcopy(result["definition"])
+    result["blockers"] = copy.deepcopy(result["hypothesis_gate"]["missing"])
+    return result
+
+
+def _post_solution(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    record = ctx.open_product(principal, request.payload)
+    return prioritize_solution(ctx.config_for_record(record), request.payload.get("method"))
+
+
+def _post_gtm(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    record = ctx.open_product(principal, request.payload)
+    result = validate_gtm_plan(record["blueprint"])
+    result["pricing_or_internal_adoption_model"] = copy.deepcopy(result["model"])
+    return result
+
+
+def _post_readiness(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    record = ctx.open_product(principal, request.payload)
+    result = assess_product_readiness(ctx.config_for_record(record))
+    result["product_readiness_score"] = result["product_score"]
+    result["blockers"] = copy.deepcopy(result["missing_items"])
+    result["open_risks"] = copy.deepcopy(result["risks"])
+    result["pending_approvals"] = copy.deepcopy(result["approvals"])
+    result["unknown_metrics"] = copy.deepcopy(result["unknowns"])
+    return result
+
+
+def _post_copilot_propose(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    payload = request.payload
+    record = ctx.open_product(principal, payload)
+    proposal = propose_product_change(
+        ctx.config_for_record(record),
+        record,
+        section=payload.get("section"),
+        patch=payload.get("patch"),
+        rationale=payload.get("rationale"),
+        evidence_ids=payload.get("evidence_ids"),
+        unknowns=payload.get("unknowns", []),
+    )
+    approval = request_product_change_approval(
+        ctx.product_ledger, proposal, run_id=str(uuid4())
+    )
+    with ctx.pending_product_lock:
+        ctx.pending_product_changes[proposal["proposal_id"]] = (proposal, approval)
+    return {
+        "status": "READY_FOR_REVIEW",
+        "proposal": public_product_change_view(proposal),
+    }
+
+
+def _post_copilot_decision(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    payload = request.payload
+    proposal_id = _text(payload.get("proposal_id"), "proposal_id")
+    approved = payload.get("approved")
+    if type(approved) is not bool:
+        raise ConfigError("approved must be true or false")
+    with ctx.pending_product_lock:
+        pending = ctx.pending_product_changes.pop(proposal_id, None)
+    if pending is None:
+        raise ConfigError("unknown or already decided product proposal")
+    proposal, approval = pending
+    decision = ApprovalDecision.from_request(
+        approval, approved=approved, decided_by=principal.subject_id
+    )
+    if not approved:
+        try:
+            ctx.product_ledger.decide(decision)
+        except ApprovalRequired:
+            pass
+        return {"status": "REJECTED", "proposal_id": proposal_id, "persistence": False}
+    return apply_approved_product_change(
+        ctx.product_store, proposal, ctx.product_ledger, decision
+    )
+
+
+def _post_export(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    record = ctx.open_product(principal, request.payload)
+    return export_product_handoff(
+        ctx.config_for_record(record), record, request.payload.get("format")
+    )
+
+
+def _post_plugin_lifecycle(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    if ctx.plugin_report.get("status") != "PASS":
+        raise ConfigError("local plugin package is blocked")
+    if request.payload.get("approved") is not True:
+        raise ApprovalRequired("explicit approval is required")
+    if request.path.endswith("enable"):
+        action = "enable"
+        version = ctx.plugin_report["version"]
+    elif request.path.endswith("disable"):
+        action = "disable"
+        version = ctx.plugin_report["version"]
+    else:
+        action = "rollback"
+        version = ctx.plugin_registry.summary(ctx.plugin_report["canonical_id"])[
+            "rollback_version"
+        ]
+        if version is None:
+            raise ConfigError("no previous approved plugin version is available")
+    approval = ctx.plugin_registry.request_change(
+        ctx.plugin_ledger,
+        canonical_id=ctx.plugin_report["canonical_id"],
+        version=version,
+        action=action,
+    )
+    decision = ApprovalDecision.from_request(
+        approval, approved=True, decided_by=principal.subject_id
+    )
+    return ctx.plugin_registry.apply_change(
+        ctx.plugin_ledger,
+        decision,
+        canonical_id=ctx.plugin_report["canonical_id"],
+        version=version,
+        action=action,
+    )
+
+
+def _validated_prototype_context(value: Any) -> dict[str, Any]:
+    if value in (None, {}):
+        return {}
+    if not isinstance(value, dict):
+        raise ConfigError("prototype context must be an object")
+    scalar_limits = {
+        "problem": 400, "intended_user": 250, "outcome": 300,
+        "accomplishment": 300, "usefulness": 300,
+    }
+    list_limits = {"solution_options": (3, 300), "gherkin_contracts": (10, 1600)}
+    unknown = set(value) - set(scalar_limits) - set(list_limits)
+    if unknown:
+        raise ConfigError(f"prototype context has unknown fields: {sorted(unknown)}")
+    clean: dict[str, Any] = {}
+    for key, limit in scalar_limits.items():
+        raw = value.get(key, "")
+        if not isinstance(raw, str):
+            raise ConfigError(f"prototype context {key} must be text")
+        normalized = raw.strip()
+        if len(normalized) > limit:
+            raise ConfigError(f"prototype context {key} exceeds {limit} characters")
+        clean[key] = normalized
+    for key, (max_items, max_chars) in list_limits.items():
+        raw_items = value.get(key, [])
+        if not isinstance(raw_items, list) or len(raw_items) > max_items:
+            raise ConfigError(f"prototype context {key} exceeds item limit")
+        items: list[str] = []
+        for raw in raw_items:
+            if not isinstance(raw, str):
+                raise ConfigError(f"prototype context {key} items must be text")
+            normalized = raw.strip()
+            if not normalized:
+                continue
+            if len(normalized) > max_chars:
+                raise ConfigError(f"prototype context {key} item exceeds {max_chars} characters")
+            items.append(normalized)
+        clean[key] = items
+    serialized = canonical_json(clean)
+    if len(serialized.encode("utf-8")) > 20_000:
+        raise ConfigError("prototype context exceeds local size limit")
+    if _sensitive_paths(clean) or any(
+        pattern.search(serialized) for pattern in SENSITIVE_TEXT_PATTERNS
+    ):
+        raise ConfigError("prototype context contains sensitive-looking data")
+    return clean
+
+
+def _post_build_start(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    product_id = request.payload.get("product_id", ctx.default_product_id)
+    record = ctx.open_product(principal, {"product_id": product_id})
+    blueprint = copy.deepcopy(record["blueprint"])
+    blueprint["_prototype_context"] = _validated_prototype_context(
+        request.payload.get("prototype_context")
+    )
+    return ctx.build_manager.start(
+        str(product_id), blueprint, owner=principal.subject_id
+    )
+
+
+def _post_build_stop(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    product_id = request.payload.get("product_id", ctx.default_product_id)
+    return ctx.build_manager.stop(str(product_id))
+
+
+def _post_terminal_exec(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    command = request.payload.get("command")
+    return ctx.terminal_service.exec(str(command) if command is not None else "")
+
+
+def _post_profile(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    payload = request.payload
+    return ctx.profile_store.save(
+        str(payload.get("role", "")),
+        str(payload.get("workplace", "")),
+        str(payload.get("goal", "")),
+    )
+
+
+def _post_compare(ctx: ServerContext, principal: Principal, request: ApiRequest) -> dict[str, Any]:
+    candidates = request.payload.get("candidates")
+    if candidates is None:
+        candidates = ctx.task["mock_candidates"]
+    result = compare_e2e_candidates(ctx.config, candidates)
+    result["winner"] = result["winner_by_structure"]
+    result["candidates"] = [
+        {
+            "agent": item["candidate"], "score": item["score"],
+            "classification": item["classification"],
+            "gaps": copy.deepcopy(item["gaps"]),
+        }
+        for item in result["reports"]
+    ]
+    return result
+
+
+API_PREFIX = "/api/"
+API_VERSION_SEGMENT = "v1"
+API_VERSION_PREFIX = f"{API_PREFIX}{API_VERSION_SEGMENT}/"
+
+
+def _dual_serve(table: dict[str, ApiHandler]) -> dict[str, ApiHandler]:
+    """Additively alias every /api/... route at /api/v1/... on the very same handler.
+
+    Unversioned paths keep working; the versioned twin is derived, never hand-listed,
+    so a new route cannot be added without its version. /health is not under /api/
+    and stays unversioned only.
+    """
+    versioned = {
+        f"{API_VERSION_PREFIX}{path[len(API_PREFIX):]}": handler
+        for path, handler in table.items()
+        if path.startswith(API_PREFIX)
+    }
+    return {**table, **versioned}
+
+
+API_GET_ROUTES: dict[str, ApiHandler] = _dual_serve({
+    "/health": _get_health,
+    "/api/bootstrap": _get_bootstrap,
+    "/api/products": _get_products,
+    "/api/task": _get_task,
+    "/api/plugin": _get_plugin,
+    "/api/plugin/admin": _get_plugin_admin,
+    "/api/profile": _get_profile,
+    "/api/build/status": _get_build_status,
+    "/api/build/files": _get_build_files,
+    "/api/build/file": _get_build_file,
+    "/api/build/archive": _get_build_archive,
+    "/api/plan": _get_plan,
+    "/api/extensions": _get_extensions,
+    "/api/design-tokens": _get_design_tokens,
+    "/api/file": _get_file,
+    "/api/db-schema": _get_db_schema,
+    "/api/db-rows": _get_db_rows,
+})
+
+API_POST_ROUTES: dict[str, ApiHandler] = _dual_serve({
+    "/api/intake": _post_intake,
+    "/api/discover": _post_discover,
+    "/api/compare": _post_compare,
+    "/api/products/create": _post_products_create,
+    "/api/products/open": _post_products_open,
+    "/api/research": _post_research,
+    "/api/definition": _post_definition,
+    "/api/solution": _post_solution,
+    "/api/gtm": _post_gtm,
+    "/api/readiness": _post_readiness,
+    "/api/copilot/propose": _post_copilot_propose,
+    "/api/copilot/decision": _post_copilot_decision,
+    "/api/export": _post_export,
+    "/api/plugin/enable": _post_plugin_lifecycle,
+    "/api/plugin/disable": _post_plugin_lifecycle,
+    "/api/plugin/rollback": _post_plugin_lifecycle,
+    "/api/extensions/stage": _post_extension_stage,
+    "/api/extensions/enable": _post_extension_state,
+    "/api/extensions/disable": _post_extension_state,
+    "/api/extensions/rollback": _post_extension_state,
+    "/api/build/start": _post_build_start,
+    "/api/build/stop": _post_build_stop,
+    "/api/terminal/exec": _post_terminal_exec,
+    "/api/profile": _post_profile,
+})
+
+API_ERRORS = (
+    ConfigError, ApprovalRequired, ApprovalMismatch, ApprovalReplay,
+    json.JSONDecodeError, UnicodeDecodeError, ValueError,
+)
+
+# Backpressure. A single local operator drives this UI from one browser, and browsers
+# cap themselves at roughly six connections per origin. 32 leaves five times that
+# headroom (UI plus a parallel prototype frame plus the test suite) while turning
+# thread-per-request from unbounded into a fixed ceiling.
+MAX_CONCURRENT_REQUESTS = 32
+# Every deterministic handler in this module answers in milliseconds; the slowest
+# legitimate call is a local build start. 15s is far above that yet reclaims a socket
+# from a client that connects and then sends nothing.
+REQUEST_SOCKET_TIMEOUT_SECONDS = 15.0
+REQUEST_LIMIT_MESSAGE = (
+    f"server is at its concurrent request limit of {MAX_CONCURRENT_REQUESTS}; retry shortly"
+)
+
+
+class BoundedThreadingHTTPServer(ThreadingHTTPServer):
+    """ThreadingHTTPServer with a hard ceiling on in-flight requests.
+
+    Plain ThreadingHTTPServer spawns one unbounded thread per connection. Here a
+    BoundedSemaphore is acquired before the worker thread starts and released when it
+    ends; a request that cannot get a slot is refused immediately with the project's
+    standard error envelope rather than blocking or being silently dropped.
+    """
+
+    daemon_threads = True
+
+    def __init__(self, server_address: Any, handler_class: Any, bind_and_activate: bool = True) -> None:
+        # Read the module constant here, not in the class body, so the ceiling of a
+        # given server instance is decided when that server is built.
+        self.max_concurrent_requests = MAX_CONCURRENT_REQUESTS
+        self.request_slots = BoundedSemaphore(self.max_concurrent_requests)
+        super().__init__(server_address, handler_class, bind_and_activate)
+
+    def process_request(self, request: Any, client_address: Any) -> None:
+        if not self.request_slots.acquire(blocking=False):
+            self._refuse_overflow(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self.request_slots.release()
+            raise
+
+    def process_request_thread(self, request: Any, client_address: Any) -> None:
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self.request_slots.release()
+
+    def _refuse_overflow(self, request: Any) -> None:
+        body = json.dumps(
+            {"status": "ERROR", "error": REQUEST_LIMIT_MESSAGE}, ensure_ascii=False
+        ).encode("utf-8")
+        head = (
+            "HTTP/1.1 503 Service Unavailable\r\n"
+            "Content-Type: application/json; charset=utf-8\r\n"
+            f"Content-Length: {len(body)}\r\n"
+            "Cache-Control: no-store\r\n"
+            "X-Content-Type-Options: nosniff\r\n"
+            "Retry-After: 1\r\n"
+            "Connection: close\r\n\r\n"
+        ).encode("ascii")
+        try:
+            request.sendall(head + body)
+        except OSError:
+            pass
+        finally:
+            self.shutdown_request(request)
+
+    def handle_error(self, request: Any, client_address: Any) -> None:
+        # An idle or vanished client is expected traffic on localhost, not a defect;
+        # do not spray a traceback into the server log for it.
+        if isinstance(sys.exc_info()[1], (TimeoutError, ConnectionError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def make_e2e_server(
     config: dict[str, Any],
     host: str = "127.0.0.1",
     port: int = 8080,
     product_store_path: str | Path | None = None,
-) -> ThreadingHTTPServer:
+) -> BoundedThreadingHTTPServer:
     """Build localhost-only mocked product server with local SQLite persistence."""
 
     validate_config(config)
@@ -7078,10 +8755,16 @@ def make_e2e_server(
     page = _load_local_frontend(
         root, config["agent_plugin"]["package"]["max_file_bytes"]
     )
+    state_dir = root / ".layer-a-state"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    build_manager = EphemeralBuildManager(state_dir)
+    terminal_service = TerminalExecService(root)
+    profile_store = ProfileStore(state_dir / "profile.sqlite3")
+    extension_store = ExtensionStore(state_dir / "extensions.sqlite3")
     store_path = (
         Path(product_store_path)
         if product_store_path is not None
-        else root / ".layer-a-state" / "products.sqlite3"
+        else state_dir / "products.sqlite3"
     )
     product_store = SQLiteProductBlueprintStore(
         store_path, config["part_b"]["product_store"]
@@ -7114,128 +8797,44 @@ def make_e2e_server(
         "persistence": False,
     }
 
-    def config_for_record(record: dict[str, Any]) -> dict[str, Any]:
-        local_config = copy.deepcopy(config)
-        local_config["part_b"]["product_blueprint"] = copy.deepcopy(record["blueprint"])
-        validate_config(local_config)
-        return local_config
-
-    def open_product(payload: dict[str, Any]) -> dict[str, Any]:
-        product_id = payload.get("product_id", default_product_id)
-        if "workspace_id" in payload and payload["workspace_id"] != local_workspace_id:
-            raise ConfigError("workspace is outside local UI scope")
-        return product_store.open(_text(product_id, "product_id"), local_workspace_id)
-
-    def create_product(payload: dict[str, Any]) -> dict[str, Any]:
-        allowed = {"product_id", "name", "owner", "type"}
-        unknown = set(payload) - allowed
-        if unknown:
-            raise ConfigError(f"product create has unknown fields: {sorted(unknown)}")
-        blueprint = copy.deepcopy(default_blueprint)
-        product = blueprint["product"]
-        product["id"] = _text(payload.get("product_id", str(uuid4())), "product_id")
-        product["name"] = _text(payload.get("name"), "product name")
-        product["owner"] = _text(payload.get("owner"), "product owner")
-        product_type = payload.get("type", "internal")
-        if product_type not in {"internal", "external"}:
-            raise ConfigError("product type must be internal or external")
-        product["type"] = product_type
-        product["workspace_id"] = local_workspace_id
-        product["revision"] = 1
-        product["lifecycle_phase"] = "discovery"
-        product["status"] = "draft"
-        blueprint["portfolio"]["initiative_ids"] = [product["id"]]
-        blueprint["audit"] = {
-            "revision": 1,
-            "events": [],
-            "last_updated_by": product["owner"],
-        }
-        if product_type == "external":
-            blueprint["gtm"]["pricing_or_internal_adoption_model"] = {
-                "kind": "external_pricing",
-                "owner_role": "product-owner",
-                "approach": "UNKNOWN",
-            }
-        return product_store.create(blueprint)
-
-    def product_bootstrap() -> dict[str, Any]:
-        record = product_store.open(default_product_id, local_workspace_id)
-        local_config = config_for_record(record)
-        return {
-            "status": "PASS",
-            "mode": "LOCAL_DETERMINISTIC_MOCK",
-            "network_used": False,
-            "persistence": "local_sqlite",
-            "workspace_id": local_workspace_id,
-            "default_product_id": default_product_id,
-            "portfolio": product_store.list_portfolio(local_workspace_id),
-            "product": record,
-            "default_product": copy.deepcopy(record["blueprint"]),
-            "part_b_scope": part_b_scope_summary(local_config),
-            "questions": copy.deepcopy(local_config["part_b"]["user_experience"]["questions"]),
-            "insight_outputs": copy.deepcopy(
-                local_config["part_b"]["user_experience"]["insight_outputs"]
-            ),
-            "plugin": public_plugin_status(plugin_report, plugin_registry),
-        }
-
-    def research_api_view(record: dict[str, Any]) -> dict[str, Any]:
-        blueprint = record["blueprint"]
-        research = run_parallel_research(blueprint)
-        evidence_by_id: dict[str, dict[str, Any]] = {}
-        factor_coverage = []
-        for branch in research["branches"]:
-            evidence_ids = []
-            for item in branch["evidence"]:
-                evidence_by_id[item["id"]] = copy.deepcopy(item)
-                evidence_ids.append(item["id"])
-            factor_coverage.append(
-                {
-                    "factor": branch["factor"], "status": branch["status"],
-                    "evidence_ids": evidence_ids, "gap": branch.get("reason") or "",
-                }
-            )
-        research["factor_coverage"] = factor_coverage
-        research["evidence"] = list(evidence_by_id.values())
-        research["risks"] = copy.deepcopy(blueprint["execution"]["risks"])
-        rankings = rank_research_findings(blueprint)
-        rankings["ranked_problems"] = [
-            {**item, "score": item["problem_score"]} for item in rankings["problems"]
-        ]
-        rankings["ranked_opportunities"] = [
-            {**item, "score": item["opportunity_score"]}
-            for item in rankings["opportunities"]
-        ]
-        return {
-            "status": "PASS", "research": research, "rankings": rankings,
-            "network_used": False, "live_sources_used": False,
-        }
-
-    def discovery_api_view(payload: dict[str, Any]) -> dict[str, Any]:
-        discovered = natural_product_discovery(
-            config, payload.get("message"), payload.get("answers")
-        )
-        result = public_discovery_view(discovered)
-        record = open_product(payload)
-        local_research = research_api_view(record)
-        result["insight"] = {
-            "summary": result["message"],
-            "research_coverage": local_research["research"]["factor_coverage"],
-            "ranked_problems": local_research["rankings"]["ranked_problems"],
-            "ranked_opportunities": local_research["rankings"]["ranked_opportunities"],
-            "risks": local_research["research"]["risks"],
-            "unknowns": result["insights"]["unknowns"],
-        }
-        result["limitation"] = (
-            "Local configured fixtures only. No live research, network access, or source verification."
-        )
-        return result
+    ctx = ServerContext(
+        config=config,
+        root=root,
+        state_dir=state_dir,
+        page=page,
+        default_product_id=default_product_id,
+        default_blueprint=default_blueprint,
+        task=task,
+        product_store=product_store,
+        profile_store=profile_store,
+        extension_store=extension_store,
+        build_manager=build_manager,
+        terminal_service=terminal_service,
+        plugin_report=plugin_report,
+        plugin_registry=plugin_registry,
+        plugin_ledger=plugin_ledger,
+        product_ledger=product_ledger,
+        pending_product_changes=pending_product_changes,
+        pending_product_lock=pending_product_lock,
+        active_product_by_workspace={},
+    )
 
     class E2EHandler(BaseHTTPRequestHandler):
         server_version = "LayerAPOC/1.0"
+        # StreamRequestHandler.setup() turns this into a socket read timeout, so a
+        # client that opens a connection and never sends a request line cannot pin
+        # one of the bounded worker slots forever.
+        timeout = REQUEST_SOCKET_TIMEOUT_SECONDS
 
         def log_message(self, format: str, *args: Any) -> None:
             return
+
+        def handle_one_request(self) -> None:
+            try:
+                super().handle_one_request()
+            except TimeoutError:
+                # Close quietly. The slot is freed when the worker thread unwinds.
+                self.close_connection = True
 
         def _headers(self, status: int, content_type: str, length: int) -> None:
             self.send_response(status)
@@ -7245,10 +8844,14 @@ def make_e2e_server(
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("Referrer-Policy", "no-referrer")
+            prototype_ports = " ".join(
+                f"http://127.0.0.1:{p}" for p in range(8081, 8100)
+            )
             self.send_header(
                 "Content-Security-Policy",
                 "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-                "connect-src 'self'; img-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+                f"connect-src 'self'; img-src 'none'; frame-src {prototype_ports}; "
+                "frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
             )
             self.end_headers()
 
@@ -7257,54 +8860,93 @@ def make_e2e_server(
             self._headers(status, "application/json; charset=utf-8", len(body))
             self.wfile.write(body)
 
+        def _binary(self, data: bytes, content_type: str, filename: str | None = None, status: int = 200) -> None:
+            self.send_response(status)
+            self.send_header("Content-Type", content_type)
+            if filename:
+                safe_name = "".join(c for c in filename if c.isalnum() or c in "-_.")[:64] or "download"
+                self.send_header("Content-Disposition", f'attachment; filename="{safe_name}"')
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            self.wfile.write(data)
+
         def do_HEAD(self) -> None:
             path = urlparse(self.path).path
-            if path in {"/", "/index.html"}:
+            if path in {"/", "/index.html", "/ping"}:
                 self._headers(200, "text/html; charset=utf-8", len(page))
             else:
                 self._headers(404, "application/json; charset=utf-8", 0)
 
+        def _dispatch(self, routes: dict[str, ApiHandler], request: ApiRequest) -> None:
+            handler = routes.get(request.path)
+            if handler is None:
+                self._json({"status": "ERROR", "error": "Not found"}, 404)
+                return
+            principal = resolve_principal(self.headers, local_workspace_id)
+            try:
+                self._json(handler(ctx, principal, request))
+            except API_ERRORS as exc:
+                self._json({"status": "ERROR", "error": str(exc)}, 400)
+
         def do_GET(self) -> None:
-            path = urlparse(self.path).path
-            if path in {"/", "/index.html"}:
+            parsed = urlparse(self.path)
+            if parsed.path in {"/", "/index.html", "/ping"}:
                 self._headers(200, "text/html; charset=utf-8", len(page))
                 self.wfile.write(page)
-            elif path == "/health":
-                self._json({
-                    "status": "PASS", "mode": "LOCAL_DETERMINISTIC_MOCK",
-                    "network_used": False, "persistence": "local_sqlite",
-                })
-            elif path == "/api/bootstrap":
-                self._json(product_bootstrap())
-            elif path == "/api/products":
-                self._json({
-                    "status": "PASS",
-                    "workspace_id": local_workspace_id,
-                    "products": product_store.list_portfolio(local_workspace_id),
-                })
-            elif path == "/api/task":
-                self._json(task)
-            elif path == "/api/plugin":
-                self._json(public_plugin_status(plugin_report, plugin_registry))
-            elif path == "/api/plugin/admin":
-                inspection = copy.deepcopy(plugin_report)
-                inspection["trust_state"] = inspection.get("trust", {}).get("state", "INVALID")
-                admin = {"inspection": inspection}
-                if plugin_report.get("status") == "PASS":
-                    admin["lifecycle"] = plugin_registry.summary(plugin_report["canonical_id"])
-                self._json(admin)
-            else:
-                self._json({"status": "ERROR", "error": "Not found"}, 404)
+                return
+            if parsed.path.startswith("/p/"):
+                parts = [p for p in parsed.path.split("/") if p]
+                if len(parts) >= 3:
+                    user_id = parts[1]
+                    product_id = parts[2]
+                    subpath = parts[3] if len(parts) > 3 else ""
+                    if subpath == "preview":
+                        build = ctx.build_manager.get_build(product_id)
+                        if build and "url" in build:
+                            self.send_response(302)
+                            self.send_header("Location", build["url"])
+                            self.send_header("Content-Length", "0")
+                            self.end_headers()
+                            return
+                        self._json({"status": "NOT_RUNNING", "product_id": product_id, "user_id": user_id, "error": "Prototype not running. Start prototype first."}, 404)
+                        return
+                    elif subpath == "archive":
+                        try:
+                            archive_bytes = ctx.build_manager.archive(product_id)
+                            self._binary(archive_bytes, "application/zip", f"{product_id}-prototype.zip")
+                            return
+                        except (ValueError, ConfigError) as exc:
+                            self._json({"status": "ERROR", "error": str(exc)}, 400)
+                            return
+                    elif subpath == "files":
+                        self._json(ctx.build_manager.list_files(product_id))
+                        return
+                    elif subpath == "":
+                        self._headers(200, "text/html; charset=utf-8", len(page))
+                        self.wfile.write(page)
+                        return
+            if parsed.path in {"/api/build/archive", "/api/v1/build/archive"}:
+                query = parse_qs(parsed.query)
+                product_id = query.get("product_id", [ctx.default_product_id])[0]
+                accept_header = self.headers.get("Accept", "")
+                if "application/json" not in accept_header:
+                    try:
+                        archive_bytes = ctx.build_manager.archive(product_id)
+                        self._binary(archive_bytes, "application/zip", f"{product_id}-prototype.zip")
+                        return
+                    except (ValueError, ConfigError) as exc:
+                        self._json({"status": "ERROR", "error": str(exc)}, 400)
+                        return
+            self._dispatch(
+                API_GET_ROUTES,
+                ApiRequest(path=parsed.path, query=parse_qs(parsed.query), payload={}),
+            )
 
         def do_POST(self) -> None:
-            path = urlparse(self.path).path
-            if path not in {
-                "/api/compare", "/api/intake", "/api/discover",
-                "/api/plugin/enable", "/api/plugin/disable", "/api/plugin/rollback",
-                "/api/products/create", "/api/products/open", "/api/research",
-                "/api/definition", "/api/solution", "/api/gtm", "/api/readiness",
-                "/api/copilot/propose", "/api/copilot/decision", "/api/export",
-            }:
+            parsed = urlparse(self.path)
+            if parsed.path not in API_POST_ROUTES:
                 self._json({"status": "ERROR", "error": "Not found"}, 404)
                 return
             try:
@@ -7317,153 +8959,17 @@ def make_e2e_server(
                 payload = json.loads(self.rfile.read(length).decode("utf-8"))
                 if not isinstance(payload, dict):
                     raise ConfigError("request JSON root must be an object")
-                if path == "/api/intake":
-                    result = prepare_part_b_intake(config, payload.get("answers"))
-                elif path == "/api/discover":
-                    result = discovery_api_view(payload)
-                elif path == "/api/products/create":
-                    result = {"status": "CREATED", "record": create_product(payload)}
-                elif path == "/api/products/open":
-                    result = {"status": "PASS", "record": open_product(payload)}
-                elif path == "/api/research":
-                    record = open_product(payload)
-                    result = research_api_view(record)
-                elif path == "/api/definition":
-                    record = open_product(payload)
-                    result = build_product_definition(
-                        config_for_record(record),
-                        payload.get("answers"),
-                        payload.get("selected_problem_ids"),
-                    )
-                    result["gate_status"] = result["status"]
-                    result["definition_proposal"] = copy.deepcopy(result["definition"])
-                    result["blockers"] = copy.deepcopy(result["hypothesis_gate"]["missing"])
-                elif path == "/api/solution":
-                    record = open_product(payload)
-                    result = prioritize_solution(
-                        config_for_record(record), payload.get("method")
-                    )
-                elif path == "/api/gtm":
-                    record = open_product(payload)
-                    result = validate_gtm_plan(record["blueprint"])
-                    result["pricing_or_internal_adoption_model"] = copy.deepcopy(result["model"])
-                elif path == "/api/readiness":
-                    record = open_product(payload)
-                    result = assess_product_readiness(config_for_record(record))
-                    result["product_readiness_score"] = result["product_score"]
-                    result["blockers"] = copy.deepcopy(result["missing_items"])
-                    result["open_risks"] = copy.deepcopy(result["risks"])
-                    result["pending_approvals"] = copy.deepcopy(result["approvals"])
-                    result["unknown_metrics"] = copy.deepcopy(result["unknowns"])
-                elif path == "/api/copilot/propose":
-                    record = open_product(payload)
-                    proposal = propose_product_change(
-                        config_for_record(record),
-                        record,
-                        section=payload.get("section"),
-                        patch=payload.get("patch"),
-                        rationale=payload.get("rationale"),
-                        evidence_ids=payload.get("evidence_ids"),
-                        unknowns=payload.get("unknowns", []),
-                    )
-                    request = request_product_change_approval(
-                        product_ledger, proposal, run_id=str(uuid4())
-                    )
-                    with pending_product_lock:
-                        pending_product_changes[proposal["proposal_id"]] = (proposal, request)
-                    result = {
-                        "status": "READY_FOR_REVIEW",
-                        "proposal": public_product_change_view(proposal),
-                    }
-                elif path == "/api/copilot/decision":
-                    proposal_id = _text(payload.get("proposal_id"), "proposal_id")
-                    approved = payload.get("approved")
-                    if type(approved) is not bool:
-                        raise ConfigError("approved must be true or false")
-                    with pending_product_lock:
-                        pending = pending_product_changes.pop(proposal_id, None)
-                    if pending is None:
-                        raise ConfigError("unknown or already decided product proposal")
-                    proposal, request = pending
-                    decision = ApprovalDecision.from_request(
-                        request, approved=approved, decided_by="local-ui-user-label"
-                    )
-                    if not approved:
-                        try:
-                            product_ledger.decide(decision)
-                        except ApprovalRequired:
-                            pass
-                        result = {
-                            "status": "REJECTED", "proposal_id": proposal_id,
-                            "persistence": False,
-                        }
-                    else:
-                        result = apply_approved_product_change(
-                            product_store, proposal, product_ledger, decision
-                        )
-                elif path == "/api/export":
-                    record = open_product(payload)
-                    result = export_product_handoff(
-                        config_for_record(record), record, payload.get("format")
-                    )
-                elif path in {
-                    "/api/plugin/enable", "/api/plugin/disable", "/api/plugin/rollback"
-                }:
-                    if plugin_report.get("status") != "PASS":
-                        raise ConfigError("local plugin package is blocked")
-                    if payload.get("approved") is not True:
-                        raise ApprovalRequired("explicit approval is required")
-                    if path.endswith("enable"):
-                        action = "enable"
-                        version = plugin_report["version"]
-                    elif path.endswith("disable"):
-                        action = "disable"
-                        version = plugin_report["version"]
-                    else:
-                        action = "rollback"
-                        version = plugin_registry.summary(plugin_report["canonical_id"])[
-                            "rollback_version"
-                        ]
-                        if version is None:
-                            raise ConfigError("no previous approved plugin version is available")
-                    request = plugin_registry.request_change(
-                        plugin_ledger,
-                        canonical_id=plugin_report["canonical_id"],
-                        version=version,
-                        action=action,
-                    )
-                    decision = ApprovalDecision.from_request(
-                        request, approved=True, decided_by="local-ui-user-label"
-                    )
-                    result = plugin_registry.apply_change(
-                        plugin_ledger,
-                        decision,
-                        canonical_id=plugin_report["canonical_id"],
-                        version=version,
-                        action=action,
-                    )
-                else:
-                    candidates = payload.get("candidates")
-                    if candidates is None:
-                        candidates = task["mock_candidates"]
-                    result = compare_e2e_candidates(config, candidates)
-                    result["winner"] = result["winner_by_structure"]
-                    result["candidates"] = [
-                        {
-                            "agent": item["candidate"], "score": item["score"],
-                            "classification": item["classification"],
-                            "gaps": copy.deepcopy(item["gaps"]),
-                        }
-                        for item in result["reports"]
-                    ]
-                self._json(result)
-            except (
-                ConfigError, ApprovalRequired, ApprovalMismatch, ApprovalReplay,
-                json.JSONDecodeError, UnicodeDecodeError, ValueError,
-            ) as exc:
+            except API_ERRORS as exc:
                 self._json({"status": "ERROR", "error": str(exc)}, 400)
+                return
+            self._dispatch(
+                API_POST_ROUTES,
+                ApiRequest(path=parsed.path, query=parse_qs(parsed.query), payload=payload),
+            )
 
-    return ThreadingHTTPServer((host, port), E2EHandler)
+    server = BoundedThreadingHTTPServer((host, port), E2EHandler)
+    server.build_manager = build_manager  # type: ignore[attr-defined]
+    return server
 
 
 def serve_e2e_ui(config: dict[str, Any], host: str = "127.0.0.1", port: int = 8080) -> None:
@@ -7477,6 +8983,9 @@ def serve_e2e_ui(config: dict[str, Any], host: str = "127.0.0.1", port: int = 80
     except KeyboardInterrupt:
         pass
     finally:
+        build_mgr = getattr(server, "build_manager", None)
+        if build_mgr is not None:
+            build_mgr.shutdown_all()
         server.server_close()
 
 
@@ -7770,22 +9279,33 @@ def validate_bundle(root: str | Path, config: dict[str, Any]) -> dict[str, Any]:
         and not any(part in IGNORED_LOCAL_NAMES for part in path.relative_to(folder).parts)
         and not path.name.endswith(".pyc")
     }
-    missing = sorted(BUNDLE_FILES - actual)
-    unexpected = sorted(actual - BUNDLE_FILES)
+    docs = sorted(item for item in actual if item.startswith(f"{DOCS_DIRNAME}/") and item.endswith(".md"))
+    bundle = actual - set(docs)
+    missing = sorted(BUNDLE_FILES - bundle)
+    unexpected = sorted(bundle - BUNDLE_FILES)
     validate_config(config)
     scope = scope_summary(config)
     plugin = validate_agent_plugin(folder, config)
     return {
         "status": "PASS" if not missing and not unexpected and plugin["status"] == "PASS" else "FAIL",
         "expected_file_count": len(BUNDLE_FILES),
-        "actual_file_count": len(actual),
+        "actual_file_count": len(bundle),
         "missing": missing,
         "unexpected": unexpected,
+        "docs": docs,
         "dependencies": "python-standard-library-only",
         "network_policy": config["policy"]["network"],
         "unknown_code_execution": config["policy"]["unknown_code_execution"],
         "part_a_scope": scope,
         "part_b_scope": part_b_scope_summary(config),
+        "handoff": {
+            "status": config["handoff_contract"]["status"],
+            "source_files": copy.deepcopy(config["handoff_contract"]["authority"]["source_files"]),
+            "runtime_provider": config["handoff_contract"]["runtime_ai"]["provider_selection"],
+            "database_stores": [
+                item["id"] for item in config["handoff_contract"]["database_contract"]["stores"]
+            ],
+        },
         "agent_plugin": {
             "status": plugin["status"],
             "format": plugin.get("format"),
