@@ -1,5 +1,7 @@
 import copy
+import io
 import json
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -7,11 +9,13 @@ import tempfile
 import threading
 import time
 import unittest
+import zipfile
 from contextlib import closing
 from dataclasses import asdict, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from urllib.request import Request, urlopen
+from urllib.error import HTTPError
+from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 
 from layer_a import (
     ApprovalDecision,
@@ -20,9 +24,12 @@ from layer_a import (
     ApprovalRequired,
     ApprovalReplay,
     ApprovalRequest,
+    BUNDLE_FILES,
     BYOKConnectionRegistry,
     ConfigError,
+    EXTENSION_CATALOG,
     ExtensionConnectionRegistry,
+    ExtensionStore,
     ExternalAccessRequired,
     GovernanceDenied,
     GovernanceIdentity,
@@ -63,6 +70,7 @@ from layer_a import (
     natural_product_discovery,
     prepare_part_b_intake,
     prioritize_solution,
+    product_plan_steps,
     propose_product_change,
     plugin_freshness,
     public_discovery_view,
@@ -90,6 +98,20 @@ from layer_a import (
     validate_gtm_plan,
     validate_session_output,
     WorkflowExecutor,
+    ProfileStore,
+    API_GET_ROUTES,
+    API_POST_ROUTES,
+    ApiRequest,
+    OWNER_ROLE,
+    Principal,
+    STUDIO_ROLE,
+    resolve_principal,
+    API_PREFIX,
+    API_VERSION_PREFIX,
+    BoundedThreadingHTTPServer,
+    MAX_CONCURRENT_REQUESTS,
+    REQUEST_LIMIT_MESSAGE,
+    REQUEST_SOCKET_TIMEOUT_SECONDS,
 )
 
 
@@ -118,9 +140,9 @@ class PortableLayerATests(unittest.TestCase):
     def memory_identity(actor="owner-1", workspace="workspace-1", roles=None):
         return {"actor_id": actor, "workspace_id": workspace, "roles": roles or ["writer", "reader"]}
 
-    def test_bundle_has_exactly_five_files_with_embedded_exportable_resources(self):
+    def test_bundle_has_exactly_eight_files_with_embedded_exportable_resources(self):
         result = validate_bundle(ROOT, self.config)
-        self.assertEqual((result["status"], result["actual_file_count"]), ("PASS", 5))
+        self.assertEqual((result["status"], result["actual_file_count"]), ("PASS", 8))
         self.assertEqual(result["agent_plugin"]["status"], "PASS")
         frontend = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertTrue(frontend.lstrip().startswith("<!DOCTYPE html>"))
@@ -128,10 +150,363 @@ class PortableLayerATests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             unpacked = unpack_embedded_resources(temporary, self.config)
             self.assertEqual(unpacked["status"], "PASS")
-            self.assertEqual(len(unpacked["written"]), 3)
+            self.assertEqual(len(unpacked["written"]), 4)
             self.assertTrue((Path(temporary) / "plugin.json").is_file())
             self.assertTrue((Path(temporary) / "mcp.json").is_file())
             self.assertTrue((Path(temporary) / "skills/product-discovery/SKILL.md").is_file())
+            self.assertTrue((Path(temporary) / "skills/token-optimizer/SKILL.md").is_file())
+
+    def test_docs_markdown_is_reported_without_joining_the_eight_file_bundle(self):
+        result = validate_bundle(ROOT, self.config)
+        self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["actual_file_count"], 8)
+        self.assertIn("docs/user-research.md", result["docs"])
+        self.assertEqual(result["unexpected"], [])
+        for entry in result["docs"]:
+            self.assertTrue(entry.startswith("docs/") and entry.endswith(".md"))
+
+    def test_ping_uses_light_two_pane_project_workspace_without_bottom_dock(self):
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+        shell_start = frontend.index('<section class="piai7-studio"')
+        shell_end = frontend.index("\n      <!-- Header -->", shell_start)
+        shell = frontend[shell_start:shell_end]
+
+        self.assertIn("Chrome-measured project view: Bolt interaction geometry, PI light system.", frontend)
+        self.assertIn("width: 100vw;", frontend)
+        self.assertIn("height: 100vh;", frontend)
+        self.assertIn("grid-template-columns: 440px minmax(0, 1fr);", frontend)
+        self.assertIn("--piai7-bg: #f7fbfa;", frontend)
+        self.assertIn("--piai7-panel: #ffffff;", frontend)
+        self.assertIn("--piai7-border: #d7e7e4;", frontend)
+        self.assertIn("--piai7-text: #102a3a;", frontend)
+
+        chat_position = shell.index('<section class="piai7-chat"')
+        workspace_position = shell.index('<section class="piai7-workspace"')
+        self.assertLess(chat_position, workspace_position)
+        self.assertNotIn('<nav class="piai7-left"', shell)
+        self.assertNotIn('<div class="piai7-ide-split"', shell)
+        self.assertNotIn("piai7-projects", frontend)
+        self.assertNotIn("data-piai7-product", frontend)
+
+        for expected in (
+            "Preview",
+            "Files",
+            "What are we working on today?",
+            "How can Ping help you build?",
+            "Deterministic · local",
+            "Plan",
+            "Frame product idea",
+            "Shape requirements",
+            "Plan prototype",
+            "Build",
+            "Your generated product appears here",
+            'id="piai7-preview-frame"',
+        ):
+            self.assertIn(expected, shell)
+
+        for removed in (
+            "piai7-dock",
+            "AI Stream",
+            "Build Log",
+            "data-piai7-terminal",
+            "terminal-shortcut",
+            "Coming soon",
+            "Phase 3",
+            "piai7-build-targets",
+            "piai7-mode-database",
+            "piai7-pane-database",
+            "Retry local data",
+        ):
+            self.assertNotIn(removed, shell)
+
+        self.assertEqual(shell.count('data-piai7-suggestion='), 3)
+        self.assertIn('class="piai7-status-btn piai7-build-btn"', shell)
+        self.assertEqual(shell.count('data-piai7-action="toggle-build"'), 1)
+        self.assertEqual(shell.count('aria-label="Build preview" title="Build preview"'), 1)
+        self.assertNotIn("piai7-close-btn", shell)
+        self.assertNotIn('data-piai7-action="close"', shell)
+        self.assertIn('<span class="piai7-project-kicker">Current project</span>', shell)
+        self.assertIn('aria-label="Current project"', shell)
+        self.assertNotIn("if (name === 'close') closePIAI();", frontend)
+        self.assertIn('aria-label="Add attachment unavailable"', shell)
+        self.assertIn('title="Attachments unavailable in local preview" disabled', shell)
+        self.assertIn('sandbox="allow-scripts allow-forms allow-same-origin"', shell)
+
+    def test_ui_collapses_repeated_chrome_and_disables_dead_assistant_drawer(self):
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+
+        self.assertIn('<aside id="ai-sidebar" aria-label="Legacy assistance drawer" aria-hidden="true" hidden inert>', frontend)
+        self.assertEqual(frontend.count('aria-label="Ping"'), 1)
+        self.assertIn("if (!sidebar || sidebar.hidden || sidebar.getAttribute('aria-hidden') === 'true') return;", frontend)
+        self.assertNotIn("transition: all", frontend)
+        self.assertIn(r"|\b\d{12,19}\b|", frontend)
+        self.assertIn("if (isMobileViewport() && focusSidebar && focusSidebar.classList.contains('open')) return;", frontend)
+        self.assertIn("const focusWasInSidebar = Boolean(sidebar && sidebar.contains(document.activeElement));", frontend)
+        for removed_database_ui in (
+            "piai7-mode-database",
+            "piai7-pane-database",
+            "piai7-db-layout",
+            "piai7-db-list",
+            "piai7-db-table",
+            "piai7-table-btn",
+            "piai7-table-meta",
+            "piai7-data-table",
+            "data-piai7-table",
+            "piai7LoadSchema",
+            "piai7LoadRows",
+            "dbLoaded",
+            "schemaEpoch",
+            "tableEpoch",
+            "retry-data",
+            "Retry local data",
+            "/api/db-schema",
+            "/api/db-rows",
+            'id="i-database"',
+        ):
+            self.assertNotIn(removed_database_ui, frontend)
+        self.assertEqual(frontend.count('data-piai7-mode="'), 2)
+        self.assertIn("if (['preview', 'code', 'settings'].indexOf(mode) < 0) mode = 'preview';", frontend)
+        self.assertIn("#piai7-root .piai7-top-right .piai7-build-btn { min-width: 44px; }", frontend)
+        self.assertNotIn("#piai7-root .piai7-top-right .piai7-status-btn { display: none; }", frontend)
+        self.assertIn('aria-label="PI Home" title="Home"', frontend)
+        self.assertIn('aria-current="page" aria-label="Ping assistant, current area" title="Ping" disabled', frontend)
+        self.assertIn('<span class="nav-text">Start Project Guide</span>', frontend)
+        self.assertIn('<span class="nav-text">Artifact library</span>', frontend)
+        self.assertIn('<span>Project Guide</span>', frontend)
+        self.assertIn('aria-label="Project Guide progress"', frontend)
+        self.assertIn("#app-shell.sidebar-closed #left-sidebar .piai-sidebar-switch button {", frontend)
+
+        self.assertIn("details.className = 'pif-page-brief';", frontend)
+        self.assertIn("<span>About this step</span>", frontend)
+        self.assertIn("const PIF_BRIEF_SEEN_KEY = 'pif_brief_seen';", frontend)
+        self.assertEqual(frontend.count("pbPageBrief("), 9)
+        self.assertIn("grid-template-columns: repeat(4, minmax(0, 1fr));", frontend)
+        self.assertNotIn("['Workflow preparation', truth.workflow]", frontend)
+        self.assertNotIn("pif-progress-next", frontend)
+        self.assertIn("'📤 Export': 'copilot'", frontend)
+
+        self.assertNotRegex(frontend, r"border(?:-[a-z]+)*-radius\s*:\s*(?:[4-7]|9|1[013-9]|9999)px")
+        for token_pat in (r"--radius-sm:\s*8px", r"--radius-md:\s*12px", r"--radius-pill:\s*999px"):
+            self.assertRegex(frontend, token_pat)
+        for token in ("--radius-sm:", "--radius-md:", "--radius-pill:",
+                      "--font-sans:", "--font-mono:"):
+            self.assertEqual(frontend.count(token), 1, token)
+        for obsolete in ("--radius-lg:", "--radius-xl:", "--radius-full:", "--radius-ai:"):
+            self.assertNotIn(obsolete, frontend)
+
+    def test_ping_uat_contracts_keep_compact_safe_single_tab_stop_and_mobile_views(self):
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+
+        def section(start, end):
+            start_at = frontend.index(start)
+            return frontend[start_at:frontend.index(end, start_at)]
+
+        sidebar = section("function piaiSidebarSection()", "function renderSidebarNav()")
+        self.assertIn("done + ' complete'", sidebar)
+        self.assertIn("step.state === 'active'", sidebar)
+        self.assertIn("step.state === 'blocked'", sidebar)
+        self.assertIn("step.state === 'pending'", sidebar)
+        self.assertIn("visiblePlanSteps.map", sidebar)
+        self.assertNotIn("plan.steps.map", sidebar)
+        self.assertEqual(frontend.count('aria-label="PI Home"'), 1)
+
+        ping_shell = section('<section class="piai7-studio"', "\n      <!-- Header -->")
+        self.assertIn('<use href="#i-list-check"></use>', ping_shell)
+        self.assertIn('class="piai7-mobile-view-tabs" role="tablist"', ping_shell)
+        self.assertIn('data-piai7-mobile-pane="conversation"', ping_shell)
+        self.assertIn('data-piai7-mobile-pane="preview"', ping_shell)
+        welcome_start = ping_shell.index('data-piai7-message-id="welcome"')
+        welcome_end = ping_shell.index('<article class="piai7-plan-card"', welcome_start)
+        welcome = ping_shell[welcome_start:welcome_end]
+        self.assertEqual(welcome.count('class="piai7-message-action-summary"'), 1)
+        self.assertEqual(welcome.count('role="menuitem" tabindex="-1"'), 4)
+
+        renderer = section("function piai7RenderStructuredReply", "function piai7AddBubble")
+        self.assertIn("document.createTextNode", renderer)
+        self.assertIn("row.textContent", renderer)
+        self.assertNotIn("innerHTML", renderer)
+        replies = section("function piai7GenerateAssistantReply", "function piai7SendMessage")
+        for label in ("Strength", "Weakness", "Opportunity", "Threat", "Acceptance", "Risks", "Next step"):
+            self.assertIn("label: '" + label + "'", replies)
+        self.assertIn("UNKNOWN —", replies)
+
+        actions = section("function piai7CreateMessageAction", "function piai7LocalSpeechVoice")
+        self.assertIn("button.tabIndex = -1", actions)
+        self.assertIn("document.createElement('details')", actions)
+        self.assertIn("document.createElement('summary')", actions)
+        mobile = section("function piai7SetMobilePane", "function piai7ValidPreviewUrl")
+        self.assertIn("button.tabIndex = selected ? 0 : -1", mobile)
+        self.assertIn("chat.inert = mobile && next !== 'conversation'", mobile)
+        self.assertIn("workspace.inert = mobile && next !== 'preview'", mobile)
+
+        transitions = section("function piai7Transition", "function piai7SidebarState")
+        self.assertIn("}, 220);", transitions)
+        for destination in ("overview:", "products:", "guide:", "advanced:"):
+            self.assertIn(destination, transitions)
+        self.assertIn("piai7Transition(destination.label, destination.detail, destination.action)", transitions)
+        self.assertIn("#piai7-root.piai7-transitioning .piai7-content", frontend)
+
+    def test_product_uat_contracts_keep_truth_modal_focus_decision_first_and_routes(self):
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+
+        def section(start, end):
+            start_at = frontend.index(start)
+            return frontend[start_at:frontend.index(end, start_at)]
+
+        header = section("function pbPageHeader", "function pbDataBoundaryNotice")
+        self.assertIn("Workflow completion; decision and approval status remain separate", header)
+        self.assertIn("% workflow complete · Decision", header)
+        self.assertNotIn("% prepared", header)
+        self.assertIn("currentPage === 'copilot'", header)
+        self.assertIn("truth.preview", header)
+        self.assertIn("truth.workflowTotal", header)
+        truth = section("function pbReadinessTruth", "function pbProductExportGate")
+        self.assertIn("stage.key !== 'copilot'", truth)
+        self.assertIn("workflowStages.filter", truth)
+        self.assertIn("Preview complete", truth)
+        preview = section("function pbHandoffPreviewHtml", "function pbPreviewHandoff")
+        self.assertIn("Preview only", preview)
+        self.assertIn("Preview preparation does not change decision, delivery, or approval status.", preview)
+
+        readiness = section("function pbRenderReadinessResult", "B8: COPILOT + EXPORT SCREEN")
+        self.assertLess(readiness.index("Decision readiness"), readiness.index("Configured evidence-check score"))
+        self.assertIn("Decision blocked", readiness)
+        self.assertIn("decisionBlocked ? ' role=\"alert\"'", readiness)
+        self.assertIn("Secondary configuration metric. Not overall readiness.", readiness)
+
+        create_markup = section("document.getElementById('pb-create-form')?.remove()", "function pbShowCreateProduct")
+        self.assertIn('role="dialog" aria-modal="true"', create_markup)
+        for field_id in ("pb-new-accomplishment", "pb-new-usefulness"):
+            self.assertIn('id="' + field_id + '"', create_markup)
+        self.assertIn("What does user expect to accomplish?", create_markup)
+        self.assertIn("Why is this useful compared with current behavior?", create_markup)
+        self.assertGreaterEqual(create_markup.count('class="pif-create-group"'), 3)
+
+        modal = section("function pbShowCreateProduct", "document.addEventListener('keydown', pbHandleDialogKeydown)")
+        self.assertIn("shell.inert = true", modal)
+        self.assertIn("shell.inert = previous.inert", modal)
+        self.assertIn("window._pbCreateTrigger.focus", modal)
+        self.assertIn("event.shiftKey && document.activeElement === first", modal)
+        self.assertIn("!event.shiftKey && document.activeElement === last", modal)
+        self.assertIn("#theme-toggle-btn { width: 44px; min-width: 44px; height: 44px;", frontend)
+        self.assertIn(".pif-onboarding-dialog { max-height:", frontend)
+        self.assertIn(".pif-onboarding-dialog .pif-dialog-actions { position: sticky;", frontend)
+
+        sidebar = section("function piaiSidebarSection()", "function renderSidebarNav()")
+        self.assertIn("const current = function(name)", sidebar)
+        self.assertIn("current(view.landing)", sidebar)
+        self.assertIn("current(prompted && view.mode === 'code')", sidebar)
+        self.assertIn("current(prompted && view.mode === 'settings')", sidebar)
+        self.assertIn('aria-current="page" aria-label="Ping assistant, current area"', sidebar)
+        product_sidebar = section("function pbSidebarSection", "function toggleIntegrationsNav")
+        self.assertIn("currentPage === it.key ? ' aria-current=\"page\"' : ''", product_sidebar)
+        advanced_sidebar = section("function pbAdvancedSidebarSection", "B1: PORTFOLIO SCREEN")
+        self.assertIn("currentPage === it.key ? ' aria-current=\"page\"' : ''", advanced_sidebar)
+
+    def test_extensions_uat_contract_keeps_local_search_and_collapsed_group_triplet(self):
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+
+        def section(start, end):
+            start_at = frontend.index(start)
+            return frontend[start_at:frontend.index(end, start_at)]
+
+        search = section("function piai7EnsureExtensionSearch", "function piai7LoadExtensions")
+        self.assertIn("input.type = 'search'", search)
+        self.assertIn("input.id = 'piai7-extension-search'", search)
+        self.assertIn("Search extensions", search)
+        self.assertIn("trim().toLocaleLowerCase()", search)
+        self.assertIn("toLocaleLowerCase().includes(query)", search)
+        for kind, title in (("design_system", "Design systems"), ("skill", "Skills"), ("mcp_server", "MCP servers")):
+            self.assertIn("{ kind: '" + kind + "', title: '" + title + "' }", search)
+        self.assertIn("document.createElement('details')", search)
+        self.assertIn("document.createElement('summary')", search)
+        self.assertIn("section.open = Boolean(query && rows.length)", search)
+
+        local_filter = section("root.addEventListener('input'", "document.addEventListener('pointerdown'")
+        self.assertIn("event.target.id === 'piai7-extension-search'", local_filter)
+        self.assertIn("state.extensionQuery = event.target.value", local_filter)
+        self.assertIn("piai7RenderExtensions({ entries: state.extensionEntries })", local_filter)
+        self.assertNotIn("piai7Request", local_filter)
+
+    def test_akp_ui_keeps_canonical_page_state_blank_scoring_and_grounded_build_payload(self):
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+
+        def section(start, end):
+            start_at = frontend.index(start)
+            return frontend[start_at:frontend.index(end, start_at)]
+
+        initialization = section("async function pbInit()", "function pbActiveProduct()")
+        self.assertIn("const bootProductId = boot.product && boot.product.product_id", initialization)
+        self.assertIn("pbState.activeProductId = bootProductId", initialization)
+        self.assertIn("conversation starts fresh after reload", initialization)
+        active_record = section("function piai7ActiveRecord()", "function piai7RenderEditor()")
+        self.assertIn("String(item.product_id || item.id) === String(state.productId)", active_record)
+        self.assertIn("String(bootProduct.product_id || bootProduct.id) === String(state.productId)", active_record)
+        conversations = section("function piai7SaveConversation", "function piai7CreateMessageIdentity")
+        self.assertIn("state.conversations[String(productId)]", conversations)
+        self.assertNotIn("localStorage", conversations)
+        self.assertNotIn("sessionStorage", conversations)
+        self.assertNotRegex(
+            frontend,
+            r"(?:localStorage|sessionStorage)\.(?:getItem|setItem)\([^\n]*(?:activeProductId|active.?product|product.?id)",
+        )
+
+        solution = section("function pbRiceMetricsReady()", "function pbRenderSolutionResult")
+        self.assertIn("value: null, effort: null, reach: null, impact: null", solution)
+        self.assertIn("confidence: null", solution)
+        self.assertIn("return value == null ? '' : String(value)", solution)
+        self.assertIn('placeholder="No default"', solution)
+        self.assertIn("? ['reach', 'impact', 'confidence', 'effort']", solution)
+        self.assertIn("value == null || !Number.isFinite(value) || value <= 0", solution)
+        self.assertIn("No default assumptions are applied.", solution)
+        self.assertIn("document.getElementById(fieldId)?.focus()", solution)
+        for seeded in (
+            "reach: idx === 0 ? 500",
+            "impact: idx === 0 ? 2",
+            "confidence: idx === 0 ? 100",
+        ):
+            self.assertNotIn(seeded, solution)
+
+        create_markup = section(
+            "document.getElementById('pb-create-form')?.remove()", "function pbShowCreateProduct"
+        )
+        for field_id in (
+            "pb-new-name", "pb-new-pitch", "pb-new-user", "pb-new-accomplishment",
+            "pb-new-usefulness", "pb-new-outcome", "pb-new-stage", "pb-new-domain",
+        ):
+            self.assertIn('for="' + field_id + '"', create_markup)
+            self.assertIn('id="' + field_id + '"', create_markup)
+        for required_id in (
+            "pb-new-name", "pb-new-pitch", "pb-new-user", "pb-new-accomplishment",
+            "pb-new-usefulness", "pb-new-outcome",
+        ):
+            self.assertIn('aria-describedby="' + required_id + '-error"', create_markup)
+        self.assertIn('id="pb-create-status" role="status"', create_markup)
+        self.assertIn('tabindex="-1"', create_markup)
+
+        create_action = section("async function pbCreateProduct()", "async function pbOpenProduct")
+        for field_name in (
+            "problem: pitch", "intended_user: intendedUser",
+            "desired_outcome: desiredOutcome", "expected_accomplishment: expectedAccomplishment",
+            "usefulness, domain, stage",
+        ):
+            self.assertIn(field_name, create_action)
+        self.assertIn("document.getElementById(missing[0].id)?.focus()", create_action)
+        self.assertIn("status.focus()", create_action)
+        self.assertIn("rec.name = rec.name ||", create_action)
+
+        self.assertIn(
+            '<code id="piai7-preview-address" aria-label="Local preview address">Not started</code>',
+            frontend,
+        )
+        build_state = section("function piai7ApplyBuild(data)", "async function piai7RefreshBuild")
+        self.assertIn("String(data.product_id) !== String(state.productId)", build_state)
+        self.assertIn("previewAddress.textContent = state.buildRunning ? state.buildUrl : 'Not started'", build_state)
+        prototype_context = section("function piai7PrototypeContext()", "function piai7GenerateAssistantReply")
+        self.assertIn("pbSession(state.productId)", prototype_context)
+        self.assertIn("gherkin_contracts:", prototype_context)
+        build_action = section("async function piai7ToggleBuild(button)", "async function piai7LoadFileCount")
+        self.assertIn("{ product_id: productId, prototype_context: piai7PrototypeContext() }", build_action)
 
     def test_config_keeps_local_security_boundary(self):
         validate_config(self.config)
@@ -141,6 +516,65 @@ class PortableLayerATests(unittest.TestCase):
         plugin = self.config["agent_plugin"]
         self.assertEqual(plugin["contract"]["status"], "VALIDATED_POC")
         self.assertEqual([item["id"] for item in plugin["must_features"]], [f"P{i}" for i in range(1, 11)])
+
+    def test_eight_file_handoff_is_standalone_provider_neutral_and_database_complete(self):
+        handoff = self.config["handoff_contract"]
+        authority = handoff["authority"]
+        self.assertEqual(authority["source_files"], sorted(BUNDLE_FILES))
+        self.assertEqual(authority["exact_source_file_count"], 8)
+        self.assertFalse(authority["sibling_dependency"])
+        self.assertFalse(authority["absolute_path_dependency"])
+        self.assertFalse(authority["new_source_files_allowed"])
+
+        build_agent = handoff["build_agent"]
+        self.assertEqual((build_agent["preferred_family"], build_agent["role"]), ("Gemini", "build-time-only"))
+        self.assertFalse(build_agent["runtime_provider_authority"])
+        self.assertFalse(build_agent["claim_local_shell_without_connected_tool"])
+
+        runtime_ai = handoff["runtime_ai"]
+        self.assertEqual((runtime_ai["name"], runtime_ai["current_mode"]), ("Ping", "deterministic-local-mock"))
+        self.assertIsNone(runtime_ai["provider_selection"])
+        self.assertIsNone(runtime_ai["provider_preference"])
+        self.assertFalse(runtime_ai["silent_live_fallback"])
+        self.assertEqual(
+            {item["id"] for item in runtime_ai["candidates"]},
+            {"google-gemini", "xai-grok", "nvidia-nim", "other-provider"},
+        )
+        self.assertTrue(all(not item["enabled"] and not item["selected"] for item in runtime_ai["candidates"]))
+
+        expected_tables = {
+            "memory_metadata", "memory_records", "memory_revisions", "memory_requests", "memory_audit",
+            "product_blueprints", "knowledge_sources", "knowledge_chunks",
+            "governance_meta", "governance_budget", "governance_audit",
+        }
+        configured_tables = {
+            table
+            for store in handoff["database_contract"]["stores"]
+            for table in store["tables"]
+        }
+        self.assertEqual(configured_tables, expected_tables)
+        runtime_source = (ROOT / "layer_a.py").read_text(encoding="utf-8")
+        for table in expected_tables:
+            self.assertRegex(runtime_source, rf"CREATE TABLE IF NOT EXISTS\s+{table}\b")
+
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertNotIn("/Users/", agents)
+        self.assertNotIn("portable-mvp", agents)
+        self.assertIn("## MoSCoW full-build priorities", agents)
+        self.assertIn("## Database and state contract", agents)
+        self.assertIn("### Gemini continuation prompt", agents)
+        self.assertIn("## Legacy analysis register", agents)
+
+        frontend = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn("runtimeProvider: null", frontend)
+        self.assertIn("runtimeProviderCalls: false", frontend)
+        for selected_vendor in ("NVIDIA NIM", "Gemini Flash 2.5", "OpenAI GPT-4o"):
+            self.assertNotIn(selected_vendor, frontend)
+
+        report = validate_bundle(ROOT, self.config)
+        self.assertEqual(report["handoff"]["status"], "AUTHORITATIVE_LOCAL_HANDOFF")
+        self.assertIsNone(report["handoff"]["runtime_provider"])
+        self.assertEqual(set(report["handoff"]["database_stores"]), {"memory", "products", "knowledge", "governance"})
 
     def test_memory_m1_strict_portable_record_and_checksum(self):
         memory = self.config["memory_core"]
@@ -876,6 +1310,129 @@ class PortableLayerATests(unittest.TestCase):
             with self.assertRaisesRegex(ConfigError, "stale Product Blueprint revision"):
                 reopened.update(changed, expected_revision=1)
 
+    def test_akp_create_identity_active_reload_and_prototype_context_are_product_bound(self):
+        from layer_a import ServerContext, _post_build_start, _validated_prototype_context
+
+        class CapturingBuildManager:
+            def __init__(self):
+                self.calls = []
+
+            def start(self, product_id, blueprint, owner="local"):
+                self.calls.append((product_id, copy.deepcopy(blueprint), owner))
+                return {"status": "STARTED", "product_id": product_id}
+
+        with tempfile.TemporaryDirectory() as temporary:
+            state_dir = Path(temporary)
+            default_blueprint = copy.deepcopy(self.config["part_b"]["product_blueprint"])
+            workspace_id = default_blueprint["product"]["workspace_id"]
+            store = SQLiteProductBlueprintStore(
+                state_dir / "products.sqlite3", self.config["part_b"]["product_store"]
+            )
+            store.create(default_blueprint)
+            builds = CapturingBuildManager()
+            context = ServerContext(
+                config=self.config,
+                root=ROOT,
+                state_dir=state_dir,
+                page=b"",
+                default_product_id=default_blueprint["product"]["id"],
+                default_blueprint=default_blueprint,
+                task={},
+                product_store=store,
+                profile_store=None,
+                extension_store=None,
+                build_manager=builds,
+                terminal_service=None,
+                plugin_report=validate_agent_plugin(ROOT, self.config),
+                plugin_registry=None,
+                plugin_ledger=ApprovalLedger(),
+                product_ledger=ApprovalLedger(),
+                pending_product_changes={},
+                pending_product_lock=None,
+                active_product_by_workspace={},
+            )
+            principal = Principal(
+                "local-akp-user", workspace_id, frozenset({OWNER_ROLE, STUDIO_ROLE})
+            )
+
+            def create_payload(product_id, name, problem):
+                return {
+                    "product_id": product_id,
+                    "name": name,
+                    "owner": "current-local-user",
+                    "type": "internal",
+                    "problem": problem,
+                    "intended_user": "Early learner",
+                    "desired_outcome": "Complete one reviewed lesson",
+                    "expected_accomplishment": "Practice one letter safely",
+                    "usefulness": "Replaces an unstructured worksheet",
+                    "domain": "Learning",
+                    "stage": "idea",
+                }
+
+            alpha = context.create_product(
+                principal, create_payload("akp-alpha", "Alpha Product", "Alpha-only problem")
+            )
+            beta = context.create_product(
+                principal, create_payload("akp-beta", "Beta Product", "Beta-only problem")
+            )
+            self.assertEqual(
+                (alpha["product_id"], alpha["name"], alpha["blueprint"]["product"]["name"]),
+                ("akp-alpha", "Alpha Product", "Alpha Product"),
+            )
+            self.assertEqual(
+                (beta["product_id"], beta["name"], beta["blueprint"]["product"]["name"]),
+                ("akp-beta", "Beta Product", "Beta Product"),
+            )
+            self.assertEqual(context.bootstrap(principal)["product"]["product_id"], "akp-beta")
+            context.open_product(principal, {"product_id": "akp-alpha"})
+            self.assertEqual(context.bootstrap(principal)["product"]["product_id"], "akp-alpha")
+            self.assertEqual(
+                store.open("akp-alpha", workspace_id)["blueprint"]["definition"]["problem_statement"],
+                "Alpha-only problem",
+            )
+            self.assertEqual(
+                store.open("akp-beta", workspace_id)["blueprint"]["definition"]["problem_statement"],
+                "Beta-only problem",
+            )
+
+            prototype_context = {
+                "problem": "Beta prototype problem",
+                "intended_user": "Early learner",
+                "outcome": "Recognize letter B",
+                "accomplishment": "Match B to Ball",
+                "usefulness": "Short guided practice",
+                "solution_options": ["Letter matching"],
+                "gherkin_contracts": [
+                    "Scenario: Match B\nGiven B is selected\nWhen Ball is chosen\nThen the match passes"
+                ],
+            }
+            started = _post_build_start(
+                context,
+                principal,
+                ApiRequest(
+                    path="/api/build/start",
+                    query={},
+                    payload={"product_id": "akp-beta", "prototype_context": prototype_context},
+                ),
+            )
+            self.assertEqual(started["product_id"], "akp-beta")
+            captured_id, captured_blueprint, captured_owner = builds.calls[-1]
+            self.assertEqual((captured_id, captured_owner), ("akp-beta", "local-akp-user"))
+            self.assertEqual(captured_blueprint["product"]["name"], "Beta Product")
+            self.assertEqual(captured_blueprint["_prototype_context"], prototype_context)
+            self.assertNotIn(
+                "_prototype_context", store.open("akp-beta", workspace_id)["blueprint"]
+            )
+            for rejected in (
+                {"unknown": "field"},
+                {"problem": "api_key = secret-looking-value"},
+                {"gherkin_contracts": "not-a-list"},
+            ):
+                with self.subTest(rejected=rejected):
+                    with self.assertRaises(ConfigError):
+                        _validated_prototype_context(rejected)
+
     def test_part_b_b2_guided_definition_links_findings_without_silent_write(self):
         answers = {
             "problem": "Broad internal users lose time during repeated handoffs.",
@@ -1589,11 +2146,12 @@ class PortableLayerATests(unittest.TestCase):
         report = validate_agent_plugin(ROOT, self.config)
         self.assertEqual(report["status"], "PASS")
         self.assertEqual(report["format"], "Agent Plugins 1.0.0")
-        self.assertEqual(report["physical_file_count"], 5)
-        self.assertEqual(report["file_count"], 8)
+        self.assertEqual(report["physical_file_count"], 8)
+        self.assertEqual(report["file_count"], 12)
         self.assertEqual(report["resource_mode"], "embedded-exportable")
         self.assertIn("skills/product-discovery/SKILL.md", report["files"])
-        self.assertEqual(report["skills"][0]["name"], "product-discovery")
+        self.assertIn("skills/token-optimizer/SKILL.md", report["files"])
+        self.assertEqual([s["name"] for s in report["skills"]], ["product-discovery", "token-optimizer"])
         self.assertEqual(report["mcp_servers"], ["layer-a-local"])
         self.assertFalse(report["inspection_executed_package_code"])
         demo = run_plugin_demo(self.config, ROOT)
@@ -1905,10 +2463,16 @@ class PortableLayerATests(unittest.TestCase):
                 page_headers = response.headers
             self.assertEqual(page, (ROOT / "index.html").read_text(encoding="utf-8"))
             self.assertIn("const FEATURE_FLAGS = Object.freeze({", page)
-            self.assertNotRegex(page, r"(?i)https?://|firebase|firestore|gstatic|cdnjs")
+            self.assertNotRegex(page, r"(?i)(?:src|href|action)\s*=\s*['\"]https?://|firebase|firestore|gstatic|cdnjs")
             self.assertIn("connect-src 'self'", page_headers["Content-Security-Policy"])
             with urlopen(base + "/index.html", timeout=3) as response:
                 self.assertEqual(response.read().decode("utf-8"), page)
+            with urlopen(base + "/ping", timeout=3) as response:
+                self.assertEqual(response.read().decode("utf-8"), page)
+            ping_head_request = Request(base + "/ping", method="HEAD")
+            with urlopen(ping_head_request, timeout=3) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(int(response.headers["Content-Length"]), len(page.encode("utf-8")))
             with urlopen(base + "/health", timeout=3) as response:
                 health = json.load(response)
             self.assertEqual(health, {
@@ -2037,13 +2601,1153 @@ class PortableLayerATests(unittest.TestCase):
             thread.join(timeout=3)
 
 
+    # --- Story 04.1 + 04.2 ---
+
+    def test_ephemeral_build_manager_start_stop_and_status(self):
+        from layer_a_build import EphemeralBuildManager
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        self.addCleanup(manager.shutdown_all)
+        blueprint = self.config["part_b"]["product_blueprint"]
+        result = manager.start("test-product", blueprint)
+        self.assertEqual(result["status"], "STARTED")
+        self.assertEqual(result["product_id"], "test-product")
+        self.assertIn("url", result)
+        self.assertIn("port", result)
+        status = manager.status("test-product")
+        self.assertTrue(status["running"])
+        self.assertEqual(status["product_id"], "test-product")
+        stop = manager.stop("test-product")
+        self.assertEqual(stop["status"], "STOPPED")
+        status_after = manager.status("test-product")
+        self.assertFalse(status_after["running"])
+
+    def test_ephemeral_build_manager_stop_not_running(self):
+        from layer_a_build import EphemeralBuildManager
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        result = manager.stop("never-started")
+        self.assertEqual(result["status"], "NOT_RUNNING")
+
+    def test_ephemeral_build_manager_rejects_unsafe_product_id(self):
+        from layer_a_build import EphemeralBuildManager
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        with self.assertRaises(ValueError):
+            manager.start("", {})
+
+    def test_ephemeral_build_manager_status_all_returns_active_list(self):
+        from layer_a_build import EphemeralBuildManager
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        self.addCleanup(manager.shutdown_all)
+        blueprint = self.config["part_b"]["product_blueprint"]
+        manager.start("product-a", blueprint)
+        all_status = manager.status()
+        self.assertIn("active_builds", all_status)
+        ids = [b["product_id"] for b in all_status["active_builds"]]
+        self.assertIn("product-a", ids)
+
+    def test_terminal_exec_service_compile_passes(self):
+        from layer_a_terminal import TerminalExecService
+        service = TerminalExecService(ROOT)
+        result = service.exec("compile")
+        self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["command"], "compile")
+        self.assertEqual(result["returncode"], 0)
+        self.assertFalse(result["truncated"])
+
+    def test_terminal_exec_service_validate_passes(self):
+        from layer_a_terminal import TerminalExecService
+        service = TerminalExecService(ROOT)
+        result = service.exec("validate")
+        self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["command"], "validate")
+        self.assertIn("actual_file_count", result["stdout"])
+
+    def test_terminal_exec_service_rejects_disallowed_command(self):
+        from layer_a_terminal import TerminalExecService
+        service = TerminalExecService(ROOT)
+        with self.assertRaises(ValueError):
+            service.exec("rm -rf /")
+        with self.assertRaises(ValueError):
+            service.exec("")
+
+    def test_terminal_exec_service_rejects_non_string_input(self):
+        from layer_a_terminal import TerminalExecService
+        service = TerminalExecService(ROOT)
+        with self.assertRaises(ValueError):
+            service.exec(None)  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            service.exec(42)  # type: ignore[arg-type]
+
+    def test_csp_header_contains_prototype_frame_src(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        server = make_e2e_server(
+            self.config, "127.0.0.1", 0,
+            Path(temporary.name) / "products.sqlite3",
+        )
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        base = f"http://127.0.0.1:{server.server_port}"
+        try:
+            with urlopen(base + "/health", timeout=3) as response:
+                csp = response.headers.get("Content-Security-Policy", "")
+            self.assertIn("frame-src", csp)
+            for port in (8081, 8090, 8099):
+                self.assertIn(f"http://127.0.0.1:{port}", csp)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=3)
+
+    def test_terminal_combined_output_stays_within_64kb(self):
+        from layer_a_terminal import TerminalExecService, _MAX_OUTPUT_BYTES
+        service = TerminalExecService(ROOT)
+        result = service.exec("compile")
+        combined = len(result["stdout"].encode("utf-8")) + len(result["stderr"].encode("utf-8"))
+        self.assertLessEqual(combined, _MAX_OUTPUT_BYTES)
+
+    def test_terminal_cap_enforces_combined_budget_with_oversized_streams(self):
+        from unittest.mock import patch, MagicMock
+        from layer_a_terminal import TerminalExecService, _MAX_OUTPUT_BYTES
+        service = TerminalExecService(ROOT)
+        big_stdout = b"A" * (_MAX_OUTPUT_BYTES + 1000)
+        big_stderr = b"B" * (_MAX_OUTPUT_BYTES + 1000)
+        mock_result = MagicMock()
+        mock_result.returncode = 0
+        mock_result.stdout = big_stdout
+        mock_result.stderr = big_stderr
+        with patch("layer_a_terminal.subprocess.run", return_value=mock_result):
+            result = service.exec("compile")
+        self.assertTrue(result["truncated"])
+        combined = len(result["stdout"].encode("utf-8")) + len(result["stderr"].encode("utf-8"))
+        self.assertLessEqual(combined, _MAX_OUTPUT_BYTES)
+        # stdout fills budget → stderr gets 0 remaining
+        self.assertEqual(result["stderr"], "")
+        self.assertEqual(len(result["stdout"].encode("utf-8")), _MAX_OUTPUT_BYTES)
+
+    def test_ephemeral_build_manager_readiness_timeout_cleans_up(self):
+        from unittest.mock import patch
+        from layer_a_build import EphemeralBuildManager
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        blueprint = self.config["part_b"]["product_blueprint"]
+        self.addCleanup(manager.shutdown_all)
+        with patch.object(EphemeralBuildManager, "_wait_for_port", return_value=False):
+            with self.assertRaises(ValueError):
+                manager.start("test-timeout", blueprint)
+        self.assertNotIn("test-timeout", manager._builds)
+
+    def test_failed_child_cannot_claim_unrelated_listener_and_retries_next_port(self):
+        from unittest.mock import MagicMock, patch
+        from layer_a_build import EphemeralBuildManager
+
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        self.addCleanup(manager.shutdown_all)
+        failed_child = MagicMock(pid=101)
+        failed_child.poll.return_value = 1
+        ready_child = MagicMock(pid=102)
+        ready_child.poll.return_value = None
+        listener = MagicMock()
+        listener.__enter__.return_value = listener
+        listener.__exit__.return_value = False
+        ports = iter((8084, 8085))
+        excluded_snapshots = []
+
+        def find_port(excluded):
+            excluded_snapshots.append(set(excluded))
+            return next(ports)
+
+        with patch.object(manager, "_find_free_port", side_effect=find_port), \
+             patch("layer_a_build.subprocess.Popen", side_effect=[failed_child, ready_child]), \
+             patch("layer_a_build.socket.create_connection", return_value=listener):
+            result = manager.start(
+                "retry-product", self.config["part_b"]["product_blueprint"]
+            )
+
+        self.assertEqual(result["status"], "STARTED")
+        self.assertEqual(result["port"], 8085)
+        self.assertEqual(excluded_snapshots, [set(), {8084}])
+        self.assertIs(manager._builds["retry-product"]["process"], ready_child)
+
+    def test_build_and_terminal_routes_integrated(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        server = make_e2e_server(
+            self.config,
+            "127.0.0.1",
+            0,
+            Path(temporary.name) / "products.sqlite3",
+        )
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        base = f"http://127.0.0.1:{server.server_port}"
+
+        def get(path):
+            with urlopen(base + path, timeout=5) as response:
+                return json.load(response)
+
+        def post(path, payload):
+            request = Request(
+                base + path,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urlopen(request, timeout=5) as response:
+                return json.load(response)
+
+        try:
+            not_running = get("/api/build/status?product_id=portable-product-example")
+            self.assertFalse(not_running["running"])
+            self.assertEqual(not_running["product_id"], "portable-product-example")
+
+            started = post("/api/build/start", {"product_id": "portable-product-example"})
+            self.assertEqual(started["status"], "STARTED")
+            self.assertEqual(started["product_id"], "portable-product-example")
+            self.assertIn("url", started)
+
+            running = get("/api/build/status?product_id=portable-product-example")
+            self.assertTrue(running["running"])
+            self.assertIsNotNone(running["port"])
+
+            stopped = post("/api/build/stop", {"product_id": "portable-product-example"})
+            self.assertIn(stopped["status"], ("STOPPED", "NOT_RUNNING"))
+
+            compile_result = post("/api/terminal/exec", {"command": "compile"})
+            self.assertEqual(compile_result["status"], "PASS")
+            self.assertEqual(compile_result["command"], "compile")
+            self.assertEqual(compile_result["returncode"], 0)
+
+            try:
+                post("/api/terminal/exec", {"command": "rm"})
+                self.fail("expected HTTP 400 for disallowed command")
+            except HTTPError as exc:
+                with exc:
+                    self.assertEqual(exc.code, 400)
+                    bad_cmd = json.loads(exc.read().decode("utf-8"))
+                    self.assertEqual(bad_cmd["status"], "ERROR")
+                    self.assertIn("allowlist", bad_cmd["error"])
+        finally:
+            build_mgr = getattr(server, "build_manager", None)
+            if build_mgr is not None:
+                build_mgr.shutdown_all()
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=3)
+
+
+class TestProfileStore(unittest.TestCase):
+    def setUp(self):
+        self._tmp = tempfile.mkdtemp()
+        self.store = ProfileStore(self._tmp + "/profile.sqlite3")
+
+    def test_profile_store_load_returns_none_fields_when_empty(self):
+        profile = self.store.load()
+        self.assertIsNone(profile["role"])
+        self.assertIsNone(profile["workplace"])
+        self.assertIsNone(profile["goal"])
+
+    def test_profile_store_save_and_load_roundtrip(self):
+        saved = self.store.save(
+            "Product Manager", "Early Startup", "Validate Problem & PRD"
+        )
+        self.assertEqual(saved["role"], "Product Manager")
+        loaded = self.store.load()
+        self.assertEqual(loaded["role"], "Product Manager")
+        self.assertEqual(loaded["workplace"], "Early Startup")
+        self.assertEqual(loaded["goal"], "Validate Problem & PRD")
+        self.assertIsNotNone(loaded["updated_at"])
+
+    def test_profile_store_rejects_invalid_role(self):
+        with self.assertRaises(ValueError):
+            self.store.save("Hacker", "Solo / Indie", "Auto Specs")
+
+    def test_profile_store_rejects_invalid_workplace(self):
+        with self.assertRaises(ValueError):
+            self.store.save("Founder", "Unknown Corp", "Auto Specs")
+
+    def test_profile_store_rejects_invalid_goal(self):
+        with self.assertRaises(ValueError):
+            self.store.save("Founder", "Solo / Indie", "World domination")
+
+
+class TestExtensionStore(unittest.TestCase):
+    """Settings extensions: listed, scoped, consented, and never fetched."""
+
+    WORKSPACE = "ws-extensions"
+
+    def setUp(self):
+        self._tmp = tempfile.mkdtemp()
+        self.store = ExtensionStore(self._tmp + "/extensions.sqlite3")
+
+    def _by_id(self, scope="project"):
+        listing = self.store.list(self.WORKSPACE, scope)
+        return {entry["id"]: entry for entry in listing["entries"]}
+
+    def test_catalog_lists_every_entry_as_available_and_unfetched(self):
+        listing = self.store.list(self.WORKSPACE, "project")
+        self.assertEqual(listing["status"], "PASS")
+        self.assertFalse(listing["network_used"])
+        self.assertEqual(len(listing["entries"]), len(EXTENSION_CATALOG))
+        for entry in listing["entries"]:
+            self.assertEqual(entry["state"], "available")
+            self.assertFalse(entry["network_fetched"])
+            self.assertEqual(entry["trust"], "UNSIGNED")
+
+    def test_catalog_covers_all_three_kinds(self):
+        kinds = {entry["kind"] for entry in self.store.list(self.WORKSPACE)["entries"]}
+        self.assertEqual(kinds, {"design_system", "skill", "mcp_server"})
+
+    def test_pasted_source_url_is_provenance_only(self):
+        caveman = self._by_id()["caveman"]
+        self.assertEqual(caveman["source_url"], "https://github.com/juliusbrussee/caveman")
+        self.assertFalse(caveman["network_fetched"])
+
+    def test_design_system_without_tokens_cannot_be_enabled(self):
+        cloudscape = self._by_id()["cloudscape"]
+        self.assertFalse(cloudscape["tokens_supplied"])
+        self.assertFalse(cloudscape["enableable"])
+        with self.assertRaises(ValueError):
+            self.store.set_state(self.WORKSPACE, "cloudscape", "project", "enabled")
+
+    def test_enabling_a_second_design_system_names_what_it_disabled(self):
+        self.store.set_state(self.WORKSPACE, "geist", "project", "enabled")
+        result = self.store.set_state(self.WORKSPACE, "carbon", "project", "enabled")
+        self.assertEqual(result["disabled_by_this_change"], ["geist"])
+        self.assertEqual(self.store.active_tokens(self.WORKSPACE)["id"], "carbon")
+
+    def test_project_scope_shadows_global_and_says_so(self):
+        self.store.set_state(self.WORKSPACE, "geist", "global", "enabled")
+        self.store.set_state(self.WORKSPACE, "geist", "project", "disabled")
+        row = self._by_id()["geist"]
+        self.assertTrue(row["overrides_global"])
+        self.assertEqual(row["state"], "disabled")
+
+    def test_remove_is_reversible_and_rollback_restores_staged(self):
+        self.store.set_state(self.WORKSPACE, "geist", "project", "enabled")
+        self.assertEqual(
+            self.store.remove(self.WORKSPACE, "geist", "project")["state"], "disabled"
+        )
+        self.assertEqual(self._by_id()["geist"]["state"], "disabled")
+        self.store.set_state(self.WORKSPACE, "geist", "project", "staged")
+        self.assertEqual(self._by_id()["geist"]["state"], "staged")
+
+    def test_user_added_entry_stages_rather_than_activates(self):
+        added = self.store.add(self.WORKSPACE, "project", {
+            "id": "my-tokens", "kind": "design_system", "title": "Mine",
+            "tokens": {"--radius-md": "3px"},
+            "source_url": "https://example.com/tokens",
+        })
+        self.assertEqual(added["state"], "staged")
+        self.assertFalse(added["source_url_fetched"])
+        self.assertEqual(self._by_id()["my-tokens"]["origin"], "user_added")
+
+    def test_token_values_reject_css_injection(self):
+        for tokens in (
+            {"--radius-md": "3px; background:url(http://evil)"},
+            {"--radius-md": "red}\n.x{color:red"},
+            {"onclick": "1px"},
+            {"--radius-md": "expression(alert(1))<script>"},
+        ):
+            with self.assertRaises(ValueError):
+                self.store.add(self.WORKSPACE, "project", {
+                    "id": "probe", "kind": "design_system", "tokens": tokens,
+                })
+
+    def test_catalog_entry_cannot_be_replaced_by_a_user_entry(self):
+        with self.assertRaises(ValueError):
+            self.store.add(self.WORKSPACE, "project", {
+                "id": "geist", "kind": "design_system",
+            })
+
+    def test_unknown_scope_kind_and_id_are_refused(self):
+        with self.assertRaises(ValueError):
+            self.store.list(self.WORKSPACE, "everywhere")
+        with self.assertRaises(ValueError):
+            self.store.set_state(self.WORKSPACE, "geist", "project", "installed")
+        with self.assertRaises(ValueError):
+            self.store.set_state(self.WORKSPACE, "does-not-exist", "project", "enabled")
+        with self.assertRaises(ValueError):
+            self.store.add(self.WORKSPACE, "project", {"id": "x1", "kind": "runtime"})
+
+    def test_non_http_source_url_is_refused(self):
+        with self.assertRaises(ValueError):
+            self.store.add(self.WORKSPACE, "project", {
+                "id": "x2", "kind": "skill", "source_url": "file:///etc/passwd",
+            })
+
+    def test_workspaces_do_not_leak_state_to_each_other(self):
+        self.store.set_state(self.WORKSPACE, "geist", "project", "enabled")
+        other = {e["id"]: e for e in self.store.list("ws-other")["entries"]}
+        self.assertEqual(other["geist"]["state"], "available")
+        self.assertIsNone(self.store.active_tokens("ws-other")["id"])
+
+    def test_catalog_declares_no_secret_values(self):
+        for entry in EXTENSION_CATALOG:
+            self.assertEqual(entry["secret_refs"], ())
+
+
+class TestApiSeams(unittest.TestCase):
+    """Identity and routing seams that let the server host swap without touching handlers."""
+
+    def setUp(self):
+        self.config = load_config(ROOT / "layer_a_config.json")
+
+    def test_resolve_principal_returns_one_local_operator_holding_both_roles(self):
+        principal = resolve_principal(None, "workspace-local")
+        self.assertEqual(principal.workspace_id, "workspace-local")
+        self.assertIn(OWNER_ROLE, principal.roles)
+        self.assertIn(STUDIO_ROLE, principal.roles)
+        principal.require(STUDIO_ROLE)
+
+    def test_principal_require_rejects_a_role_the_caller_does_not_hold(self):
+        principal = Principal("someone", "workspace-local", frozenset({OWNER_ROLE}))
+        with self.assertRaises(ConfigError):
+            principal.require(STUDIO_ROLE)
+
+    def test_studio_data_routes_refuse_a_caller_without_the_studio_role(self):
+        principal = Principal("someone", "workspace-local", frozenset({OWNER_ROLE}))
+        request = ApiRequest(path="/api/db-rows", query={"table": ["products"]}, payload={})
+        for path in ("/api/file", "/api/db-schema", "/api/db-rows", "/api/plugin/admin"):
+            with self.subTest(path=path):
+                with self.assertRaises(ConfigError):
+                    API_GET_ROUTES[path](None, principal, replace(request, path=path))
+
+    def test_every_handler_is_a_module_level_callable_taking_context_principal_request(self):
+        for table in (API_GET_ROUTES, API_POST_ROUTES):
+            for path, handler in table.items():
+                with self.subTest(path=path):
+                    self.assertTrue(callable(handler))
+                    self.assertEqual(handler.__code__.co_argcount, 3)
+                    self.assertIs(getattr(sys.modules["layer_a"], handler.__name__), handler)
+
+    def test_handoff_contract_routes_are_all_implemented(self):
+        api = self.config["handoff_contract"]["api_contract"]
+        self.assertLessEqual(set(api["get_routes"]), set(API_GET_ROUTES))
+        self.assertLessEqual(set(api["post_routes"]), set(API_POST_ROUTES))
+
+    def test_api_request_reads_the_first_query_value_with_a_fallback(self):
+        request = ApiRequest(path="/api/db-rows", query={"limit": ["5", "9"]}, payload={})
+        self.assertEqual(request.first("limit"), "5")
+        self.assertEqual(request.first("table", "products"), "products")
+
+
+class TestApiVersioningAndBackpressure(unittest.TestCase):
+    def setUp(self):
+        self.config = load_config(ROOT / "layer_a_config.json")
+
+    def _live_server(self, **patched):
+        """Start a localhost server on an ephemeral port, torn down by cleanup."""
+        from unittest.mock import patch
+
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        patches = [patch(f"layer_a.{name}", value) for name, value in patched.items()]
+        for item in patches:
+            item.start()
+            self.addCleanup(item.stop)
+        server = make_e2e_server(
+            self.config,
+            "127.0.0.1",
+            0,
+            Path(temporary.name) / "products.sqlite3",
+        )
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+
+        def teardown():
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
+        self.addCleanup(teardown)
+        return server, f"http://127.0.0.1:{server.server_port}"
+
+    @staticmethod
+    def _get(base, path):
+        with urlopen(base + path, timeout=5) as response:
+            return response.status, json.load(response)
+
+    @staticmethod
+    def _post(base, path, payload):
+        request = Request(
+            base + path,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(request, timeout=5) as response:
+            return response.status, json.load(response)
+
+    def test_every_unversioned_api_route_has_a_versioned_twin_on_the_same_handler(self):
+        for table in (API_GET_ROUTES, API_POST_ROUTES):
+            unversioned = [
+                path for path in table
+                if path.startswith(API_PREFIX) and not path.startswith(API_VERSION_PREFIX)
+            ]
+            self.assertTrue(unversioned)
+            for path in unversioned:
+                twin = API_VERSION_PREFIX + path[len(API_PREFIX):]
+                with self.subTest(path=path):
+                    self.assertIn(twin, table)
+                    self.assertIs(table[twin], table[path])
+            # Dual-serve is exactly additive: no versioned path without a twin.
+            versioned = [path for path in table if path.startswith(API_VERSION_PREFIX)]
+            self.assertEqual(len(versioned), len(unversioned))
+
+    def test_health_stays_unversioned_only(self):
+        self.assertIn("/health", API_GET_ROUTES)
+        self.assertNotIn("/api/v1/health", API_GET_ROUTES)
+        self.assertNotIn("/api/health", API_GET_ROUTES)
+
+    def test_plugin_lifecycle_actions_still_resolve_under_the_version_prefix(self):
+        # _post_plugin_lifecycle branches on the path suffix, which a prefix must not disturb.
+        self.assertTrue("/api/v1/plugin/enable".endswith("enable"))
+        self.assertFalse("/api/v1/plugin/disable".endswith("enable"))
+        self.assertTrue("/api/v1/plugin/disable".endswith("disable"))
+        self.assertFalse("/api/v1/plugin/rollback".endswith("enable"))
+        self.assertFalse("/api/v1/plugin/rollback".endswith("disable"))
+
+    def test_versioned_paths_serve_the_same_payload_as_their_unversioned_twins(self):
+        _server, base = self._live_server()
+        plain_status, plain_task = self._get(base, "/api/task")
+        versioned_status, versioned_task = self._get(base, "/api/v1/task")
+        self.assertEqual((plain_status, versioned_status), (200, 200))
+        self.assertEqual(plain_task, versioned_task)
+
+        plain_status, plain_compare = self._post(base, "/api/compare", {})
+        versioned_status, versioned_compare = self._post(base, "/api/v1/compare", {})
+        self.assertEqual((plain_status, versioned_status), (200, 200))
+        self.assertEqual(plain_compare, versioned_compare)
+
+        # An unknown path stays a 404 under the version prefix too.
+        with self.assertRaises(HTTPError) as caught:
+            self._get(base, "/api/v1/nope")
+        self.assertEqual(caught.exception.code, 404)
+        caught.exception.close()
+
+    def test_bounded_server_is_configured_with_a_ceiling_and_daemon_threads(self):
+        server, _base = self._live_server()
+        self.assertIsInstance(server, BoundedThreadingHTTPServer)
+        self.assertTrue(server.daemon_threads)
+        self.assertEqual(server.max_concurrent_requests, MAX_CONCURRENT_REQUESTS)
+        self.assertGreaterEqual(MAX_CONCURRENT_REQUESTS, 8)
+        self.assertGreater(REQUEST_SOCKET_TIMEOUT_SECONDS, 0)
+
+    def test_exceeding_the_concurrency_cap_returns_503_then_recovers(self):
+        server, base = self._live_server(MAX_CONCURRENT_REQUESTS=1)
+        self.assertEqual(server.max_concurrent_requests, 1)
+        # Hold the only slot, so the next connection cannot get one.
+        self.assertTrue(server.request_slots.acquire(blocking=False))
+        try:
+            with self.assertRaises(HTTPError) as caught:
+                self._get(base, "/health")
+            error = caught.exception
+            self.assertEqual(error.code, 503)
+            self.assertEqual(error.headers.get("Content-Type"), "application/json; charset=utf-8")
+            envelope = json.loads(error.read().decode("utf-8"))
+            error.close()
+            self.assertEqual(envelope["status"], "ERROR")
+            self.assertEqual(envelope["error"], REQUEST_LIMIT_MESSAGE)
+            self.assertIn("concurrent request limit", envelope["error"])
+        finally:
+            server.request_slots.release()
+        # The slot is back, so the server serves again.
+        status, payload = self._get(base, "/health")
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["status"], "PASS")
+        self.assertEqual(payload["mode"], "LOCAL_DETERMINISTIC_MOCK")
+        self.assertFalse(payload["network_used"])
+
+    def test_an_idle_connection_times_out_without_breaking_later_requests(self):
+        server, base = self._live_server(REQUEST_SOCKET_TIMEOUT_SECONDS=0.3)
+        idle = socket.create_connection(("127.0.0.1", server.server_port), timeout=5)
+        with closing(idle):
+            # Connect and send nothing. The handler's socket timeout must close it
+            # instead of pinning the worker thread forever.
+            self.assertEqual(idle.recv(1024), b"")
+        status, payload = self._get(base, "/health")
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["status"], "PASS")
+        status, task = self._get(base, "/api/v1/task")
+        self.assertEqual(status, 200)
+        self.assertIn("prompt", task)
+
+
+class TestPlanStepsAndPreviewPhase(unittest.TestCase):
+    def setUp(self):
+        self.config = load_config(ROOT / "layer_a_config.json")
+
+    def _manager(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        from layer_a_build import EphemeralBuildManager
+
+        return EphemeralBuildManager(Path(temporary.name)), Path(temporary.name)
+
+    def test_plan_steps_cover_every_readiness_check_plus_the_prototype(self):
+        readiness = assess_product_readiness(self.config)
+        plan = product_plan_steps(self.config)
+        ids = [step["id"] for step in plan["steps"]]
+        self.assertEqual(ids, [check["id"] for check in readiness["checks"]] + ["prototype"])
+        self.assertEqual(plan["rules_version"], readiness["rules_version"])
+        self.assertEqual(plan["product_score"], readiness["product_score"])
+
+    def test_plan_step_state_follows_the_readiness_outcome(self):
+        readiness = assess_product_readiness(self.config)
+        passed = {check["id"]: check["passed"] for check in readiness["checks"]}
+        for step in product_plan_steps(self.config)["steps"]:
+            if step["id"] == "prototype":
+                continue
+            with self.subTest(step=step["id"]):
+                if passed[step["id"]]:
+                    self.assertEqual(step["state"], "done")
+                else:
+                    self.assertIn(step["state"], ("active", "blocked"))
+
+    def test_a_step_after_an_open_blocker_is_blocked_not_active(self):
+        config = copy.deepcopy(self.config)
+        config["part_b"]["product_blueprint"]["execution"]["evidence_refs"] = []
+        states = {step["id"]: step["state"] for step in product_plan_steps(config)["steps"]}
+        self.assertEqual(states["execution"], "active")
+        self.assertEqual(states["approvals"], "blocked")
+        self.assertEqual(states["definition"], "done")
+
+    def test_plan_counts_add_up_to_the_step_total(self):
+        plan = product_plan_steps(self.config)
+        self.assertEqual(sum(plan["counts"].values()), len(plan["steps"]))
+
+    def test_prototype_step_tracks_the_build_phase(self):
+        expected = {"ready": "done", "failed": "blocked", "not_started": "pending",
+                    "stopped": "pending", "exited": "pending"}
+        for phase, state in expected.items():
+            with self.subTest(phase=phase):
+                plan = product_plan_steps(self.config, {"phase": phase})
+                self.assertEqual(plan["steps"][-1]["state"], state)
+                self.assertEqual(plan["preview"]["phase"], phase)
+
+    def test_status_reports_not_started_before_any_build(self):
+        manager, _ = self._manager()
+        status = manager.status("prod-1")
+        self.assertFalse(status["running"])
+        self.assertEqual(status["phase"], "not_started")
+        self.assertTrue(status["message"])
+
+    def test_a_failed_start_is_distinguishable_from_never_started(self):
+        manager, _ = self._manager()
+        with self.assertRaises(ValueError):
+            manager.start("!!!", {})
+        status = manager.status("!!!")
+        self.assertEqual(status["phase"], "failed")
+        self.assertIn("not safe", status["message"])
+
+    def test_listing_reports_no_files_before_generation_and_is_never_editable(self):
+        manager, root = self._manager()
+        listing = manager.list_files("prod-1")
+        self.assertFalse(listing["generated"])
+        self.assertEqual(listing["files"], [])
+        self.assertFalse(listing["editable"])
+        build_dir = root / "builds" / "prod-1"
+        build_dir.mkdir(parents=True)
+        (build_dir / "index.html").write_text("<h1>hi</h1>", encoding="utf-8")
+        listing = manager.list_files("prod-1")
+        self.assertTrue(listing["generated"])
+        self.assertEqual([f["name"] for f in listing["files"]], ["index.html"])
+        self.assertFalse(listing["editable"])
+        self.assertEqual(manager.read_file("prod-1", "index.html")["content"], "<h1>hi</h1>")
+
+    def test_prototype_reads_cannot_escape_the_build_directory(self):
+        manager, root = self._manager()
+        build_dir = root / "builds" / "prod-1"
+        build_dir.mkdir(parents=True)
+        (build_dir / "index.html").write_text("ok", encoding="utf-8")
+        for name in ("../../layer_a.py", "sub/index.html", "", ".hidden", "missing.html"):
+            with self.subTest(name=name):
+                with self.assertRaises(ValueError):
+                    manager.read_file("prod-1", name)
+
+    def test_oversized_prototype_file_is_refused_rather_than_streamed(self):
+        from layer_a_build import PROTOTYPE_FILE_BYTE_LIMIT
+
+        manager, root = self._manager()
+        build_dir = root / "builds" / "prod-1"
+        build_dir.mkdir(parents=True)
+        (build_dir / "big.html").write_text("x" * (PROTOTYPE_FILE_BYTE_LIMIT + 1), encoding="utf-8")
+        with self.assertRaises(ValueError) as caught:
+            manager.read_file("prod-1", "big.html")
+        self.assertIn("read limit", str(caught.exception))
+
+    def _fake_running_build(self, manager, product_id, owner, age=0.0):
+        """Register a build record without spawning a subprocess."""
+
+        class _Alive:
+            def poll(self):
+                return None
+
+            def terminate(self):
+                return None
+
+            def wait(self, timeout=None):
+                return 0
+
+        manager._builds[product_id] = {
+            "port": 8081 + len(manager._builds),
+            "pid": -1,
+            "process": _Alive(),
+            "build_dir": "",
+            "url": f"http://127.0.0.1:{8081 + len(manager._builds)}/",
+            "owner": owner,
+            "started_at": time.monotonic() - age,
+        }
+
+    def test_owner_quota_refuses_a_third_prototype_for_the_same_owner(self):
+        from layer_a_build import MAX_BUILDS_PER_OWNER
+
+        manager, _ = self._manager()
+        for index in range(MAX_BUILDS_PER_OWNER):
+            self._fake_running_build(manager, f"prod-{index}", "alice")
+        with self.assertRaises(ValueError) as caught:
+            manager.start("prod-new", {}, owner="alice")
+        self.assertIn("stop one before starting another", str(caught.exception))
+        self.assertEqual(manager.status("prod-new")["phase"], "failed")
+
+    def test_global_quota_refuses_a_new_prototype_across_different_owners(self):
+        from layer_a_build import MAX_BUILDS_PER_OWNER, MAX_CONCURRENT_BUILDS
+
+        manager, _ = self._manager()
+        for index in range(MAX_CONCURRENT_BUILDS):
+            owner = f"owner-{index // MAX_BUILDS_PER_OWNER}"
+            self._fake_running_build(manager, f"prod-{index}", owner)
+        with self.assertRaises(ValueError) as caught:
+            manager.start("prod-new", {}, owner="fresh-owner")
+        self.assertIn("already running", str(caught.exception))
+
+    def test_restarting_the_same_product_does_not_need_a_free_quota_slot(self):
+        from layer_a_build import MAX_CONCURRENT_BUILDS
+
+        manager, _ = self._manager()
+        for index in range(MAX_CONCURRENT_BUILDS):
+            self._fake_running_build(manager, f"prod-{index}", f"owner-{index}")
+
+        def _no_port(_excluded=None):
+            raise ValueError("reached the port search")
+
+        manager._find_free_port = _no_port
+        with self.assertRaises(ValueError) as rejected:
+            manager.start("prod-new", {}, owner="fresh-owner")
+        self.assertIn("already running", str(rejected.exception))
+        # prod-0 already holds a slot, so its restart skips the quota check and gets
+        # as far as the real work instead of being refused.
+        with self.assertRaises(ValueError) as allowed:
+            manager.start("prod-0", {}, owner="owner-0")
+        self.assertIn("reached the port search", str(allowed.exception))
+
+    def test_a_prototype_past_its_ttl_is_reaped_and_reported_as_expired(self):
+        from layer_a_build import BUILD_TTL_SECONDS
+
+        manager, _ = self._manager()
+        self._fake_running_build(manager, "prod-old", "alice", age=BUILD_TTL_SECONDS + 1)
+        status = manager.status("prod-old")
+        self.assertFalse(status["running"])
+        self.assertEqual(status["phase"], "expired")
+        self.assertNotIn("prod-old", manager._builds)
+
+    def test_aggregate_status_reports_the_quota(self):
+        from layer_a_build import BUILD_TTL_SECONDS, MAX_BUILDS_PER_OWNER, MAX_CONCURRENT_BUILDS
+
+        manager, _ = self._manager()
+        self._fake_running_build(manager, "prod-0", "alice")
+        quota = manager.status()["quota"]
+        self.assertEqual(quota["in_use"], 1)
+        self.assertEqual(quota["max_concurrent"], MAX_CONCURRENT_BUILDS)
+        self.assertEqual(quota["max_per_owner"], MAX_BUILDS_PER_OWNER)
+        self.assertEqual(quota["ttl_seconds"], BUILD_TTL_SECONDS)
+
+    def test_extract_data_model_derived_from_user_input(self):
+        from layer_a_build import extract_data_model
+
+        blueprint = self.config["part_b"]["product_blueprint"]
+        dm = extract_data_model(blueprint)
+        self.assertIn("entities", dm)
+        self.assertIn("relationships", dm)
+        self.assertIn("open_questions", dm)
+        entity_names = {e["name"] for e in dm["entities"]}
+        self.assertIn("User", entity_names)
+        self.assertTrue(any(e["type"] in ("fact", "dimension") for e in dm["entities"]))
+        for entity in dm["entities"]:
+            self.assertTrue(entity["grain"])
+            self.assertTrue(entity["attributes"])
+            self.assertTrue(any(a.get("pk") for a in entity["attributes"]))
+        self.assertTrue(len(dm["open_questions"]) >= 2)
+
+    def test_prototype_generates_all_nine_files_and_reads_them(self):
+        manager, _ = self._manager()
+        blueprint = self.config["part_b"]["product_blueprint"]
+        manager._generate_prototype("prod-multi", blueprint)
+        listing = manager.list_files("prod-multi")
+        self.assertTrue(listing["generated"])
+        names = {f["name"] for f in listing["files"]}
+        self.assertEqual(
+            names,
+            {"index.html", "data-model.md", "schema.sql", "er.svg", "BRD.md", "PRD.md", "FSD.md", "manifest.webmanifest", "sw.js"},
+        )
+        for name in names:
+            file_res = manager.read_file("prod-multi", name)
+            self.assertEqual(file_res["name"], name)
+            self.assertTrue(len(file_res["content"]) > 0)
+            self.assertFalse(file_res["editable"])
+
+        brd = manager.read_file("prod-multi", "BRD.md")["content"]
+        prd = manager.read_file("prod-multi", "PRD.md")["content"]
+        fsd = manager.read_file("prod-multi", "FSD.md")["content"]
+        manifest = manager.read_file("prod-multi", "manifest.webmanifest")["content"]
+        sw = manager.read_file("prod-multi", "sw.js")["content"]
+        self.assertIn("# Business Requirements Document (BRD)", brd)
+        self.assertIn("# Product Requirements Document (PRD)", prd)
+        self.assertIn("# Functional Specification Document (FSD)", fsd)
+        self.assertIn('"display": "standalone"', manifest)
+        self.assertIn("addEventListener", sw)
+
+    def test_akp_product_bound_generator_preserves_gherkin_and_learning_controls(self):
+        manager, _ = self._manager()
+        alpha = copy.deepcopy(self.config["part_b"]["product_blueprint"])
+        alpha["product"]["name"] = "AKP Alpha Learning"
+        alpha["definition"]["problem_statement"] = "Alpha-only fallback problem"
+        alpha["_prototype_context"] = {
+            "problem": "Alpha child needs a calm phonics lesson",
+            "intended_user": "Alpha early learner",
+            "outcome": "Match B to Ball in one short session",
+            "accomplishment": "Practice alphabet sounds",
+            "usefulness": "Replace an unstructured worksheet",
+            "solution_options": ["Letter matching", "Ten minute session timer"],
+            "gherkin_contracts": [
+                "Scenario: Match letter B\nGiven the learner selected B\nWhen the learner chooses Ball\nThen the match passes",
+                "Scenario: Parent lock\nGiven parent mode is closed\nWhen a session PIN is set\nThen the dashboard opens",
+            ],
+        }
+        beta = copy.deepcopy(alpha)
+        beta["product"]["name"] = "AKP Beta Product"
+        beta["_prototype_context"] = {
+            "problem": "Beta-only workflow problem",
+            "intended_user": "Beta operator",
+            "outcome": "Review one workflow",
+            "accomplishment": "Complete Beta workflow",
+            "usefulness": "Reduce Beta handoffs",
+            "solution_options": ["Beta review queue"],
+            "gherkin_contracts": [],
+        }
+
+        manager._generate_prototype("akp-alpha", alpha)
+        manager._generate_prototype("akp-beta", beta)
+        alpha_html = manager.read_file("akp-alpha", "index.html")["content"]
+        beta_html = manager.read_file("akp-beta", "index.html")["content"]
+        alpha_prd = manager.read_file("akp-alpha", "PRD.md")["content"]
+        alpha_brd = manager.read_file("akp-alpha", "BRD.md")["content"]
+
+        for expected in (
+            "AKP Alpha Learning",
+            'id="timer-toggle"',
+            'id="timer-reset"',
+            'class="letter-card"',
+            'id="sound-play"',
+            'id="parent-open"',
+            'id="parent-pin"',
+            'id="parent-lock"',
+            'class="drop-target balloon"',
+        ):
+            self.assertIn(expected, alpha_html)
+
+        # Gherkin remains exact in review UI and PRD; status starts truthful.
+        self.assertIn("Given the learner selected B\nWhen the learner chooses Ball\nThen the match passes", alpha_html)
+        self.assertIn("Given parent mode is closed\nWhen a session PIN is set\nThen the dashboard opens", alpha_html)
+        self.assertIn('data-contract-state="not-run">Not run', alpha_html)
+        self.assertIn("Run prototype smoke check", alpha_html)
+        self.assertIn("Given the learner selected B\nWhen the learner chooses Ball\nThen the match passes", alpha_prd)
+        self.assertIn("Given parent mode is closed\nWhen a session PIN is set\nThen the dashboard opens", alpha_prd)
+        self.assertIn("Alpha child needs a calm phonics lesson", alpha_brd)
+
+        self.assertNotIn("AKP Beta Product", alpha_html)
+        self.assertIn("AKP Beta Product", beta_html)
+        self.assertNotIn("AKP Alpha Learning", beta_html)
+
+        for forbidden in (
+            '<div class="logo">PI</div>',
+            "Ping prototype",
+            "local preview",
+            "localStorage", "sessionStorage", "indexedDB", "document.cookie",
+            "100% Offline SQLite Engine", "persisted progress", "saved progress",
+            "Default PIN", 'sessionPin="1234"', 'value="1234"', "strictly offline",
+        ):
+            self.assertNotIn(forbidden, alpha_html)
+
+    def test_prototype_archive_is_deterministic_and_guards_traversal(self):
+        import zipfile
+        import io
+
+        manager, _ = self._manager()
+        blueprint = self.config["part_b"]["product_blueprint"]
+        manager._generate_prototype("prod-arch", blueprint)
+
+        zip1 = manager.archive("prod-arch")
+        zip2 = manager.archive("prod-arch")
+        self.assertEqual(zip1, zip2)  # Byte-identical deterministic output
+
+        with zipfile.ZipFile(io.BytesIO(zip1), "r") as zf:
+            zip_names = set(zf.namelist())
+            self.assertEqual(
+                zip_names,
+                {"index.html", "data-model.md", "schema.sql", "er.svg", "BRD.md", "PRD.md", "FSD.md", "manifest.webmanifest", "sw.js"},
+            )
+
+        with self.assertRaises(ValueError):
+            manager.archive("non-existent-product")
+
+        with self.assertRaises(ValueError):
+            manager.archive("../../etc/passwd")
+
+    def test_new_read_only_routes_are_registered_with_their_versioned_twins(self):
+        for path in ("/api/plan", "/api/build/files", "/api/build/file", "/api/build/archive"):
+            with self.subTest(path=path):
+                self.assertIn(path, API_GET_ROUTES)
+                versioned = path.replace("/api/", "/api/v1/", 1)
+                self.assertIs(API_GET_ROUTES[path], API_GET_ROUTES[versioned])
+        self.assertNotIn("/api/build/write", API_POST_ROUTES)
+
+
+class TestVaultAndHandoffTraceability(unittest.TestCase):
+    """Deep verification of BYOK secret:// boundaries and PRD/BRD handoff traceability."""
+
+    def setUp(self):
+        self.config = load_config(ROOT / "layer_a_config.json")
+
+    def test_vault_secret_ref_scheme_enforcement(self):
+        secrets_map = {"secret://vault/key": "val"}
+        provider = SecretProvider(lambda ref: secrets_map[ref])
+        self.assertEqual(provider.resolve("secret://vault/key"), "val")
+
+        # Missing secret raises ConfigError with suppressed details
+        with self.assertRaises(ConfigError):
+            provider.resolve("secret://vault/missing")
+
+        # Non-secret:// schemes raise ConfigError
+        with self.assertRaises(ConfigError):
+            provider.resolve("plaintext-key")
+
+        with self.assertRaises(ConfigError):
+            provider.resolve("http://vault/leak")
+
+        with self.assertRaises(ConfigError):
+            provider.resolve("")
+
+    def test_vault_secrets_never_leak_in_catalog(self):
+        for entry in EXTENSION_CATALOG:
+            serialized = json.dumps(entry).lower()
+            self.assertNotIn("api_key", serialized)
+            self.assertNotIn("password", serialized)
+            self.assertNotIn("bearer", serialized)
+            for ref in entry.get("secret_refs", []):
+                self.assertTrue(ref.startswith("secret://"), f"Invalid secret ref {ref}")
+
+
+    def test_product_handoff_traceability_across_all_formats(self):
+        blueprint = self.config["part_b"]["product_blueprint"]
+        record = {
+            "workspace_id": "ws-test",
+            "product_id": blueprint["product"]["id"],
+            "revision": 1,
+            "fingerprint": fingerprint(blueprint),
+            "blueprint": blueprint,
+        }
+
+        for fmt in ("json", "markdown", "executive_brief", "prd"):
+            with self.subTest(format=fmt):
+                result = export_product_handoff(self.config, record, fmt)
+                self.assertEqual(result["format"], fmt)
+                self.assertIn("content", result)
+                self.assertIn("payload_fingerprint", result)
+                self.assertIn("artifact_fingerprint", result)
+                self.assertGreater(result["evidence_count"], 0)
+                if fmt == "prd":
+                    self.assertIn("# PRD", result["content"])
+                    self.assertIn("## 1. Problem", result["content"])
+                    self.assertIn("## 9. Evidence and sources", result["content"])
+                elif fmt == "json":
+                    parsed = json.loads(result["content"])
+                    self.assertEqual(parsed["schema"], "part-b.product-handoff")
+                    self.assertIn("decisions", parsed)
+                    self.assertIn("evidence", parsed)
+
+    def test_product_handoff_rejects_tampered_fingerprint(self):
+        blueprint = self.config["part_b"]["product_blueprint"]
+        tampered_record = {
+            "workspace_id": "ws-test",
+            "product_id": blueprint["product"]["id"],
+            "revision": 1,
+            "fingerprint": "tampered-bad-fingerprint-12345",
+            "blueprint": blueprint,
+        }
+        with self.assertRaises(ConfigError):
+            export_product_handoff(self.config, tampered_record, "prd")
+
+    def test_approval_ledger_enforces_single_use_replay_prevention_and_integrity(self):
+        ledger = ApprovalLedger()
+        req = ledger.issue(
+            workflow_id="wf-test",
+            run_id="run-101",
+            target_id="prod-101",
+            target_version="1.0.0",
+            target={"action": "deploy", "env": "prod"},
+        )
+        self.assertTrue(req.approval_id)
+        self.assertTrue(req.target_fingerprint)
+
+        # Valid decision
+        dec = ApprovalDecision.from_request(req, approved=True, decided_by="sec-admin")
+        approved_req = ledger.decide(dec)
+        self.assertEqual(approved_req.approval_id, req.approval_id)
+
+        # Replay attempt fails immediately
+        with self.assertRaises(ApprovalReplay):
+            ledger.decide(dec)
+
+        # Unknown approval request fails
+        fake_req = ApprovalRequest(
+            approval_id="non-existent-id",
+            workflow_id="wf-test",
+            run_id="run-101",
+            checkpoint_id="chk-1",
+            target_id="prod-101",
+            target_version="1.0.0",
+            target_fingerprint="abc",
+        )
+        fake_dec = ApprovalDecision.from_request(fake_req, approved=True, decided_by="sec-admin")
+        with self.assertRaises(ApprovalMismatch):
+            ledger.decide(fake_dec)
+
+    def test_vault_secret_uri_boundary_never_leaked_in_product_export(self):
+        blueprint = copy.deepcopy(self.config["part_b"]["product_blueprint"])
+        blueprint["definition"]["problem_statement"] = "Problem with key: secret://vault/api_key_prod"
+        record = {
+            "workspace_id": "ws-test",
+            "product_id": blueprint["product"]["id"],
+            "revision": 1,
+            "fingerprint": fingerprint(blueprint),
+            "blueprint": blueprint,
+        }
+        with self.assertRaises(ConfigError):
+            export_product_handoff(self.config, record, "json")
+
+    def test_scoped_portfolio_user_product_routes(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        server = make_e2e_server(
+            self.config, "127.0.0.1", 0,
+            Path(temporary.name) / "products.sqlite3",
+        )
+        self.addCleanup(server.build_manager.shutdown_all)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        base = f"http://127.0.0.1:{server.server_port}"
+
+        # 1. Root /p/user_123/prod_456 returns 200 HTML
+        req = Request(f"{base}/p/user_123/prod_456")
+        with urlopen(req, timeout=3) as resp:
+            self.assertEqual(resp.status, 200)
+            self.assertIn("text/html", resp.headers.get("Content-Type", ""))
+
+        # 2. /preview when not running returns 404
+        try:
+            req_prev = Request(f"{base}/p/user_123/prod_456/preview")
+            with urlopen(req_prev, timeout=3):
+                self.fail("expected 404 for unstarted prototype preview")
+        except HTTPError as exc:
+            self.assertEqual(exc.code, 404)
+            exc.close()
+
+        # 3. Start prototype and verify /preview redirects with 302
+        blueprint = self.config["part_b"]["product_blueprint"]
+        server.build_manager.start("prod_456", blueprint, owner="user_123")
+        
+        class NoRedirectHandler(HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                return None
+
+        opener = build_opener(NoRedirectHandler)
+        try:
+            with opener.open(f"{base}/p/user_123/prod_456/preview") as resp:
+                self.assertEqual(resp.status, 302)
+                self.assertIn("127.0.0.1:", resp.headers.get("Location", ""))
+        except HTTPError as exc:
+            self.assertEqual(exc.code, 302)
+            self.assertIn("127.0.0.1:", exc.headers.get("Location", ""))
+            exc.close()
+
+        # 4. /archive returns valid zip
+        with urlopen(f"{base}/p/user_123/prod_456/archive", timeout=3) as resp:
+            self.assertEqual(resp.status, 200)
+            self.assertEqual(resp.headers.get("Content-Type", ""), "application/zip")
+            zip_bytes = resp.read()
+            with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+                names = zf.namelist()
+                self.assertIn("index.html", names)
+                self.assertIn("manifest.webmanifest", names)
+
+        # 5. /files returns json listing
+        with urlopen(f"{base}/p/user_123/prod_456/files", timeout=3) as resp:
+            self.assertEqual(resp.status, 200)
+            data = json.loads(resp.read().decode("utf-8"))
+            self.assertTrue(data.get("generated"))
+            self.assertGreaterEqual(len(data.get("files", [])), 9)
+
+    def test_discrete_build_stages_and_last_good_fallback(self):
+        from layer_a_build import EphemeralBuildManager
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        manager = EphemeralBuildManager(Path(temporary.name))
+        self.addCleanup(manager.shutdown_all)
+
+        blueprint = self.config["part_b"]["product_blueprint"]
+        res = manager.start("prod-stage-test", blueprint, owner="builder_1")
+        self.assertEqual(res["status"], "STARTED")
+        self.assertIn("stages", res)
+        stage_names = [s["name"] for s in res["stages"]]
+        self.assertEqual(stage_names, [
+            "parse_sections",
+            "map_components",
+            "render_html",
+            "sanitize",
+            "start_runner",
+            "smoke_checks",
+        ])
+        self.assertGreater(res["elapsed_ms"], 0)
+        self.assertEqual(res["scoped_path"], "/p/builder_1/prod-stage-test")
+
+        # get_build check
+        build = manager.get_build("prod-stage-test")
+        self.assertIsNotNone(build)
+        self.assertEqual(build["port"], res["port"])
+
+        # Rebuild failure preserves last good build
+        invalid_blueprint = {"product": None}  # will cause exception in generator
+        with self.assertRaises(Exception):
+            manager.start("prod-stage-test", invalid_blueprint, owner="builder_1")
+        
+        # Original build is still active
+        fallback_build = manager.get_build("prod-stage-test")
+        self.assertIsNotNone(fallback_build)
+        self.assertEqual(fallback_build["port"], res["port"])
+
+
 if __name__ == "__main__":
     unittest.main()
-    classify_plugin_trust,
-    mcp_handle_request,
-    natural_product_discovery,
-    plugin_freshness,
-    public_discovery_view,
-    public_plugin_status,
-    run_plugin_demo,
-    validate_agent_plugin,
+
