@@ -1,9 +1,275 @@
 {
   "platform": {
-    "name": "Portable Part A and Part B POC",
+    "name": "PI four-app product platform POC",
     "scope": "Part A + Part B",
     "version": "0.3.0",
     "mode": "LOCAL_DETERMINISTIC_POC"
+  },
+  "handoff_contract": {
+    "id": "pi-eight-file-authority",
+    "version": "1.0.0",
+    "status": "AUTHORITATIVE_LOCAL_HANDOFF",
+    "authority": {
+      "source_files": [
+        "AGENTS.md",
+        "CONTEXT.md",
+        "index.html",
+        "layer_a.py",
+        "layer_a_build.py",
+        "layer_a_config.json",
+        "layer_a_terminal.py",
+        "test_layer_a.py"
+      ],
+      "exact_source_file_count": 8,
+      "sibling_dependency": false,
+      "absolute_path_dependency": false,
+      "new_source_files_allowed": false,
+      "generated_state_is_transfer_source": false,
+      "generated_local_artifacts": [
+        ".layer-a-state/",
+        "__pycache__/",
+        "*.pyc"
+      ],
+      "precedence": [
+        "current executable tests and validated configuration",
+        "current AGENTS.md product and security contract",
+        "current implementation",
+        "legacy analysis recorded in AGENTS.md"
+      ]
+    },
+    "product": {
+      "brand": "PI",
+      "assistant": "Ping",
+      "single_user": true,
+      "end_user_rbac": false,
+      "owner_onboarding_field": false,
+      "apps": [
+        {
+          "id": "foundation",
+          "label": "Frame idea",
+          "owns": ["problem", "intended user", "context", "evidence framing", "desired outcome", "hypothesis", "decision"]
+        },
+        {
+          "id": "product",
+          "label": "Design product",
+          "owns": ["research review", "solution options", "requirements", "validation", "launch", "readiness", "handoff"]
+        },
+        {
+          "id": "assistant",
+          "label": "Ask Ping",
+          "owns": ["conversation", "evidence-grounded guidance", "reviewable proposals", "session activity"]
+        },
+        {
+          "id": "advanced",
+          "label": "Advanced",
+          "owns": ["AI behavior", "credentials boundary", "skills", "plugins", "provider adapters", "policy"]
+        }
+      ],
+      "target_journey": [
+        "Create product",
+        "Frame problem",
+        "Confirm hypothesis",
+        "Start product design",
+        "Review evidence",
+        "Compare solutions",
+        "Define requirements and validation",
+        "Plan launch",
+        "Assess readiness",
+        "Preview handoff"
+      ],
+      "required_artifacts": [
+        "research dossier",
+        "BRD",
+        "PRD",
+        "FSD",
+        "user journeys",
+        "user stories",
+        "Gherkin-ready acceptance criteria",
+        "evidence traceability",
+        "assumptions, risks, decisions, and unknowns",
+        "Markdown, JSON, and YAML engineering handoff"
+      ],
+      "generic_primitives": [
+        "Knowledge",
+        "Memory",
+        "Decisions",
+        "Workflow",
+        "Approvals",
+        "Automation",
+        "AI Interaction",
+        "Execution"
+      ]
+    },
+    "build_agent": {
+      "preferred_family": "Gemini",
+      "role": "build-time-only",
+      "supported_context_surfaces": ["Google AI Studio", "Gemini coding agent", "other approved coding agent"],
+      "autonomy": "plan-edit-test-report within these eight local source files",
+      "read_agents_first": true,
+      "baseline_before_edit": true,
+      "execution_evidence_required": true,
+      "claim_local_shell_without_connected_tool": false,
+      "runtime_provider_authority": false,
+      "stop_for_human": [
+        "network or provider access",
+        "credential creation, storage, or resolution",
+        "dependency or tool installation",
+        "external-system mutation",
+        "destructive data or schema change",
+        "publishing, deployment, migration, or release",
+        "scope or eight-file contract change"
+      ]
+    },
+    "runtime_ai": {
+      "name": "Ping",
+      "current_mode": "deterministic-local-mock",
+      "provider_policy": "provider-neutral-BYOK",
+      "provider_selection": null,
+      "provider_preference": null,
+      "silent_live_fallback": false,
+      "browser_secret_storage": false,
+      "secret_storage": "external-vault-reference-only",
+      "mutation_policy": "reviewable proposal with explicit human acceptance",
+      "candidates": [
+        {"id": "google-gemini", "enabled": false, "selected": false},
+        {"id": "xai-grok", "enabled": false, "selected": false},
+        {"id": "nvidia-nim", "enabled": false, "selected": false},
+        {"id": "other-provider", "enabled": false, "selected": false}
+      ],
+      "provider_adapter_contract": [
+        "capability discovery",
+        "health and model availability",
+        "generate and stream",
+        "structured tool calls",
+        "usage and cost metadata",
+        "timeout, cancellation, and normalized errors",
+        "redacted traces",
+        "no raw credential in request record or result"
+      ]
+    },
+    "database_contract": {
+      "current_mode": "local SQLite POC",
+      "encryption": "none",
+      "generated_data_in_source_bundle": false,
+      "canonical_product_key": "workspace_id + product_id",
+      "stores": [
+        {
+          "id": "memory",
+          "default_path": ".layer-a-state/memory.sqlite3",
+          "schema_version": 1,
+          "tables": ["memory_metadata", "memory_records", "memory_revisions", "memory_requests", "memory_audit"],
+          "rules": ["workspace binding", "immutable revisions", "optimistic conflict checks", "idempotency", "expiry", "tombstone and purge", "content-free audit hashes"]
+        },
+        {
+          "id": "products",
+          "default_path": ".layer-a-state/products.sqlite3",
+          "schema_version": 1,
+          "tables": ["product_blueprints"],
+          "rules": ["canonical blueprint JSON", "workspace isolation", "stable product ID", "optimistic revision", "fingerprint", "bounded size", "sensitive-data rejection"]
+        },
+        {
+          "id": "knowledge",
+          "default_path": ".layer-a-state/knowledge.sqlite3",
+          "schema_version": 1,
+          "tables": ["knowledge_sources", "knowledge_chunks"],
+          "rules": ["workspace and role scope", "source version and hash", "bounded local parsing", "deterministic lexical retrieval", "resolvable citation"]
+        },
+        {
+          "id": "governance",
+          "default_path": "caller-supplied local SQLite path",
+          "schema_version": 1,
+          "tables": ["governance_meta", "governance_budget", "governance_audit"],
+          "rules": ["policy fingerprint", "workspace budget", "metadata-only audit", "secret-reference hash only", "checked backup and restore"]
+        }
+      ],
+      "process_memory_only": ["pending approvals", "pending product proposals", "Ping conversation and activity", "unsaved form drafts"],
+      "browser_persistence_forbidden": ["localStorage", "sessionStorage", "IndexedDB", "cookies", "URL state"],
+      "migration_rules": [
+        "never silently downgrade or discard unknown schema",
+        "migrations are versioned, tested, reversible where possible, and backed up before destructive change",
+        "writes are transactional and fail closed",
+        "production storage needs encryption, authenticated tenancy, retention, backup, restore, and audit review"
+      ]
+    },
+    "api_contract": {
+      "current_mode": "same-origin localhost POC",
+      "versioning": "dual-serve: every /api/... route also answers at /api/v1/... on the same handler; unversioned paths stay supported and /health stays unversioned; deprecation and sunset policy still owed before production",
+      "request_body_limit_bytes": 1000000,
+      "error_shape": {"status": "ERROR", "error": "human-readable reason"},
+      "get_routes": ["/health", "/api/bootstrap", "/api/products", "/api/task", "/api/plugin", "/api/plugin/admin"],
+      "post_routes": [
+        "/api/intake", "/api/discover", "/api/compare",
+        "/api/products/create", "/api/products/open",
+        "/api/research", "/api/definition", "/api/solution", "/api/gtm", "/api/readiness",
+        "/api/copilot/propose", "/api/copilot/decision", "/api/export",
+        "/api/plugin/enable", "/api/plugin/disable", "/api/plugin/rollback"
+      ],
+      "production_requirements": [
+        "versioned request, response, and error schemas",
+        "authentication and tenancy boundary",
+        "idempotency and optimistic concurrency",
+        "pagination and bounded query contracts",
+        "archive or deletion lifecycle",
+        "compatibility and deprecation policy",
+        "audit correlation without prompt or secret logging"
+      ]
+    },
+    "acceptance_families": {
+      "part_a": "19 frozen gates; 18 locally validated and Gate 18 external sign-off",
+      "memory": "M1-M9; M8 optional and disabled",
+      "part_b": "B1-B8 validated POC experiences, not production readiness",
+      "plugins": "P1-P10 validated POC; P11-P13 should; P14-P15 could; P16 excluded",
+      "sessions": "S1-S5 validated local contract; S6 external gateway enforcement remains partial"
+    },
+    "moscow": {
+      "must": [
+        "retain exact eight-file sole authority and passing baseline",
+        "use one canonical product identity and source across all four apps",
+        "keep single-user onboarding without owner or RBAC fields",
+        "persist explicit product work with revision and evidence traceability",
+        "separate workflow preparation, evidence confidence, decision readiness, delivery readiness, and approval",
+        "keep Ping provider-neutral, conversational, context-visible, and proposal-only",
+        "store BYOK credentials only in approved server vault and never in browser, logs, URLs, files, or errors",
+        "preserve database schemas, migrations, backups, failure behavior, API contracts, and regression tests",
+        "meet keyboard, semantic dialog, 44-pixel target, contrast, reduced-motion, and responsive requirements",
+        "gate exports, destructive operations, provider calls, deployment, and release"
+      ],
+      "should": [
+        "add backend-backed draft recovery without browser storage",
+        "complete detailed BRD, PRD, FSD, journey, story, Gherkin, traceability, and handoff outputs",
+        "add archive/delete with confirmation, recovery policy, and audit",
+        "add metadata-only observability, cost limits, retry, cancellation, and rollback",
+        "add automated accessibility, responsive, security, migration, recovery, and concurrency tests"
+      ],
+      "could": [
+        "add voice, image, and attachment input only when processing and privacy behavior are real",
+        "add more provider adapters after neutral contract passes",
+        "add optional organization profiles, templates, and domain packs",
+        "add cloud collaboration or enterprise RBAC only through explicit new scope"
+      ],
+      "wont_now": [
+        "select or prefer Gemini, Grok, NVIDIA NIM, or another runtime provider",
+        "make Firebase, OpenHands, Agent Canvas, or any hosted service a product dependency",
+        "perform live research, remote extension installation, or unknown code execution",
+        "auto-approve AI changes, readiness, exports, releases, or deployment",
+        "store prompts, drafts, keys, or secrets in browser persistence",
+        "claim production, compliance, identity, encryption, or deployment certification"
+      ]
+    },
+    "known_gaps": [
+      "new products currently inherit synthetic blueprint sections instead of a blank canonical template",
+      "several product workflow inputs remain page-memory notes rather than durable canonical fields",
+      "legacy Foundation reference code remains broad and retains dormant technical routes outside the focused normal journey",
+      "current owner and role fields are engine fixtures, not intended end-user RBAC or onboarding",
+      "Ping is a safe deterministic UI mock, not a live evidence-grounded model agent",
+      "current API lacks production versioning, deletion, durable sessions, authentication, vault, and deployment contracts",
+      "browser-rendered accessibility and responsive acceptance still require human or approved tool evidence"
+    ],
+    "missing_external_context": [
+      "referenced 98-section master product specification was never present in local source and cannot be reconstructed exactly",
+      "NDA-specific export examples were not provided and must not be guessed",
+      "production provider, hosting, database, identity, legal, security, data residency, retention, and release decisions remain open"
+    ]
   },
   "policy": {
     "network": "deny",
@@ -325,6 +591,28 @@
           "Use local product_discovery MCP tool when available. Show known input, unknowns, evidence status, and one safe next action. Keep manifests, task packets, and trust internals hidden unless requested.",
           "",
           "Stop before hypothesis when problem or evidence remains weak. Never request secrets, credentials, financial statements, account numbers, card numbers, or private enterprise data."
+        ],
+        "skills/token-optimizer/SKILL.md": [
+          "---",
+          "name: token-optimizer",
+          "description: Ultra-compressed token optimizer for commercial LLM usage. Cuts prompt and response token costs by up to 70% using high-density communication while preserving 100% technical accuracy, code blocks, exact errors, units, and API schemas. MIT License for commercial and enterprise workflows.",
+          "---",
+          "",
+          "# Token Optimizer (MIT License)",
+          "",
+          "Ultra-compressed token optimization engine based on Caveman compression principles. Cuts LLM token spend by up to 70% while maintaining full technical substance, exact code blocks, and system contracts.",
+          "",
+          "## Compression Rules",
+          "- Drop: Filler words (just, really, basically, actually, simply), pleasantries (sure, hello, glad to help), hedging, decorative tables/emojis.",
+          "- Fragments OK: Short synonyms (big not extensive, fix not implement a solution for).",
+          "- Preserve 100%:",
+          "  - Code blocks, diffs, API endpoints, and SQL schemas exact.",
+          "  - Technical terms, error messages, and stack traces quoted exact.",
+          "  - Never drop not, never, no, only, except. Numbers and units exact.",
+          "- Pattern: [subject] [action] [reason]. [next step].",
+          "",
+          "## License",
+          "MIT License — Permissive for all commercial, private cloud, and enterprise workflows."
         ]
       }
     },
@@ -367,7 +655,7 @@
     ],
     "progressive_loading": {
       "initial": ["plugin_metadata", "selected_skill_metadata"],
-      "on_skill_use": ["skills/product-discovery/SKILL.md", "selected_question_contract"],
+      "on_skill_use": ["skills/product-discovery/SKILL.md", "skills/token-optimizer/SKILL.md", "selected_question_contract"],
       "deferred": ["full_product_blueprint", "evaluation_schema", "admin_trust_evidence"],
       "max_task_packet_characters": 4000
     },
